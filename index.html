@@ -4,13 +4,14 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Portfolio 2025</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
     <style>
         body {
             font-family: 'Roboto', sans-serif;
         }
     </style>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body class="bg-gray-100 text-gray-900">
     <!-- Navbar -->
@@ -21,7 +22,7 @@
                     <!-- Logo -->
                     <div>
                         <a class="flex items-center py-5 px-2 text-white" href="#">
-                            <img alt="Logo of the portfolio website, a stylized letter P inside a circle" class="h-8 w-8 mr-2" height="50" src="https://storage.googleapis.com/a1aa/image/tQEk7_Z4wAedePd0NCOePjB_UiFrRH3yCTtp4DR0wVs.jpg" width="50"/>
+                            <img alt="Logo of the portfolio website, a stylized letter P inside a circle" class="h-8 w-8 mr-2" height="50" src="https://storage.googleapis.com/a1aa/image/TYVA8fOU6Eh_d65i0Aj2mA71S7SVaoQ6kVQqS9JrZ24.jpg" width="50"/>
                             <span class="font-bold text-xl">Portfolio 2025</span>
                         </a>
                     </div>
@@ -31,6 +32,11 @@
                     <a class="py-5 px-3 text-white hover:text-gray-200 transition duration-300" href="#about">About</a>
                     <a class="py-5 px-3 text-white hover:text-gray-200 transition duration-300" href="#projects">Projects</a>
                     <a class="py-5 px-3 text-white hover:text-gray-200 transition duration-300" href="#contact">Contact</a>
+                </div>
+                <!-- Google Login Button -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <div id="login-button"></div>
+                    <button id="logout-button" class="bg-teal-600 text-white py-2 px-4 rounded-full hover:bg-teal-700 transition duration-300" style="display: none;" onclick="logout()">Logout</button>
                 </div>
                 <!-- Mobile Button -->
                 <div class="md:hidden flex items-center">
@@ -60,7 +66,7 @@
         <div class="max-w-6xl mx-auto px-4">
             <div class="flex flex-col md:flex-row items-center">
                 <div class="md:w-1/2">
-                    <img alt="Portrait of John Doe, a professional web developer" class="rounded-full w-64 h-64 mx-auto md:mx-0 shadow-lg" height="400" src="https://storage.googleapis.com/a1aa/image/sK7P5Iu5soBvNbaUp-83p9poDeMGBYnvCeAe8tf0AmM.jpg" width="400"/>
+                    <img alt="Portrait of John Doe, a professional web developer" class="rounded-full w-64 h-64 mx-auto md:mx-0 shadow-lg" height="400" src="https://storage.googleapis.com/a1aa/image/dt6-hkCl6CUlWH1at4cv0WdGHW467zCprN9ijqKKTTw.jpg" width="400"/>
                 </div>
                 <div class="md:w-1/2 mt-8 md:mt-0 md:pl-12">
                     <h2 class="text-4xl font-bold mb-4 text-teal-600">About Me</h2>
@@ -79,7 +85,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Project 1 -->
                 <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                    <img alt="Screenshot of Project 1, a modern web application" class="w-full h-48 object-cover" src="https://storage.googleapis.com/a1aa/image/fFUesoLhNRYccBCwt90hl-T2zSUBjE3Mie8Ov8Qywpc.jpg"/>
+                    <img alt="Screenshot of Project 1, a modern web application" class="w-full h-48 object-cover" height="400" src="https://storage.googleapis.com/a1aa/image/RRuuC7kxV2P54gQGEHI8VQMXVO8YyFawpXp9pt0Zu0o.jpg" width="600"/>
                     <div class="p-6">
                         <h3 class="text-2xl font-bold mb-2">Project 1</h3>
                         <p class="text-gray-600 mb-4">A modern web application built with React and Tailwind CSS.</p>
@@ -91,7 +97,7 @@
                 </div>
                 <!-- Project 2 -->
                 <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                    <img alt="Screenshot of Project 2, an e-commerce website" class="w-full h-48 object-cover" src="https://storage.googleapis.com/a1aa/image/POg3BGK96TVcRALpBePbUaFZYDw2-F6IG7tc8WFzDew.jpg"/>
+                    <img alt="Screenshot of Project 2, an e-commerce website" class="w-full h-48 object-cover" height="400" src="https://storage.googleapis.com/a1aa/image/3Cegz70bK9JAAqLzr02jdI04ffgyG4tq8zVKfZv4kzE.jpg" width="600"/>
                     <div class="p-6">
                         <h3 class="text-2xl font-bold mb-2">Project 2</h3>
                         <p class="text-gray-600 mb-4">An e-commerce website with a custom shopping cart and checkout process.</p>
@@ -103,7 +109,7 @@
                 </div>
                 <!-- Project 3 -->
                 <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                    <img alt="Screenshot of Project 3, a portfolio website" class="w-full h-48 object-cover" src="https://storage.googleapis.com/a1aa/image/-QonwTCIDjyczSZFnd1QFx0ez-1C40sXKfCYG1HDhqE.jpg"/>
+                    <img alt="Screenshot of Project 3, a portfolio website" class="w-full h-48 object-cover" height="400" src="https://storage.googleapis.com/a1aa/image/SzA3dtKIspifR7rnDQ_56-Kd3wmZ47SWDUnu8zucmUk.jpg" width="600"/>
                     <div class="p-6">
                         <h3 class="text-2xl font-bold mb-2">Project 3</h3>
                         <p class="text-gray-600 mb-4">A personal portfolio website showcasing my work and skills.</p>
@@ -115,7 +121,7 @@
                 </div>
                 <!-- Project 4 -->
                 <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                    <img alt="Screenshot of Project 4, a blog platform" class="w-full h-48 object-cover" src="https://storage.googleapis.com/a1aa/image/zzSHnFavZ-iVv4JZ8jBFQnvwb0A60p5a6AAJaI7x1Wg.jpg"/>
+                    <img alt="Screenshot of Project 4, a blog platform" class="w-full h-48 object-cover" height="400" src="https://storage.googleapis.com/a1aa/image/dNivrWh-K8Fk0iE4QUfaACpBrZyCbhU_YxlM9f_lvlY.jpg" width="600"/>
                     <div class="p-6">
                         <h3 class="text-2xl font-bold mb-2">Project 4</h3>
                         <p class="text-gray-600 mb-4">A blog platform with user authentication and content management.</p>
@@ -127,7 +133,7 @@
                 </div>
                 <!-- Project 5 -->
                 <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                    <img alt="Screenshot of Project 5, a social media app" class="w-full h-48 object-cover" src="https://storage.googleapis.com/a1aa/image/SfKJvbxU9ElSLWqKwyjvgjsMJWrffUDqKYfJjR_ewbo.jpg"/>
+                    <img alt="Screenshot of Project 5, a social media app" class="w-full h-48 object-cover" height="400" src="https://storage.googleapis.com/a1aa/image/u0PlMOS9D2P6KqN1uKISHbEvVnu7a2FrPPK1-xL1U9w.jpg" width="600"/>
                     <div class="p-6">
                         <h3 class="text-2xl font-bold mb-2">Project 5</h3>
                         <p class="text-gray-600 mb-4">A social media app with real-time chat and notifications.</p>
@@ -139,7 +145,7 @@
                 </div>
                 <!-- Project 6 -->
                 <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                    <img alt="Screenshot of Project 6, a task management tool" class="w-full h-48 object-cover" src="https://storage.googleapis.com/a1aa/image/lCEtEPH70TmxeBPX6W3OZKUaA_D9BytgxI6_I3J3IzI.jpg"/>
+                    <img alt="Screenshot of Project 6, a task management tool" class="w-full h-48 object-cover" height="400" src="https://storage.googleapis.com/a1aa/image/k5p3vuuhQR41W7Wi_nSpYqZJ69mup4jfhp10CTuGgG0.jpg" width="600"/>
                     <div class="p-6">
                         <h3 class="text-2xl font-bold mb-2">Project 6</h3>
                         <p class="text-gray-600 mb-4">A task management tool to help teams collaborate and stay organized.</p>
@@ -203,6 +209,42 @@
         btn.addEventListener('click', () => {
             menu.classList.toggle('hidden');
         });
+
+        let isLoggedIn = false;
+
+        function handleCredentialResponse(response) {
+            const data = jwt_decode(response.credential);
+            console.log(data);
+            isLoggedIn = true;
+            document.getElementById('login-button').style.display = 'none';
+            document.getElementById('logout-button').style.display = 'block';
+        }
+
+        function logout() {
+            isLoggedIn = false;
+            document.getElementById('login-button').style.display = 'block';
+            document.getElementById('logout-button').style.display = 'none';
+        }
+
+        function checkLoginStatus() {
+            if (!isLoggedIn) {
+                setTimeout(() => {
+                    window.location.href = 'https://forumu.github.io/';
+                }, 10000);
+            }
+        }
+
+        window.onload = function() {
+            google.accounts.id.initialize({
+                client_id: '824098875497-2g3vencet4brebqqf8iunvcafnhurrsg.apps.googleusercontent.com',
+                callback: handleCredentialResponse
+            });
+            google.accounts.id.renderButton(
+                document.getElementById('login-button'),
+                { theme: 'outline', size: 'large' }
+            );
+            checkLoginStatus();
+        };
     </script>
 </body>
 </html>
