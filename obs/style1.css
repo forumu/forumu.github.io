@@ -1,0 +1,113 @@
+/* https://socialstream.ninja/featured.html?session=P9q77tS3q5&css=http://localhost/chat.css */
+.hl-message {
+    display: flex
+;
+    align-items: flex-start;
+    gap: 10px;
+    position: relative;
+    width: var(--comment-width);
+    font-weight: var(--comment-font-weight);
+    padding: var(--comment-padding);
+    color: var(--comment-color);
+    background-color: #ffffff;
+    border-radius: 0px;
+    font-size: medium;
+    word-break: break-word;
+    z-index: 1;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.6);
+    box-sizing: border-box;
+    padding-top: 50px;
+margin-left: -25px;
+    padding-left: 107px;
+}
+
+/* Avatar responsif di kiri dalam bubble */
+.hl-img {
+    width: 60px;
+    height: 60px;
+    max-width: 15vw;
+    max-height: 15vw;
+    margin-left: 15px;
+    margin-top: 30px;
+    object-fit: cover;
+    border-radius: 9999px;
+    flex-shrink: 0;
+}
+
+/* Container teks (nama + isi komentar) */
+.hl-content {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Nama pengguna berada dalam bubble */
+.hl-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: #8e8e8e;
+    margin-bottom: 4px;
+    margin-top: 55px;
+    margin-left: -20px;
+    background: transparent;
+}
+
+/* Isi komentar */
+.hl-text {
+    font-size: 16px;
+    line-height: 1.4;
+    color: #333;
+}
+
+/* Ekor bubble di pojok kiri bawah */
+.hl-message::after {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 0px;
+    width: 0;
+    height: 0;
+    border: 40px solid transparent;
+    border-top-color: #ffffff;
+    border-bottom: 0;
+    margin-left: -20px;
+    transform: rotate(-90deg);
+}
+
+/* Hover effect */
+.hl-message:hover {
+    background-color: #f9f9f9;
+    transform: translateY(-2px);
+    transition: all 0.2s ease;
+}
+.donation-title {
+    width: 100%;
+    font-size: 10px;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.23);
+    border-radius: 9px 10px 0 0;
+    padding: 9px 2px 6px;
+    display: block;
+    color: var(--donation-label-color);
+}
+.donation .subtitle {
+    font-size: medium;
+    padding: 3px 0 5px;
+    color: #2d2108;
+}
+.donation {
+    position: absolute;
+    display: inline-block;
+    text-align: center;
+    top: 0px;
+    left: 45px;
+    z-index: 3;
+    min-width: 95px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: linear-gradient(to right, var(--donation-gradient-stop0), var(--donation-gradient-stop1), var(--donation-gradient-stop2));
+    color: var(--donation-color);
+    transform: rotate(-5deg) translateX(-50%);
+    line-break: loose;
+    max-width: 95px;
+    width: min-content;
+}
