@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aplikasi Penjualan Depo Air</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="container">
+    <div class="brand">
+      <h1>💧 Depo Air Isi Ulang</h1>
+      <small id="store-name">Store: -</small>
+    </div>
+    <div class="actions">
+      <button id="btn-refresh">↻ Muat Ulang</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>Pengaturan & Stok Toren</h2>
+      <div class="grid2">
+        <div>
+          <div class="info"><b>Alamat:</b> <span id="store-address">-</span></div>
+          <div class="info"><b>Owner:</b> <span id="store-owner">-</span></div>
+          <div class="info"><b>Kasir:</b> <span id="store-cashier">-</span></div>
+        </div>
+        <div>
+          <div class="stok">
+            <div>Stok Toren Saat Ini: <b><span id="stok-toren">0</span> liter</b></div>
+            <div class="stok-ctrl">
+              <input type="number" id="manual-refill" placeholder="Isi stok (liter)" />
+              <button id="btn-refill">Isi / Reset</button>
+            </div>
+            <small>Jika stok ≤ 0, sistem otomatis reset ke 8000 liter.</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Tambah Penjualan</h2>
+      <form id="sales-form" class="grid4">
+        <input type="date" name="Tanggal" required />
+        <input type="text" name="Nama Pelanggan" placeholder="Nama Pelanggan" required />
+        <input type="text" name="Alamat" placeholder="Alamat" required />
+
+        <select name="Produk" id="produk" required>
+          <option value="Air 19L" data-price="6000" data-liters="19">Air Isi Ulang 19L (Rp6.000)</option>
+          <option value="Air 15L" data-price="4000" data-liters="15">Air Isi Ulang 15L (Rp4.000)</option>
+          <option value="Gas 3Kg" data-price="20000" data-liters="0">Gas LPG 3Kg (Rp20.000)</option>
+        </select>
+
+        <input type="number" name="Qty" id="qty" min="1" value="1" placeholder="Qty" required />
+        <input type="number" name="Harga Satuan" id="harga" placeholder="Harga Satuan" required />
+        <input type="number" name="Total" id="total" placeholder="Total (auto)" readonly />
+
+        <select name="Status Pembayaran" id="status" required>
+          <option value="Lunas">Lunas</option>
+          <option value="Hutang">Hutang</option>
+        </select>
+
+        <input type="text" name="WA/HP" placeholder="WA/HP" />
+        <input type="text" name="Keterangan" placeholder="Keterangan (opsional)" />
+
+        <button type="submit" class="primary">💾 Simpan</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <div class="flex-between">
+        <h2>Daftar Penjualan</h2>
+        <div>
+          <input id="search" placeholder="Cari nama/alamat/produk..." />
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="sales-table">
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>Nama</th>
+              <th>Alamat</th>
+              <th>Produk</th>
+              <th>Qty</th>
+              <th>Harga</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Hutang</th>
+              <th>Bayar</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="sales-body">
+            <tr><td colspan="11">Memuat data...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Laporan</h2>
+      <div class="tabs">
+        <button data-tab="harian" class="tab active">Harian</button>
+        <button data-tab="mingguan" class="tab">Mingguan</button>
+        <button data-tab="bulanan" class="tab">Bulanan</button>
+        <button data-tab="tahunan" class="tab">Tahunan</button>
+      </div>
+      <div id="laporan-harian" class="report visible"></div>
+      <div id="laporan-mingguan" class="report"></div>
+      <div id="laporan-bulanan" class="report"></div>
+      <div id="laporan-tahunan" class="report"></div>
+    </section>
+  </main>
+
+  <dialog id="pay-dialog">
+    <form method="dialog" id="pay-form">
+      <h3>Bayar Hutang</h3>
+      <div>Nama: <b id="pay-name">-</b></div>
+      <div>Hutang: <b id="pay-debt">0</b></div>
+      <label>Nominal Bayar (harus ≥ hutang)</label>
+      <input type="number" id="pay-amount" required />
+      <menu>
+        <button value="cancel">Batal</button>
+        <button value="confirm" class="primary">Konfirmasi</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>

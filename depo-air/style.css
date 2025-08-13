@@ -1,0 +1,25 @@
+*{box-sizing:border-box}body{font-family:Inter,Arial,sans-serif;background:#0b1020;color:#e6eaf2;margin:0}
+.container{max-width:1100px;margin:0 auto;padding:16px}
+header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #1e2746;background:#0f1530;position:sticky;top:0;z-index:10}
+header .brand h1{margin:.2rem 0}header .actions button{background:#1e88e5;border:none;color:#fff;padding:.6rem 1rem;border-radius:10px;cursor:pointer}
+main{display:grid;gap:16px}
+.card{background:#121939;border:1px solid #1e2746;border-radius:16px;padding:16px;box-shadow:0 8px 20px rgba(0,0,0,.2)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(140px,1fr));gap:10px}
+.info{margin:.3rem 0;opacity:.9}
+.stok{display:grid;gap:8px}
+.stok-ctrl{display:flex;gap:8px}
+input,select,button{padding:10px;border-radius:10px;border:1px solid #283255;background:#0f1530;color:#e6eaf2}
+button.primary{background:#22c55e;border-color:#22c55e;color:#071016}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse}
+th,td{border-bottom:1px solid #1e2746;padding:8px;text-align:center}
+th{background:#111a3b;position:sticky;top:0}
+.flex-between{display:flex;justify-content:space-between;align-items:center}
+.tabs{display:flex;gap:8px;margin-bottom:10px}
+.tab{background:#1e88e5;border:none;color:#fff;padding:.5rem .8rem;border-radius:10px;opacity:.7}
+.tab.active{opacity:1}
+.report{display:none}
+.report.visible{display:block}
+dialog{border:none;border-radius:16px;background:#0f1530;color:#e6eaf2;padding:16px;border:1px solid #1e2746}
+menu{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
