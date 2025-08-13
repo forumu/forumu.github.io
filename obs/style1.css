@@ -8,7 +8,7 @@
     width: var(--comment-width);
     font-weight: var(--comment-font-weight);
     padding: var(--comment-padding);
-    color: var(--comment-color);
+    color: #000000;
     background-color: #ffffff;
     border-radius: 0px;
     font-size: medium;
