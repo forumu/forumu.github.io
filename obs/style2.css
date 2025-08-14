@@ -1,15 +1,3 @@
- /* Reset and base */
-    body {
-      margin: 0;
-      padding: 1rem;
-      background-color: #f3f4f6; /* Tailwind's gray-100 */
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-    }
-
     .hl-c-cont {
       position: relative;
       max-width: 28rem; /* 448px */
