@@ -1,0 +1,403 @@
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Generator Prompt Apps Script</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <style>
+    body {
+      padding-top: env(safe-area-inset-top);
+    }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-start p-6 overflow-auto">
+  <div class="bg-white shadow-xl rounded-2xl p-6 w-full max-w-4xl max-h-[95vh] overflow-y-auto">
+    <h1 class="text-2xl font-bold mb-6 text-center sticky top-0 bg-white z-10 pt-4 pb-4 border-b border-gray-200">📝 Generator Prompt Apps Script</h1>
+
+    <form id="promptForm" class="space-y-6" autocomplete="off">
+      <div>
+        <label class="block font-semibold mb-1" for="sheet">Nama Sheet</label>
+        <input type="text" id="sheet" name="sheet" placeholder="Produk" class="w-full border p-2 rounded" required />
+      </div>
+
+      <div>
+        <label class="block font-semibold mb-1" for="columns">Kolom (pisahkan dengan koma)</label>
+        <input type="text" id="columns" name="columns" placeholder="ProdukID, ProdukNama, ProdukHarga" class="w-full border p-2 rounded" required />
+      </div>
+
+      <div>
+        <label class="block font-semibold mb-1" for="idColumn">Kolom ID</label>
+        <input type="text" id="idColumn" name="idColumn" placeholder="ProdukID" class="w-full border p-2 rounded" required />
+      </div>
+
+      <div>
+        <label class="block font-semibold mb-1" for="cssFramework">Framework CSS</label>
+        <select id="cssFramework" name="cssFramework" class="w-full border p-2 rounded" required>
+          <option value="TailwindCSS">TailwindCSS</option>
+          <option value="Bootstrap">Bootstrap</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block font-semibold mb-1" for="apiUrl">API URL</label>
+        <input type="url" id="apiUrl" name="apiUrl" placeholder="https://script.google.com/macros/s/..." class="w-full border p-2 rounded" required />
+      </div>
+
+      <div>
+        <label class="block font-semibold mb-1" for="spreadsheetUrl">Spreadsheet URL</label>
+        <input type="url" id="spreadsheetUrl" name="spreadsheetUrl" placeholder="https://docs.google.com/spreadsheets/d/..." class="w-full border p-2 rounded" required />
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <input type="checkbox" id="fillCodeGs" />
+        <label for="fillCodeGs" class="font-semibold cursor-pointer select-none">Isi otomatis Code.gs dengan template standar</label>
+      </div>
+
+      <div>
+        <label class="block font-semibold mb-1" for="codeGs">Code.gs</label>
+        <textarea id="codeGs" name="codeGs" rows="12" placeholder="Paste code.gs di sini" class="w-full border p-2 rounded font-mono" required></textarea>
+      </div>
+
+      <div>
+        <label class="block font-semibold mb-2">Menu dan Link (tambahkan menu baru dengan tombol +)</label>
+        <div id="menuList" class="space-y-4 max-h-72 overflow-y-auto">
+          <div class="flex flex-col md:flex-row md:space-x-4 space-y-2 md:space-y-0 items-center border rounded p-3">
+            <input type="text" name="menuName[]" placeholder="Beranda" class="flex-1 border p-2 rounded" required />
+            <input type="text" name="menuLink[]" placeholder="/" class="flex-1 border p-2 rounded" required />
+            <button type="button" class="text-red-600 hover:text-red-800" aria-label="Hapus menu" onclick="removeMenu(this)">
+              <i class="fas fa-trash-alt fa-lg"></i>
+            </button>
+          </div>
+          <div class="flex flex-col md:flex-row md:space-x-4 space-y-2 md:space-y-0 items-center border rounded p-3">
+            <input type="text" name="menuName[]" placeholder="Produk" class="flex-1 border p-2 rounded" required />
+            <input type="text" name="menuLink[]" placeholder="?Produk" class="flex-1 border p-2 rounded" required />
+            <button type="button" class="text-red-600 hover:text-red-800" aria-label="Hapus menu" onclick="removeMenu(this)">
+              <i class="fas fa-trash-alt fa-lg"></i>
+            </button>
+          </div>
+          <div class="flex flex-col md:flex-row md:space-x-4 space-y-2 md:space-y-0 items-center border rounded p-3">
+            <input type="text" name="menuName[]" placeholder="Penjualan" class="flex-1 border p-2 rounded" required />
+            <input type="text" name="menuLink[]" placeholder="?Penjualan" class="flex-1 border p-2 rounded" required />
+            <button type="button" class="text-red-600 hover:text-red-800" aria-label="Hapus menu" onclick="removeMenu(this)">
+              <i class="fas fa-trash-alt fa-lg"></i>
+            </button>
+          </div>
+          <div class="flex flex-col md:flex-row md:space-x-4 space-y-2 md:space-y-0 items-center border rounded p-3">
+            <input type="text" name="menuName[]" placeholder="Keuangan" class="flex-1 border p-2 rounded" required />
+            <input type="text" name="menuLink[]" placeholder="?Keuangan" class="flex-1 border p-2 rounded" required />
+            <button type="button" class="text-red-600 hover:text-red-800" aria-label="Hapus menu" onclick="removeMenu(this)">
+              <i class="fas fa-trash-alt fa-lg"></i>
+            </button>
+          </div>
+          <div class="flex flex-col md:flex-row md:space-x-4 space-y-2 md:space-y-0 items-center border rounded p-3">
+            <input type="text" name="menuName[]" placeholder="Lainnya" class="flex-1 border p-2 rounded" required />
+            <input type="text" name="menuLink[]" placeholder="?Lainnya" class="flex-1 border p-2 rounded" required />
+            <button type="button" class="text-red-600 hover:text-red-800" aria-label="Hapus menu" onclick="removeMenu(this)">
+              <i class="fas fa-trash-alt fa-lg"></i>
+            </button>
+          </div>
+        </div>
+        <button type="button" id="addMenuBtn" class="mt-3 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center justify-center gap-2 w-full md:w-auto">
+          <i class="fas fa-plus"></i> Tambah Menu
+        </button>
+      </div>
+
+      <button type="button" onclick="generatePrompt()" class="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 w-full text-lg font-semibold flex items-center justify-center gap-2">
+        <i class="fas fa-rocket"></i> Generate Prompt
+      </button>
+    </form>
+
+    <div id="resultBox" class="mt-8 hidden">
+      <h2 class="text-xl font-bold mb-3 flex items-center gap-2"><i class="fas fa-thumbtack"></i> Hasil Prompt</h2>
+      <textarea id="result" rows="20" class="w-full border p-3 rounded font-mono text-sm md:text-base" readonly></textarea>
+      <button onclick="copyPrompt()" class="mt-3 bg-green-600 text-white px-5 py-2 rounded hover:bg-green-700 w-full md:w-auto flex items-center justify-center gap-2">
+        <i class="fas fa-clipboard"></i> Copy
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const addMenuBtn = document.getElementById("addMenuBtn");
+    const menuList = document.getElementById("menuList");
+    const form = document.getElementById("promptForm");
+    const fillCodeGsCheckbox = document.getElementById("fillCodeGs");
+    const codeGsTextarea = document.getElementById("codeGs");
+
+    const defaultCodeGs = `// Fungsi utama untuk menangani permintaan HTTP GET
+function doGet(e) {
+  const sheetName = e.parameter.sheet;
+  if (!sheetName) {
+    return responseJson(false, "Parameter 'sheet' tidak ditemukan", null);
+  }
+
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
+  if (!sheet) {
+    return responseJson(false, \`Sheet '\${sheetName}' tidak ditemukan\`, null);
+  }
+
+  const action = e.parameter.action;
+  let response;
+
+  if (action === "get-data") {
+    response = getDatas(sheet);
+  } else if (action === "insert") {
+    response = addData(sheet, e.parameter);
+  } else if (action === "update") {
+    const row = parseInt(e.parameter.row);
+    response = updateData(sheet, row, e.parameter);
+  } else if (action === "delete") {
+    const row = parseInt(e.parameter.row);
+    response = deleteData(sheet, row);
+  } else {
+    response = responseJson(false, "Action tidak dikenali", null);
+  }
+
+  return ContentService.createTextOutput(JSON.stringify(response)).setMimeType(ContentService.MimeType.JSON);
+}
+
+// Fungsi untuk mengubah respons menjadi JSON
+function responseJson(success, message, data) {
+  return { success, message, data };
+}
+
+// Fungsi untuk mendapatkan data dari sheet secara otomatis berdasarkan header
+function getDatas(sheet) {
+  const data = sheet.getDataRange().getValues();
+  if (data.length < 2) {
+    return responseJson(false, "Tidak ada data", null);
+  }
+
+  const headers = data[0]; // Header di baris pertama
+  const jsonData = data.slice(1).map(row => {
+    let obj = {};
+    headers.forEach((header, index) => {
+      obj[header] = row[index];
+    });
+    return obj;
+  });
+
+  return responseJson(true, "Sukses menampilkan data", jsonData);
+}
+
+// Fungsi untuk menambahkan data berdasarkan header tanpa menyebutkan nama kolom
+function addData(sheet, params) {
+  const headers = sheet.getDataRange().getValues()[0];
+  const newRow = headers.map(header => params[header] || ""); // Ambil nilai dari parameter sesuai header
+
+  sheet.appendRow(newRow);
+  return responseJson(true, "Sukses menyimpan data", newRow);
+}
+
+// Fungsi untuk memperbarui data di sheet berdasarkan header
+function updateData(sheet, row, params) {
+  if (row < 2) {
+    return responseJson(false, "Baris tidak valid", null);
+  }
+
+  const headers = sheet.getDataRange().getValues()[0];
+  headers.forEach((header, index) => {
+    if (params[header] !== undefined) {
+      sheet.getRange(row, index + 1).setValue(params[header]);
+    }
+  });
+
+  return responseJson(true, "Sukses mengubah data", { row, ...params });
+}
+
+// Fungsi untuk menghapus data dari sheet
+function deleteData(sheet, row) {
+  if (row < 2) {
+    return responseJson(false, "Baris tidak valid", null);
+  }
+  sheet.deleteRow(row);
+  return responseJson(true, "Sukses menghapus data", { row });
+}`;
+
+    // Load saved data from localStorage on page load
+    window.addEventListener("DOMContentLoaded", () => {
+      const savedData = localStorage.getItem("generatorData");
+      if (savedData) {
+        try {
+          const data = JSON.parse(savedData);
+
+          if (data.sheet) form.sheet.value = data.sheet;
+          if (data.columns) form.columns.value = data.columns;
+          if (data.idColumn) form.idColumn.value = data.idColumn;
+          if (data.cssFramework) form.cssFramework.value = data.cssFramework;
+          if (data.apiUrl) form.apiUrl.value = data.apiUrl;
+          if (data.spreadsheetUrl) form.spreadsheetUrl.value = data.spreadsheetUrl;
+          if (data.codeGs) {
+            codeGsTextarea.value = data.codeGs;
+            fillCodeGsCheckbox.checked = (data.codeGs.trim() === defaultCodeGs.trim());
+          }
+          if (Array.isArray(data.menuName) && Array.isArray(data.menuLink)) {
+            // Clear existing menus
+            menuList.innerHTML = "";
+            for (let i = 0; i < data.menuName.length; i++) {
+              addMenuItem(data.menuName[i], data.menuLink[i]);
+            }
+          }
+        } catch {
+          // ignore JSON parse errors
+        }
+      }
+    });
+
+    // Save form data to localStorage on input change
+    form.addEventListener("input", () => {
+      saveFormData();
+    });
+
+    // Checkbox to fill code.gs with default code or clear it
+    fillCodeGsCheckbox.addEventListener("change", () => {
+      if (fillCodeGsCheckbox.checked) {
+        codeGsTextarea.value = defaultCodeGs;
+      } else {
+        codeGsTextarea.value = "";
+      }
+      saveFormData();
+    });
+
+    function saveFormData() {
+      const formData = new FormData(form);
+      const data = {
+        sheet: formData.get("sheet") || "",
+        columns: formData.get("columns") || "",
+        idColumn: formData.get("idColumn") || "",
+        cssFramework: formData.get("cssFramework") || "",
+        apiUrl: formData.get("apiUrl") || "",
+        spreadsheetUrl: formData.get("spreadsheetUrl") || "",
+        codeGs: formData.get("codeGs") || "",
+        menuName: formData.getAll("menuName[]"),
+        menuLink: formData.getAll("menuLink[]"),
+      };
+      localStorage.setItem("generatorData", JSON.stringify(data));
+    }
+
+    addMenuBtn.addEventListener("click", () => {
+      addMenuItem("", "");
+      saveFormData();
+    });
+
+    function addMenuItem(name, link) {
+      const menuItem = document.createElement("div");
+      menuItem.className = "flex flex-col md:flex-row md:space-x-4 space-y-2 md:space-y-0 items-center border rounded p-3";
+
+      const inputName = document.createElement("input");
+      inputName.type = "text";
+      inputName.name = "menuName[]";
+      inputName.placeholder = "Nama Menu";
+      inputName.required = true;
+      inputName.className = "flex-1 border p-2 rounded";
+      inputName.value = name;
+      inputName.addEventListener("input", saveFormData);
+
+      const inputLink = document.createElement("input");
+      inputLink.type = "text";
+      inputLink.name = "menuLink[]";
+      inputLink.placeholder = "Link Menu";
+      inputLink.required = true;
+      inputLink.className = "flex-1 border p-2 rounded";
+      inputLink.value = link;
+      inputLink.addEventListener("input", saveFormData);
+
+      const removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.className = "text-red-600 hover:text-red-800";
+      removeBtn.setAttribute("aria-label", "Hapus menu");
+      removeBtn.innerHTML = '<i class="fas fa-trash-alt fa-lg"></i>';
+      removeBtn.onclick = () => {
+        removeMenu(removeBtn);
+        saveFormData();
+      };
+
+      menuItem.appendChild(inputName);
+      menuItem.appendChild(inputLink);
+      menuItem.appendChild(removeBtn);
+
+      menuList.appendChild(menuItem);
+    }
+
+    function removeMenu(button) {
+      const parent = button.parentElement;
+      if (menuList.children.length > 1) {
+        parent.remove();
+      } else {
+        alert("Minimal harus ada satu menu.");
+      }
+    }
+
+    function generatePrompt() {
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      // Collect all menu names and links
+      const menuNames = formData.getAll("menuName[]");
+      const menuLinks = formData.getAll("menuLink[]");
+
+      // Build menu string for prompt
+      let menuString = "";
+      for (let i = 0; i < menuNames.length; i++) {
+        menuString += `- ${menuNames[i]} (link: ${menuLinks[i]})\n`;
+      }
+
+      const prompt = `
+Saya mempunyai Google Apps Script dengan code.gs yang sudah fleksibel untuk membaca header sheet secara otomatis. 
+Saya ingin membuat form HTML untuk menambah dan mengedit data di sheet "${data.sheet}" 
+yang memiliki kolom: ${data.columns}.
+
+Berikut adalah code.gs yang saya miliki:
+
+\`\`\`javascript
+${data.codeGs}
+\`\`\`
+
+Saya membutuhkan file HTML yang:
+
+- Dapat digunakan untuk menambah dan mengedit data
+- Menggunakan ${data.cssFramework} untuk tampilan yang responsif
+- Memiliki validasi form
+- Dapat berkomunikasi dengan code.gs yang sudah ada
+- Untuk mode edit, form harus bisa mengambil data berdasarkan parameter ID di URL
+- Menampilkan indikator loading saat menyimpan data
+- Menampilkan pesan sukses/error setelah proses simpan
+- URL API yang digunakan: ${data.apiUrl}
+- Spreadsheet yang digunakan: ${data.spreadsheetUrl}
+
+Contoh penggunaan:
+
+- Tambah data: ${data.apiUrl}
+- Edit data (misal ID=1): ${data.apiUrl}?id=1
+
+Pastikan form HTML yang dihasilkan kompatibel dengan code.gs yang sudah ada tanpa perlu modifikasi code.gs.
+
+Tampilan awal menampilkan list data (tidak boleh dalam tabel gunakan div, ul, li, span, atau lainnya). 
+Lalu jika ingin menambah data tinggal tekan icon plus saja, untuk edit data tinggal tekan icon pensil di tiap tiap item yang mau di edit. 
+Untuk ${data.idColumn} dibuat otomatis misal P001 dan seterusnya. 
+Gunakan ${data.cssFramework} bukan framework lain. Tampilan aplikasi mobile dengan tampilan menarik moderen dan kekinian dengan Fitur yang harus ada:
+- Header berisi nama toko dan ${data.sheet}.
+- Bottom navigation dengan menu sebagai berikut:
+${menuString.trim()}
+- Desain modern, minimalis, menggunakan warna utama hijau dan putih, dengan icon sederhana. warna di dominasi teal-800, #000 dan gradiasi
+      `;
+
+      const resultBox = document.getElementById("resultBox");
+      const result = document.getElementById("result");
+      result.value = prompt.trim();
+      resultBox.classList.remove("hidden");
+      result.scrollIntoView({ behavior: "smooth" });
+    }
+
+    function copyPrompt() {
+      const result = document.getElementById("result");
+      result.select();
+      result.setSelectionRange(0, 99999);
+      navigator.clipboard.writeText(result.value).then(() => {
+        alert("Prompt berhasil dicopy ✅");
+      }, () => {
+        alert("Gagal menyalin prompt.");
+      });
+    }
+  </script>
+</body>
+</html>
