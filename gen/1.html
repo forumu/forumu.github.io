@@ -12,15 +12,23 @@
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col items-center justify-start p-6 overflow-auto">
   <div class="bg-white shadow-xl rounded-2xl p-6 w-full max-w-4xl ">
-    <header class="flex items-center space-x-4 mb-6 sticky top-0 bg-white z-10 pt-4 pb-4 border-b border-gray-200">
-      <img id="headerLogo" src="https://forumu.github.io/gen/logo.png" alt="Logo default berwarna hijau dengan simbol aplikasi modern minimalis" class="w-12 h-12 object-contain rounded" />
-      <h1 class="text-2xl font-bold">📝 Generator Prompt Apps Script</h1>
+    <header class="flex items-center justify-between mb-6 sticky top-0 bg-white z-10 pt-4 pb-4 border-b border-gray-200">
+      <div class="flex items-center space-x-4">
+        <img id="headerLogo" src="https://forumu.github.io/gen/logo.png" alt="Logo default berwarna hijau dengan simbol aplikasi modern minimalis" class="w-12 h-12 object-contain rounded" />
+        <input type="text" id="storeName" name="storeName" placeholder="Nama Toko" class="border border-gray-300 rounded p-2 w-48" />
+      </div>
+      <h1 id="sheetNameHeader" class="text-2xl font-bold">📝 Generator Prompt Apps Script</h1>
     </header>
 
     <form id="promptForm" class="space-y-6" autocomplete="off">
       <div>
-        <label class="block font-semibold mb-1" for="logoUrl">URL Logo (opsional)</label>
+        <label class="block font-semibold mb-1" for="logoUrl">URL Logo (opsional, akan menjadi favicon dan logo header)</label>
         <input type="url" id="logoUrl" name="logoUrl" placeholder="https://example.com/logo.png" class="w-full border p-2 rounded" />
+      </div>
+
+      <div>
+        <label class="block font-semibold mb-1" for="storeNameInput">Nama Toko (akan tampil di header dan prompt)</label>
+        <input type="text" id="storeNameInput" name="storeNameInput" placeholder="Nama Toko" class="w-full border p-2 rounded" />
       </div>
 
       <div>
@@ -174,6 +182,9 @@
     const codeGsContainer = document.getElementById("codeGsContainer");
     const logoUrlInput = document.getElementById("logoUrl");
     const headerLogo = document.getElementById("headerLogo");
+    const storeNameInputHeader = document.getElementById("storeName");
+    const storeNameInputForm = document.getElementById("storeNameInput");
+    const sheetNameHeader = document.getElementById("sheetNameHeader");
 
     const customColorsToggle = document.getElementById("customColorsToggle");
     const customColorsContainer = document.getElementById("customColorsContainer");
@@ -306,7 +317,21 @@ function deleteData(sheet, row) {
             headerLogo.src = defaultLogoUrl;
           }
 
-          if (data.sheet) form.sheet.value = data.sheet;
+          if (data.storeNameInput) {
+            storeNameInputForm.value = data.storeNameInput;
+            storeNameInputHeader.value = data.storeNameInput;
+          } else {
+            storeNameInputForm.value = "";
+            storeNameInputHeader.value = "";
+          }
+
+          if (data.sheet) {
+            form.sheet.value = data.sheet;
+            sheetNameHeader.textContent = data.sheet;
+          } else {
+            sheetNameHeader.textContent = "📝 Generator Prompt Apps Script";
+          }
+
           if (data.columns) form.columns.value = data.columns;
           if (data.idColumn) form.idColumn.value = data.idColumn;
           if (data.cssFramework) form.cssFramework.value = data.cssFramework;
@@ -355,6 +380,9 @@ function deleteData(sheet, row) {
           colorGradientEndInput.value = defaultColors.colorGradientEnd;
           colorBgGradientStartInput.value = defaultColors.colorBgGradientStart;
           colorBgGradientEndInput.value = defaultColors.colorBgGradientEnd;
+          storeNameInputForm.value = "";
+          storeNameInputHeader.value = "";
+          sheetNameHeader.textContent = "📝 Generator Prompt Apps Script";
         }
       } else {
         // Default state: checkbox checked and textarea hidden, no custom colors
@@ -368,7 +396,28 @@ function deleteData(sheet, row) {
         colorGradientEndInput.value = defaultColors.colorGradientEnd;
         colorBgGradientStartInput.value = defaultColors.colorBgGradientStart;
         colorBgGradientEndInput.value = defaultColors.colorBgGradientEnd;
+        storeNameInputForm.value = "";
+        storeNameInputHeader.value = "";
+        sheetNameHeader.textContent = "📝 Generator Prompt Apps Script";
       }
+    });
+
+    // Sync store name input in form and header
+    storeNameInputForm.addEventListener("input", () => {
+      storeNameInputHeader.value = storeNameInputForm.value;
+      saveFormData();
+    });
+
+    // Sync header store name input back to form (optional)
+    storeNameInputHeader.addEventListener("input", () => {
+      storeNameInputForm.value = storeNameInputHeader.value;
+      saveFormData();
+    });
+
+    // Sync sheet name input to header title
+    form.sheet.addEventListener("input", () => {
+      sheetNameHeader.textContent = form.sheet.value || "📝 Generator Prompt Apps Script";
+      saveFormData();
     });
 
     // Toggle custom colors container visibility
@@ -422,6 +471,7 @@ function deleteData(sheet, row) {
       const formData = new FormData(form);
       const data = {
         logoUrl: formData.get("logoUrl") || "",
+        storeNameInput: storeNameInputForm.value || "",
         sheet: formData.get("sheet") || "",
         columns: formData.get("columns") || "",
         idColumn: formData.get("idColumn") || "",
@@ -506,6 +556,12 @@ function deleteData(sheet, row) {
       // Determine logo URL for prompt (use default if empty)
       const logoUrlForPrompt = data.logoUrl && data.logoUrl.trim() !== "" ? data.logoUrl.trim() : defaultLogoUrl;
 
+      // Determine store name for prompt
+      const storeNameForPrompt = data.storeNameInput && data.storeNameInput.trim() !== "" ? data.storeNameInput.trim() : "";
+
+      // Determine sheet name for prompt
+      const sheetNameForPrompt = data.sheet && data.sheet.trim() !== "" ? data.sheet.trim() : "";
+
       // Build menu string for prompt
       let menuString = "";
       for (let i = 0; i < menuNames.length; i++) {
@@ -528,7 +584,7 @@ function deleteData(sheet, row) {
 
       const prompt = `
 Saya mempunyai Google Apps Script dengan code.gs yang sudah fleksibel untuk membaca header sheet secara otomatis. 
-Saya ingin membuat form HTML untuk menambah dan mengedit data di sheet "${data.sheet}" 
+Saya ingin membuat form HTML untuk menambah dan mengedit data di sheet "${sheetNameForPrompt}" 
 yang memiliki kolom: ${data.columns}.
 
 Berikut adalah code.gs yang saya miliki:
@@ -560,8 +616,8 @@ Tampilan awal menampilkan list data (tidak boleh dalam tabel gunakan div, ul, li
 Lalu jika ingin menambah data tinggal tekan icon plus saja, untuk edit data tinggal tekan icon pensil di tiap tiap item yang mau di edit. 
 Untuk ${data.idColumn} dibuat otomatis misal P001 dan seterusnya. 
 Gunakan ${data.cssFramework} bukan framework lain. Tampilan aplikasi mobile dengan tampilan menarik moderen dan kekinian dengan Fitur yang harus ada:
-- Header berisi nama toko dan ${data.sheet}.
-- Logo yang digunakan: ${logoUrlForPrompt}
+- Header berisi nama toko "${storeNameForPrompt}" dan sheet "${sheetNameForPrompt}".
+- Logo yang digunakan: ${logoUrlForPrompt} (juga sebagai favicon).
 - Bottom navigation dengan menu sebagai berikut:
 ${menuString.trim()}
 - Desain modern, minimalis, menggunakan warna utama ${colorPrimary} (untuk tombol, link, icon utama), ${colorSecondary} (untuk teks utama dan ikon sekunder), dan gradiasi dari ${colorGradientStart} ke ${colorGradientEnd} (untuk elemen gradiasi utama).
