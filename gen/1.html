@@ -57,6 +57,43 @@
       </div>
 
       <div class="flex items-center space-x-3">
+        <input type="checkbox" id="customColorsToggle" name="customColorsToggle" />
+        <label for="customColorsToggle" class="font-semibold cursor-pointer select-none">Gunakan Palet Warna Kustom</label>
+      </div>
+
+      <div id="customColorsContainer" class="space-y-4 mt-2 hidden">
+        <div>
+          <label class="block font-semibold mb-1" for="colorPrimary">Warna Utama (teal-800) - untuk tombol, link, icon utama</label>
+          <input type="color" id="colorPrimary" name="colorPrimary" value="#0f766e" class="w-20 h-10 p-0 border rounded cursor-pointer" />
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-1" for="colorSecondary">Warna Sekunder (#000) - untuk teks utama dan ikon sekunder</label>
+          <input type="color" id="colorSecondary" name="colorSecondary" value="#000000" class="w-20 h-10 p-0 border rounded cursor-pointer" />
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-1" for="colorGradientStart">Warna Gradiasi Awal - untuk elemen gradiasi utama</label>
+          <input type="color" id="colorGradientStart" name="colorGradientStart" value="#0f766e" class="w-20 h-10 p-0 border rounded cursor-pointer" />
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-1" for="colorGradientEnd">Warna Gradiasi Akhir - untuk elemen gradiasi utama</label>
+          <input type="color" id="colorGradientEnd" name="colorGradientEnd" value="#000000" class="w-20 h-10 p-0 border rounded cursor-pointer" />
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-1" for="colorBgGradientStart">Warna Gradiasi Background Header & Menu Awal - untuk latar header dan navigasi bawah</label>
+          <input type="color" id="colorBgGradientStart" name="colorBgGradientStart" value="#0f766e" class="w-20 h-10 p-0 border rounded cursor-pointer" />
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-1" for="colorBgGradientEnd">Warna Gradiasi Background Header & Menu Akhir - untuk latar header dan navigasi bawah</label>
+          <input type="color" id="colorBgGradientEnd" name="colorBgGradientEnd" value="#000000" class="w-20 h-10 p-0 border rounded cursor-pointer" />
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3">
         <input type="checkbox" id="fillCodeGs" checked />
         <label for="fillCodeGs" class="font-semibold cursor-pointer select-none">Isi otomatis Code.gs dengan template standar</label>
       </div>
@@ -138,12 +175,31 @@
     const logoUrlInput = document.getElementById("logoUrl");
     const headerLogo = document.getElementById("headerLogo");
 
+    const customColorsToggle = document.getElementById("customColorsToggle");
+    const customColorsContainer = document.getElementById("customColorsContainer");
+
+    const colorPrimaryInput = document.getElementById("colorPrimary");
+    const colorSecondaryInput = document.getElementById("colorSecondary");
+    const colorGradientStartInput = document.getElementById("colorGradientStart");
+    const colorGradientEndInput = document.getElementById("colorGradientEnd");
+    const colorBgGradientStartInput = document.getElementById("colorBgGradientStart");
+    const colorBgGradientEndInput = document.getElementById("colorBgGradientEnd");
+
     const popupOverlay = document.getElementById("popupOverlay");
     const resultTextarea = document.getElementById("result");
     const copyBtn = document.getElementById("copyBtn");
     const popupCloseBtn = document.getElementById("popupCloseBtn");
 
     const defaultLogoUrl = "https://forumu.github.io/gen/logo.png";
+
+    const defaultColors = {
+      colorPrimary: "#0f766e",
+      colorSecondary: "#000000",
+      colorGradientStart: "#0f766e",
+      colorGradientEnd: "#000000",
+      colorBgGradientStart: "#0f766e",
+      colorBgGradientEnd: "#000000"
+    };
 
     const defaultCodeGs = `// Fungsi utama untuk menangani permintaan HTTP GET
 function doGet(e) {
@@ -256,6 +312,22 @@ function deleteData(sheet, row) {
           if (data.cssFramework) form.cssFramework.value = data.cssFramework;
           if (data.apiUrl) form.apiUrl.value = data.apiUrl;
           if (data.spreadsheetUrl) form.spreadsheetUrl.value = data.spreadsheetUrl;
+
+          if (data.customColorsToggle) {
+            customColorsToggle.checked = true;
+            customColorsContainer.classList.remove("hidden");
+          } else {
+            customColorsToggle.checked = false;
+            customColorsContainer.classList.add("hidden");
+          }
+
+          colorPrimaryInput.value = data.colorPrimary || defaultColors.colorPrimary;
+          colorSecondaryInput.value = data.colorSecondary || defaultColors.colorSecondary;
+          colorGradientStartInput.value = data.colorGradientStart || defaultColors.colorGradientStart;
+          colorGradientEndInput.value = data.colorGradientEnd || defaultColors.colorGradientEnd;
+          colorBgGradientStartInput.value = data.colorBgGradientStart || defaultColors.colorBgGradientStart;
+          colorBgGradientEndInput.value = data.colorBgGradientEnd || defaultColors.colorBgGradientEnd;
+
           if (data.codeGs) {
             codeGsTextarea.value = data.codeGs;
             fillCodeGsCheckbox.checked = (data.codeGs.trim() === defaultCodeGs.trim());
@@ -275,12 +347,45 @@ function deleteData(sheet, row) {
           // ignore JSON parse errors
           fillCodeGsCheckbox.checked = true;
           updateCodeGsVisibility();
+          customColorsToggle.checked = false;
+          customColorsContainer.classList.add("hidden");
+          colorPrimaryInput.value = defaultColors.colorPrimary;
+          colorSecondaryInput.value = defaultColors.colorSecondary;
+          colorGradientStartInput.value = defaultColors.colorGradientStart;
+          colorGradientEndInput.value = defaultColors.colorGradientEnd;
+          colorBgGradientStartInput.value = defaultColors.colorBgGradientStart;
+          colorBgGradientEndInput.value = defaultColors.colorBgGradientEnd;
         }
       } else {
-        // Default state: checkbox checked and textarea hidden
+        // Default state: checkbox checked and textarea hidden, no custom colors
         fillCodeGsCheckbox.checked = true;
         updateCodeGsVisibility();
+        customColorsToggle.checked = false;
+        customColorsContainer.classList.add("hidden");
+        colorPrimaryInput.value = defaultColors.colorPrimary;
+        colorSecondaryInput.value = defaultColors.colorSecondary;
+        colorGradientStartInput.value = defaultColors.colorGradientStart;
+        colorGradientEndInput.value = defaultColors.colorGradientEnd;
+        colorBgGradientStartInput.value = defaultColors.colorBgGradientStart;
+        colorBgGradientEndInput.value = defaultColors.colorBgGradientEnd;
       }
+    });
+
+    // Toggle custom colors container visibility
+    customColorsToggle.addEventListener("change", () => {
+      if (customColorsToggle.checked) {
+        customColorsContainer.classList.remove("hidden");
+      } else {
+        customColorsContainer.classList.add("hidden");
+        // Reset colors to default when unchecked
+        colorPrimaryInput.value = defaultColors.colorPrimary;
+        colorSecondaryInput.value = defaultColors.colorSecondary;
+        colorGradientStartInput.value = defaultColors.colorGradientStart;
+        colorGradientEndInput.value = defaultColors.colorGradientEnd;
+        colorBgGradientStartInput.value = defaultColors.colorBgGradientStart;
+        colorBgGradientEndInput.value = defaultColors.colorBgGradientEnd;
+      }
+      saveFormData();
     });
 
     // Save form data to localStorage on input change
@@ -323,6 +428,13 @@ function deleteData(sheet, row) {
         cssFramework: formData.get("cssFramework") || "",
         apiUrl: formData.get("apiUrl") || "",
         spreadsheetUrl: formData.get("spreadsheetUrl") || "",
+        customColorsToggle: customColorsToggle.checked,
+        colorPrimary: formData.get("colorPrimary") || defaultColors.colorPrimary,
+        colorSecondary: formData.get("colorSecondary") || defaultColors.colorSecondary,
+        colorGradientStart: formData.get("colorGradientStart") || defaultColors.colorGradientStart,
+        colorGradientEnd: formData.get("colorGradientEnd") || defaultColors.colorGradientEnd,
+        colorBgGradientStart: formData.get("colorBgGradientStart") || defaultColors.colorBgGradientStart,
+        colorBgGradientEnd: formData.get("colorBgGradientEnd") || defaultColors.colorBgGradientEnd,
         codeGs: formData.get("codeGs") || "",
         menuName: formData.getAll("menuName[]"),
         menuLink: formData.getAll("menuLink[]"),
@@ -404,6 +516,16 @@ function deleteData(sheet, row) {
       const apiId = data.apiUrl ? data.apiUrl.trim() : "";
       const fullApiUrl = apiId ? `https://script.google.com/macros/s/${apiId}/exec` : "";
 
+      // Use default colors if customColorsToggle is not checked
+      const useCustomColors = customColorsToggle.checked;
+
+      const colorPrimary = useCustomColors ? (data.colorPrimary || defaultColors.colorPrimary) : defaultColors.colorPrimary;
+      const colorSecondary = useCustomColors ? (data.colorSecondary || defaultColors.colorSecondary) : defaultColors.colorSecondary;
+      const colorGradientStart = useCustomColors ? (data.colorGradientStart || defaultColors.colorGradientStart) : defaultColors.colorGradientStart;
+      const colorGradientEnd = useCustomColors ? (data.colorGradientEnd || defaultColors.colorGradientEnd) : defaultColors.colorGradientEnd;
+      const colorBgGradientStart = useCustomColors ? (data.colorBgGradientStart || defaultColors.colorBgGradientStart) : defaultColors.colorBgGradientStart;
+      const colorBgGradientEnd = useCustomColors ? (data.colorBgGradientEnd || defaultColors.colorBgGradientEnd) : defaultColors.colorBgGradientEnd;
+
       const prompt = `
 Saya mempunyai Google Apps Script dengan code.gs yang sudah fleksibel untuk membaca header sheet secara otomatis. 
 Saya ingin membuat form HTML untuk menambah dan mengedit data di sheet "${data.sheet}" 
@@ -442,7 +564,8 @@ Gunakan ${data.cssFramework} bukan framework lain. Tampilan aplikasi mobile deng
 - Logo yang digunakan: ${logoUrlForPrompt}
 - Bottom navigation dengan menu sebagai berikut:
 ${menuString.trim()}
-- Desain modern, minimalis, menggunakan warna utama hijau dan putih, dengan icon sederhana. warna di dominasi teal-800, #000 dan gradiasi
+- Desain modern, minimalis, menggunakan warna utama ${colorPrimary} (untuk tombol, link, icon utama), ${colorSecondary} (untuk teks utama dan ikon sekunder), dan gradiasi dari ${colorGradientStart} ke ${colorGradientEnd} (untuk elemen gradiasi utama).
+- Background gradiasi untuk header dan menu navigasi bawah dari ${colorBgGradientStart} ke ${colorBgGradientEnd} (untuk latar header dan navigasi bawah).
       `;
 
       resultTextarea.value = prompt.trim();
