@@ -1,0 +1,1539 @@
+(() => {
+// Constants for localStorage keys
+const LS_KEYS = {
+produk: 'depot_produk',
+stok: 'depot_stok',
+transaksi: 'depot_transaksi',
+pelanggan: 'depot_pelanggan',
+pengeluaran: 'depot_pengeluaran',
+pengaturan: 'depot_pengaturan',
+pembayaranHutang: 'depot_pembayaran_hutang'
+};
+
+// Default data
+const defaultProduk = [
+{ id: 'p1', nama: 'Air isi ulang 19L', harga: 6000, jenis: 'air_isi_ulang', liter: 19 },
+{ id: 'p2', nama: 'Air isi ulang 15L', harga: 4000, jenis: 'air_isi_ulang', liter: 15 },
+{ id: 'p3', nama: 'Galon baru', harga: 50000, jenis: 'galon_baru', liter: 0 },
+];
+const defaultPengaturan = {
+namaUsaha: 'Depot Air Minum Isi Ulang',
+kapasitasToren: 7700,
+biayaSuplai: 300000
+};
+
+// Global variables
+let TORREN_KAPASITAS = 7700;
+let HARGA_ISI_TANGKI = 300000;
+
+// Data variables
+let produk = [];
+let stok = {
+sisaLiter: TORREN_KAPASITAS,
+literTerpakai: 0,
+totalBiayaSuplai: 0,
+kapasitasToren: TORREN_KAPASITAS
+};
+let transaksi = [];
+let pelanggan = [];
+let pengeluaran = [];
+let pengaturan = {...defaultPengaturan};
+let pembayaranHutang = [];
+
+// State variables
+let currentTransaksi = null;
+let currentPelangganId = null;
+let currentProduk = null;
+
+// DOM elements
+const tabButtons = document.querySelectorAll('.tab-btn, .sidebar-btn, #mobileBottomNav button');
+const tabContents = document.querySelectorAll('.tab-content');
+const kasirProdukSelect = document.getElementById('kasirProduk');
+const kasirJumlahInput = document.getElementById('kasirJumlah');
+const kasirNamaPelangganInput = document.getElementById('kasirNamaPelanggan');
+const pelangganDatalist = document.getElementById('pelangganDatalist');
+const formKasir = document.getElementById('formKasir');
+const kasirRiwayatUl = document.getElementById('kasirRiwayat');
+const formProduk = document.getElementById('formProduk');
+const produkNamaInput = document.getElementById('produkNama');
+const produkHargaInput = document.getElementById('produkHarga');
+const produkListUl = document.getElementById('produkList');
+const modalEditHarga = document.getElementById('modalEditHarga');
+const formEditHarga = document.getElementById('formEditHarga');
+const editProdukNamaInput = document.getElementById('editProdukNama');
+const editProdukHargaInput = document.getElementById('editProdukHarga');
+const btnCancelEditHarga = document.getElementById('btnCancelEditHarga');
+let editProdukId = null;
+const stokSisaLiterEl = document.getElementById('stokSisaLiter');
+const stokLiterTerpakaiEl = document.getElementById('stokLiterTerpakai');
+const stokTotalBiayaEl = document.getElementById('stokTotalBiaya');
+const btnIsiTangki = document.getElementById('btnIsiTangki');
+const formPelanggan = document.getElementById('formPelanggan');
+const pelangganNamaInput = document.getElementById('pelangganNama');
+const pelangganKontakInput = document.getElementById('pelangganKontak');
+const pelangganGalonTitipanInput = document.getElementById('pelangganGalonTitipan');
+const pelangganPiutangInput = document.getElementById('pelangganPiutang');
+const pelangganListUl = document.getElementById('pelangganList');
+const modalDetailPelanggan = document.getElementById('modalDetailPelanggan');
+const detailPelangganNama = document.getElementById('detailPelangganNama');
+const detailPelangganKontak = document.getElementById('detailPelangganKontak');
+const detailPelangganGalon = document.getElementById('detailPelangganGalon');
+const detailPelangganPiutang = document.getElementById('detailPelangganPiutang');
+const detailPelangganRiwayatUl = document.getElementById('detailPelangganRiwayat');
+const btnCloseDetailPelanggan = document.getElementById('btnCloseDetailPelanggan');
+const formPengeluaran = document.getElementById('formPengeluaran');
+const pengeluaranKeteranganInput = document.getElementById('pengeluaranKeterangan');
+const pengeluaranNominalInput = document.getElementById('pengeluaranNominal');
+const keuPemasukanHarianEl = document.getElementById('keuPemasukanHarian');
+const keuPemasukanBulananEl = document.getElementById('keuPemasukanBulanan');
+const keuPengeluaranEl = document.getElementById('keuPengeluaran');
+const keuLabaBersihEl = document.getElementById('keuLabaBersih');
+const laporanLiterTerpakaiEl = document.getElementById('laporanLiterTerpakai');
+const laporanLiterSisaEl = document.getElementById('laporanLiterSisa');
+const laporanProdukTerlarisEl = document.getElementById('laporanProdukTerlaris');
+const laporanPelangganTerbanyakEl = document.getElementById('laporanPelangganTerbanyak');
+const btnExportExcel = document.getElementById('btnExportExcel');
+const btnExportPDF = document.getElementById('btnExportPDF');
+const namaUsahaHeader = document.getElementById('namaUsahaHeader');
+const formPengaturan = document.getElementById('formPengaturan');
+const pengaturanNamaUsaha = document.getElementById('pengaturanNamaUsaha');
+const pengaturanKapasitasToren = document.getElementById('pengaturanKapasitasToren');
+const pengaturanBiayaSuplai = document.getElementById('pengaturanBiayaSuplai');
+const btnResetPengaturan = document.getElementById('btnResetPengaturan');
+
+// Modal Pembayaran elements
+const modalPembayaran = document.getElementById('modalPembayaran');
+const formPembayaran = document.getElementById('formPembayaran');
+const totalTagihanInput = document.getElementById('totalTagihan');
+const metodePembayaranSelect = document.getElementById('metodePembayaran');
+const pembayaranCashDiv = document.getElementById('pembayaranCash');
+const pembayaranHutangDiv = document.getElementById('pembayaranHutang');
+const jumlahBayarInput = document.getElementById('jumlahBayar');
+const kembalianInfoDiv = document.getElementById('kembalianInfo');
+const btnCancelPembayaran = document.getElementById('btnCancelPembayaran');
+
+// Modal Bayar Hutang elements
+const modalBayarHutang = document.getElementById('modalBayarHutang');
+const formBayarHutang = document.getElementById('formBayarHutang');
+const hutangNamaPelangganInput = document.getElementById('hutangNamaPelanggan');
+const totalHutangInput = document.getElementById('totalHutang');
+const jumlahBayarHutangInput = document.getElementById('jumlahBayarHutang');
+const sisaHutangInfoDiv = document.getElementById('sisaHutangInfo');
+const btnCancelBayarHutang = document.getElementById('btnCancelBayarHutang');
+
+// Chart variables
+let chartPenjualanHarian = null;
+let chartPenjualanBulanan = null;
+
+// Set current date
+document.getElementById('currentDate').textContent = new Date().toLocaleDateString('id-ID', {
+weekday: 'long',
+year: 'numeric',
+month: 'long',
+day: 'numeric'
+});
+
+// Utility functions
+function saveData() {
+try {
+localStorage.setItem(LS_KEYS.produk, JSON.stringify(produk));
+localStorage.setItem(LS_KEYS.stok, JSON.stringify(stok));
+localStorage.setItem(LS_KEYS.transaksi, JSON.stringify(transaksi));
+localStorage.setItem(LS_KEYS.pelanggan, JSON.stringify(pelanggan));
+localStorage.setItem(LS_KEYS.pengeluaran, JSON.stringify(pengeluaran));
+localStorage.setItem(LS_KEYS.pengaturan, JSON.stringify(pengaturan));
+localStorage.setItem(LS_KEYS.pembayaranHutang, JSON.stringify(pembayaranHutang));
+} catch (e) {
+console.error('Error saving data to localStorage:', e);
+}
+}
+
+function loadData() {
+try {
+const produkLS = localStorage.getItem(LS_KEYS.produk);
+const stokLS = localStorage.getItem(LS_KEYS.stok);
+const transaksiLS = localStorage.getItem(LS_KEYS.transaksi);
+const pelangganLS = localStorage.getItem(LS_KEYS.pelanggan);
+const pengeluaranLS = localStorage.getItem(LS_KEYS.pengeluaran);
+const pengaturanLS = localStorage.getItem(LS_KEYS.pengaturan);
+const pembayaranHutangLS = localStorage.getItem(LS_KEYS.pembayaranHutang);
+
+// Load data with fallbacks to defaults
+produk = produkLS ? JSON.parse(produkLS) : [...defaultProduk];
+transaksi = transaksiLS ? JSON.parse(transaksiLS) : [];
+pelanggan = pelangganLS ? JSON.parse(pelangganLS) : [];
+pengeluaran = pengeluaranLS ? JSON.parse(pengeluaranLS) : [];
+pengaturan = pengaturanLS ? JSON.parse(pengaturanLS) : {...defaultPengaturan};
+pembayaranHutang = pembayaranHutangLS ? JSON.parse(pembayaranHutangLS) : [];
+
+// Update global variables based on settings
+TORREN_KAPASITAS = pengaturan.kapasitasToren;
+HARGA_ISI_TANGKI = pengaturan.biayaSuplai;
+
+// Initialize or update stock
+if (!stokLS) {
+// First time loading, use default stock based on settings
+stok = {
+sisaLiter: TORREN_KAPASITAS,
+literTerpakai: 0,
+totalBiayaSuplai: 0,
+kapasitasToren: TORREN_KAPASITAS
+};
+} else {
+// Load existing stock
+stok = JSON.parse(stokLS);
+
+// Check if capacity has changed
+if (stok.kapasitasToren !== TORREN_KAPASITAS) {
+// Capacity changed, reset stock
+stok = {
+sisaLiter: TORREN_KAPASITAS,
+literTerpakai: stok.literTerpakai, // Keep used liters
+totalBiayaSuplai: 0, // Reset cost
+kapasitasToren: TORREN_KAPASITAS
+};
+}
+}
+
+// Update header with business name
+namaUsahaHeader.textContent = pengaturan.namaUsaha;
+
+// Update settings form
+pengaturanNamaUsaha.value = pengaturan.namaUsaha;
+pengaturanKapasitasToren.value = pengaturan.kapasitasToren;
+pengaturanBiayaSuplai.value = pengaturan.biayaSuplai;
+} catch (e) {
+console.error('Error loading data from localStorage:', e);
+// Initialize with defaults if there's an error
+produk = [...defaultProduk];
+stok = {
+sisaLiter: TORREN_KAPASITAS,
+literTerpakai: 0,
+totalBiayaSuplai: 0,
+kapasitasToren: TORREN_KAPASITAS
+};
+transaksi = [];
+pelanggan = [];
+pengeluaran = [];
+pengaturan = {...defaultPengaturan};
+pembayaranHutang = [];
+}
+}
+
+function resetAllData() {
+if (confirm('Apakah Anda yakin ingin mereset semua data? Tindakan ini tidak dapat dibatalkan dan akan menghapus semua transaksi, pelanggan, dan pengaturan yang telah disimpan.')) {
+try {
+// Clear all localStorage
+Object.values(LS_KEYS).forEach(key => {
+localStorage.removeItem(key);
+});
+
+// Reset all variables to defaults
+produk = [...defaultProduk];
+stok = {
+sisaLiter: TORREN_KAPASITAS,
+literTerpakai: 0,
+totalBiayaSuplai: 0,
+kapasitasToren: TORREN_KAPASITAS
+};
+transaksi = [];
+pelanggan = [];
+pengeluaran = [];
+pengaturan = {...defaultPengaturan};
+pembayaranHutang = [];
+
+// Update global variables
+TORREN_KAPASITAS = pengaturan.kapasitasToren;
+HARGA_ISI_TANGKI = pengaturan.biayaSuplai;
+
+// Update UI
+namaUsahaHeader.textContent = pengaturan.namaUsaha;
+pengaturanNamaUsaha.value = pengaturan.namaUsaha;
+pengaturanKapasitasToren.value = pengaturan.kapasitasToren;
+pengaturanBiayaSuplai.value = pengaturan.biayaSuplai;
+
+// Update all displays
+updateKasirProdukOptions();
+updateProdukList();
+updateKasirRiwayat();
+updateStokDisplay();
+updatePelangganList();
+updatePelangganDatalist();
+updateKeuanganRingkasan();
+updateLaporan();
+
+alert('Semua data telah direset ke pengaturan awal. Aplikasi akan dimuat ulang.');
+location.reload();
+} catch (e) {
+console.error('Error resetting data:', e);
+alert('Terjadi kesalahan saat mereset data. Silakan coba lagi.');
+}
+}
+}
+
+function formatRupiah(num) {
+if (isNaN(num)) return 'Rp 0';
+return 'Rp ' + Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
+function formatDateTime(date) {
+try {
+const d = new Date(date);
+return d.toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
+} catch (e) {
+return date;
+}
+}
+
+function generateId(prefix = 'id') {
+return prefix + '_' + Math.random().toString(36).substr(2, 9);
+}
+
+// Update functions
+function updateKasirProdukOptions() {
+kasirProdukSelect.innerHTML = '';
+if (produk && produk.length > 0) {
+produk.forEach(p => {
+const option = document.createElement('option');
+option.value = p.id;
+option.textContent = `${p.nama} (${formatRupiah(p.harga)})`;
+kasirProdukSelect.appendChild(option);
+});
+}
+}
+
+function updatePelangganDatalist() {
+pelangganDatalist.innerHTML = '';
+if (pelanggan && pelanggan.length > 0) {
+pelanggan.forEach(p => {
+const option = document.createElement('option');
+option.value = p.nama;
+pelangganDatalist.appendChild(option);
+});
+}
+}
+
+function createRiwayatItem(t) {
+try {
+const produkTrans = produk.find(p => p.id === t.produkId);
+if (!produkTrans) return null;
+
+const hargaPokok = produkTrans.jenis === 'air_isi_ulang' ?
+(stok.totalBiayaSuplai / (stok.literTerpakai || 1)) * produkTrans.liter : 0;
+const labaKotor = (produkTrans.harga * t.jumlah) - (hargaPokok * t.jumlah);
+
+const tr = document.createElement('tr');
+tr.className = "hover:bg-gray-50 transition-colors";
+
+let statusBadge = '';
+if (t.status === 'lunas') {
+statusBadge = '<span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Lunas</span>';
+} else if (t.status === 'hutang') {
+statusBadge = '<span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Hutang</span>';
+} else {
+statusBadge = '<span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">Cash</span>';
+}
+
+tr.innerHTML = `
+<td class="px-4 py-3 text-sm text-gray-900">${formatDateTime(t.tanggal)}</td>
+<td class="px-4 py-3 text-sm text-gray-700">${produkTrans.nama}</td>
+<td class="px-4 py-3 text-sm text-gray-700 text-right font-medium">${t.jumlah}</td>
+<td class="px-4 py-3 text-sm text-gray-700 text-right font-medium">${formatRupiah(produkTrans.harga * t.jumlah)}</td>
+<td class="px-4 py-3 text-sm text-gray-700 text-right font-medium">${formatRupiah(Math.round(hargaPokok * t.jumlah))}</td>
+<td class="px-4 py-3 text-sm text-green-700 text-right font-medium">${formatRupiah(Math.round(labaKotor))}</td>
+<td class="px-4 py-3 text-sm text-blue-800">${t.namaPelanggan}</td>
+<td class="px-4 py-3 text-sm text-center">${statusBadge}</td>
+`;
+return tr;
+} catch (e) {
+console.error('Error creating history item:', e);
+return null;
+}
+}
+
+function updateKasirRiwayat() {
+kasirRiwayatUl.innerHTML = '';
+const last10 = transaksi ? transaksi.slice(-10).reverse() : [];
+if(last10.length === 0){
+const tr = document.createElement('tr');
+tr.className = "text-center text-gray-500";
+tr.innerHTML = `<td colspan="8" class="py-8 font-semibold">Belum ada transaksi.</td>`;
+kasirRiwayatUl.appendChild(tr);
+return;
+}
+last10.forEach(t => {
+const item = createRiwayatItem(t);
+if (item) kasirRiwayatUl.appendChild(item);
+});
+}
+
+function createProdukItem(p) {
+const li = document.createElement('li');
+li.className = "flex justify-between items-center py-5 px-8 hover:bg-blue-50 rounded-xl transition-colors";
+li.innerHTML = `
+<div class="font-semibold text-blue-900 text-lg">${p.nama}</div>
+<div class="flex items-center space-x-8">
+<div class="font-extrabold text-blue-700 text-lg">${formatRupiah(p.harga)}</div>
+<button data-id="${p.id}" class="btnEditHarga text-blue-600 hover:text-blue-800 focus:outline-none" title="Edit Harga">
+<i class="fas fa-edit text-xl"></i>
+</button>
+</div>
+`;
+return li;
+}
+
+function updateProdukList() {
+produkListUl.innerHTML = '';
+if (produk && produk.length > 0) {
+produk.forEach(p => {
+produkListUl.appendChild(createProdukItem(p));
+});
+
+// Add event listeners to edit buttons
+document.querySelectorAll('.btnEditHarga').forEach(btn => {
+btn.onclick = () => {
+const id = btn.getAttribute('data-id');
+openEditHargaModal(id);
+};
+});
+}
+}
+
+function updateStokDisplay() {
+if (stok) {
+if (stok.sisaLiter > TORREN_KAPASITAS) stok.sisaLiter = TORREN_KAPASITAS;
+stokSisaLiterEl.textContent = stok.sisaLiter.toLocaleString('id-ID') + ' L';
+stokLiterTerpakaiEl.textContent = stok.literTerpakai.toLocaleString('id-ID') + ' L';
+stokTotalBiayaEl.textContent = formatRupiah(stok.totalBiayaSuplai);
+updateBtnIsiTangkiState();
+}
+}
+
+function updateBtnIsiTangkiState() {
+if (stok && stok.sisaLiter <= 50) {
+btnIsiTangki.disabled = false;
+btnIsiTangki.classList.remove('opacity-50', 'cursor-not-allowed');
+// Update button text to show capacity
+btnIsiTangki.innerHTML = `<i class="fas fa-sync-alt mr-2"></i>Isi Tangki (${TORREN_KAPASITAS.toLocaleString('id-ID')}L)`;
+} else {
+btnIsiTangki.disabled = true;
+btnIsiTangki.classList.add('opacity-50', 'cursor-not-allowed');
+btnIsiTangki.innerHTML = `<i class="fas fa-sync-alt mr-2"></i>Isi Tangki (${TORREN_KAPASITAS.toLocaleString('id-ID')}L)`;
+}
+}
+
+function createPelangganItem(p) {
+const li = document.createElement('tr');
+li.className = "hover:bg-blue-50 transition-colors cursor-default";
+
+// Calculate total debt for this customer
+let totalPiutang = 0;
+if (transaksi) {
+const customerTransactions = transaksi.filter(t => t.pelangganId === p.id && t.status === 'hutang');
+customerTransactions.forEach(t => {
+const produkTrans = produk.find(pr => pr.id === t.produkId);
+if (produkTrans) {
+totalPiutang += produkTrans.harga * t.jumlah;
+}
+});
+
+// Subtract any payments made
+if (pembayaranHutang) {
+const customerPayments = pembayaranHutang.filter(ph => ph.pelangganId === p.id);
+customerPayments.forEach(ph => {
+totalPiutang -= ph.jumlahBayar;
+});
+}
+}
+
+li.innerHTML = `
+<td class="px-4 py-3 font-semibold text-blue-900">${p.nama}</td>
+<td class="px-4 py-3 text-gray-700">${p.kontak || '-'}</td>
+<td class="px-4 py-3 font-extrabold text-blue-700 text-right">${p.galonTitipan || 0}</td>
+<td class="px-4 py-3 text-gray-700">${totalPiutang > 0 ? formatRupiah(totalPiutang) : '-'}</td>
+<td class="px-4 py-3 text-center space-x-4">
+<button data-id="${p.id}" class="btnDetailPelanggan text-blue-600 hover:text-blue-800 focus:outline-none" title="Lihat Detail">
+<i class="fas fa-info-circle text-xl"></i>
+</button>
+${totalPiutang > 0 ? `<button data-id="${p.id}" class="btnBayarHutang text-green-600 hover:text-green-800 focus:outline-none" title="Bayar Hutang">
+<i class="fas fa-money-bill-wave text-xl"></i>
+</button>` : ''}
+<button data-id="${p.id}" class="btnHapusPelanggan text-red-600 hover:text-red-800 focus:outline-none" title="Hapus Pelanggan">
+<i class="fas fa-trash-alt text-xl"></i>
+</button>
+</td>
+`;
+return li;
+}
+
+function updatePelangganList() {
+pelangganListUl.innerHTML = '';
+if (!pelanggan || pelanggan.length === 0) {
+const tr = document.createElement('tr');
+tr.className = "text-center text-gray-500 font-semibold";
+tr.innerHTML = `<td colspan="5" class="py-8">Belum ada data pelanggan.</td>`;
+pelangganListUl.appendChild(tr);
+return;
+}
+
+pelanggan.forEach(p => {
+pelangganListUl.appendChild(createPelangganItem(p));
+});
+
+// Add event listeners
+document.querySelectorAll('.btnDetailPelanggan').forEach(btn => {
+btn.onclick = () => {
+const id = btn.getAttribute('data-id');
+openDetailPelangganModal(id);
+};
+});
+
+document.querySelectorAll('.btnBayarHutang').forEach(btn => {
+btn.onclick = () => {
+const id = btn.getAttribute('data-id');
+openBayarHutangModal(id);
+};
+});
+
+document.querySelectorAll('.btnHapusPelanggan').forEach(btn => {
+btn.onclick = () => {
+const id = btn.getAttribute('data-id');
+if (confirm('Yakin ingin menghapus pelanggan ini? Semua riwayat transaksi pelanggan juga akan dihapus.')) {
+hapusPelanggan(id);
+}
+};
+});
+}
+
+function updateKeuanganRingkasan() {
+const now = new Date();
+const todayStr = now.toISOString().slice(0, 10);
+const monthStr = now.toISOString().slice(0, 7);
+let pemasukanHarian = 0;
+let pemasukanBulanan = 0;
+
+if (transaksi) {
+transaksi.forEach(t => {
+const tDateStr = t.tanggal.slice(0, 10);
+const tMonthStr = t.tanggal.slice(0, 7);
+const produkTrans = produk.find(p => p.id === t.produkId);
+
+if (produkTrans && (t.status === 'cash' || t.status === 'lunas')) {
+if (tDateStr === todayStr) {
+pemasukanHarian += produkTrans.harga * t.jumlah;
+}
+if (tMonthStr === monthStr) {
+pemasukanBulanan += produkTrans.harga * t.jumlah;
+}
+}
+});
+}
+
+let totalPengeluaran = 0;
+if (pengeluaran) {
+pengeluaran.forEach(p => {
+totalPengeluaran += p.nominal;
+});
+}
+
+const labaBersih = pemasukanBulanan - totalPengeluaran;
+
+keuPemasukanHarianEl.textContent = formatRupiah(pemasukanHarian);
+keuPemasukanBulananEl.textContent = formatRupiah(pemasukanBulanan);
+keuPengeluaranEl.textContent = formatRupiah(totalPengeluaran);
+keuLabaBersihEl.textContent = formatRupiah(labaBersih);
+}
+
+function updateLaporan() {
+if (stok) {
+laporanLiterTerpakaiEl.textContent = stok.literTerpakai.toLocaleString('id-ID') + ' L';
+laporanLiterSisaEl.textContent = stok.sisaLiter.toLocaleString('id-ID') + ' L';
+}
+
+// Perbaikan deteksi Produk Terlaris
+const produkTerjualCount = {};
+if (transaksi && transaksi.length > 0) {
+transaksi.forEach(t => {
+if (!t.produkId) return;
+
+produkTerjualCount[t.produkId] = (produkTerjualCount[t.produkId] || 0) + t.jumlah;
+});
+}
+
+const produkTerlarisSorted = Object.entries(produkTerjualCount)
+.sort((a, b) => b[1] - a[1])
+.slice(0, 5);
+
+laporanProdukTerlarisEl.innerHTML = '';
+if (produkTerlarisSorted.length === 0) {
+const li = document.createElement('li');
+li.className = "text-gray-500 italic";
+li.textContent = 'Tidak ada data penjualan.';
+laporanProdukTerlarisEl.appendChild(li);
+} else {
+produkTerlarisSorted.forEach(([pid, jumlah]) => {
+const p = produk.find(pr => pr.id === pid);
+if (p) {
+const li = document.createElement('li');
+li.className = "flex justify-between items-center py-2 px-3 bg-gray-50 rounded-lg";
+li.innerHTML = `
+<span class="font-medium">${p.nama}</span>
+<span class="bg-teal-100 text-teal-800 px-2 py-1 rounded-full text-sm font-semibold">${jumlah} item</span>
+`;
+laporanProdukTerlarisEl.appendChild(li);
+}
+});
+}
+
+// Perbaikan deteksi Pelanggan Terbanyak
+const pelangganCount = {};
+if (transaksi && transaksi.length > 0) {
+transaksi.forEach(t => {
+if (!t.pelangganId) return;
+
+pelangganCount[t.pelangganId] = (pelangganCount[t.pelangganId] || 0) + 1;
+});
+}
+
+const pelangganTerbanyakSorted = Object.entries(pelangganCount)
+.sort((a, b) => b[1] - a[1])
+.slice(0, 5);
+
+laporanPelangganTerbanyakEl.innerHTML = '';
+if (pelangganTerbanyakSorted.length === 0) {
+const li = document.createElement('li');
+li.className = "text-gray-500 italic";
+li.textContent = 'Tidak ada data transaksi pelanggan.';
+laporanPelangganTerbanyakEl.appendChild(li);
+} else {
+pelangganTerbanyakSorted.forEach(([pid, count]) => {
+const p = pelanggan.find(pl => pl.id === pid);
+if (p) {
+const li = document.createElement('li');
+li.className = "flex justify-between items-center py-2 px-3 bg-gray-50 rounded-lg";
+li.innerHTML = `
+<span class="font-medium">${p.nama}</span>
+<span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm font-semibold">${count} transaksi</span>
+`;
+laporanPelangganTerbanyakEl.appendChild(li);
+}
+});
+}
+}
+
+function updateChartPenjualanHarian() {
+const now = new Date();
+const days = [];
+const sales = [];
+
+for (let i = 29; i >= 0; i--) {
+const d = new Date(now);
+d.setDate(d.getDate() - i);
+const dStr = d.toISOString().slice(0, 10);
+days.push(d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }));
+
+let total = 0;
+if (transaksi) {
+transaksi.forEach(t => {
+if (t.tanggal.slice(0, 10) === dStr && (t.status === 'cash' || t.status === 'lunas')) {
+const p = produk.find(pr => pr.id === t.produkId);
+if (p) {
+total += p.harga * t.jumlah;
+}
+}
+});
+}
+sales.push(total);
+}
+
+if (chartPenjualanHarian) chartPenjualanHarian.destroy();
+
+const ctx = document.getElementById('chartPenjualanHarian').getContext('2d');
+chartPenjualanHarian = new Chart(ctx, {
+type: 'bar',
+data: {
+labels: days,
+datasets: [{
+label: 'Penjualan Harian (Rp)',
+data: sales,
+backgroundColor: 'rgba(15, 118, 110, 0.8)',
+borderRadius: 6,
+}],
+},
+options: {
+responsive: true,
+scales: {
+y: {
+beginAtZero: true,
+ticks: {
+callback: val => val.toLocaleString('id-ID'),
+},
+},
+},
+plugins: {
+legend: { display: false },
+tooltip: {
+callbacks: {
+label: ctx => formatRupiah(ctx.parsed.y),
+},
+},
+},
+},
+});
+}
+
+function updateChartPenjualanBulanan() {
+const now = new Date();
+const months = [];
+const sales = [];
+
+for (let i = 11; i >= 0; i--) {
+const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+const monthStr = d.toISOString().slice(0, 7);
+months.push(d.toLocaleDateString('id-ID', { month: 'short', year: 'numeric' }));
+
+let total = 0;
+if (transaksi) {
+transaksi.forEach(t => {
+if (t.tanggal.slice(0, 7) === monthStr && (t.status === 'cash' || t.status === 'lunas')) {
+const p = produk.find(pr => pr.id === t.produkId);
+if (p) {
+total += p.harga * t.jumlah;
+}
+}
+});
+}
+sales.push(total);
+}
+
+if (chartPenjualanBulanan) chartPenjualanBulanan.destroy();
+
+const ctx = document.getElementById('chartPenjualanBulanan').getContext('2d');
+chartPenjualanBulanan = new Chart(ctx, {
+type: 'line',
+data: {
+labels: months,
+datasets: [{
+label: 'Penjualan Bulanan (Rp)',
+data: sales,
+borderColor: 'rgba(15, 118, 110, 0.9)',
+backgroundColor: 'rgba(15, 118, 110, 0.3)',
+fill: true,
+tension: 0.3,
+pointRadius: 5,
+}],
+},
+options: {
+responsive: true,
+scales: {
+y: {
+beginAtZero: true,
+ticks: {
+callback: val => val.toLocaleString('id-ID'),
+},
+},
+},
+plugins: {
+legend: { display: false },
+tooltip: {
+callbacks: {
+label: ctx => formatRupiah(ctx.parsed.y),
+},
+},
+},
+},
+});
+}
+
+// Modal functions
+function openEditHargaModal(id) {
+const p = produk.find(pr => pr.id === id);
+if (!p) return;
+
+editProdukId = id;
+editProdukNamaInput.value = p.nama;
+editProdukHargaInput.value = p.harga;
+modalEditHarga.classList.remove('hidden');
+editProdukHargaInput.focus();
+}
+
+function closeEditHargaModal() {
+modalEditHarga.classList.add('hidden');
+editProdukNamaInput.value = '';
+editProdukHargaInput.value = '';
+editProdukId = null;
+}
+
+function openDetailPelangganModal(id) {
+const p = pelanggan.find(pl => pl.id === id);
+if (!p) return;
+
+detailPelangganNama.textContent = `Detail Pelanggan: ${p.nama}`;
+detailPelangganKontak.textContent = p.kontak || '-';
+detailPelangganGalon.textContent = p.galonTitipan || 0;
+
+// Calculate total debt
+let totalPiutang = 0;
+if (transaksi) {
+const customerTransactions = transaksi.filter(t => t.pelangganId === id && t.status === 'hutang');
+customerTransactions.forEach(t => {
+const produkTrans = produk.find(pr => pr.id === t.produkId);
+if (produkTrans) {
+totalPiutang += produkTrans.harga * t.jumlah;
+}
+});
+
+// Subtract any payments made
+if (pembayaranHutang) {
+const customerPayments = pembayaranHutang.filter(ph => ph.pelangganId === id);
+customerPayments.forEach(ph => {
+totalPiutang -= ph.jumlahBayar;
+});
+}
+}
+
+detailPelangganPiutang.textContent = totalPiutang > 0 ? formatRupiah(totalPiutang) : '-';
+
+detailPelangganRiwayatUl.innerHTML = '';
+const riwayat = transaksi ? transaksi.filter(t => t.pelangganId === id).sort((a,b) => new Date(b.tanggal) - new Date(a.tanggal)) : [];
+
+if (riwayat.length === 0) {
+const tr = document.createElement('tr');
+tr.className = "text-center text-gray-500";
+tr.innerHTML = `<td colspan="6" class="py-6 font-semibold">Tidak ada riwayat transaksi.</td>`;
+detailPelangganRiwayatUl.appendChild(tr);
+} else {
+riwayat.forEach(t => {
+const pTrans = produk.find(pr => pr.id === t.produkId);
+if (!pTrans) return;
+
+const hargaPokok = pTrans.jenis === 'air_isi_ulang' ?
+(stok.totalBiayaSuplai / (stok.literTerpakai || 1)) * pTrans.liter : 0;
+const labaKotor = (pTrans.harga * t.jumlah) - (hargaPokok * t.jumlah);
+
+let statusBadge = '';
+if (t.status === 'lunas') {
+statusBadge = '<span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Lunas</span>';
+} else if (t.status === 'hutang') {
+statusBadge = '<span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Hutang</span>';
+} else {
+statusBadge = '<span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">Cash</span>';
+}
+
+const tr = document.createElement('tr');
+tr.className = "hover:bg-gray-50 transition-colors";
+tr.innerHTML = `
+<td class="px-4 py-3 text-sm text-gray-900">${formatDateTime(t.tanggal)}</td>
+<td class="px-4 py-3 text-sm text-gray-700">${pTrans.nama}</td>
+<td class="px-4 py-3 text-sm text-gray-700 text-right font-medium">${t.jumlah}</td>
+<td class="px-4 py-3 text-sm text-gray-700 text-right font-medium">${formatRupiah(pTrans.harga * t.jumlah)}</td>
+<td class="px-4 py-3 text-sm text-green-700 text-right font-medium">${formatRupiah(Math.round(labaKotor))}</td>
+<td class="px-4 py-3 text-sm text-center">${statusBadge}</td>
+`;
+detailPelangganRiwayatUl.appendChild(tr);
+});
+}
+
+modalDetailPelanggan.classList.remove('hidden');
+}
+
+function closeDetailPelangganModal() {
+modalDetailPelanggan.classList.add('hidden');
+detailPelangganRiwayatUl.innerHTML = '';
+}
+
+function openBayarHutangModal(pelangganId) {
+const p = pelanggan.find(pl => pl.id === pelangganId);
+if (!p) return;
+
+currentPelangganId = pelangganId;
+
+// Calculate total debt
+let totalHutang = 0;
+if (transaksi) {
+const customerTransactions = transaksi.filter(t => t.pelangganId === pelangganId && t.status === 'hutang');
+customerTransactions.forEach(t => {
+const produkTrans = produk.find(pr => pr.id === t.produkId);
+if (produkTrans) {
+totalHutang += produkTrans.harga * t.jumlah;
+}
+});
+
+// Subtract any payments made
+if (pembayaranHutang) {
+const customerPayments = pembayaranHutang.filter(ph => ph.pelangganId === pelangganId);
+customerPayments.forEach(ph => {
+totalHutang -= ph.jumlahBayar;
+});
+}
+}
+
+hutangNamaPelangganInput.value = p.nama;
+totalHutangInput.value = formatRupiah(totalHutang);
+jumlahBayarHutangInput.value = '';
+sisaHutangInfoDiv.classList.add('hidden');
+
+modalBayarHutang.classList.remove('hidden');
+jumlahBayarHutangInput.focus();
+}
+
+function closeBayarHutangModal() {
+modalBayarHutang.classList.add('hidden');
+currentPelangganId = null;
+}
+
+function hapusPelanggan(id) {
+pelanggan = pelanggan.filter(p => p.id !== id);
+if (transaksi) transaksi = transaksi.filter(t => t.pelangganId !== id);
+if (pembayaranHutang) pembayaranHutang = pembayaranHutang.filter(ph => ph.pelangganId !== id);
+
+saveData();
+updatePelangganList();
+updateKasirRiwayat();
+updateKeuanganRingkasan();
+updateLaporan();
+updatePelangganDatalist();
+}
+
+// Event listeners
+document.getElementById('btnSidebarToggle').addEventListener('click', () => {
+// No sidebar on mobile, so no toggle needed
+});
+
+tabButtons.forEach(btn => {
+btn.addEventListener('click', () => {
+const tab = btn.getAttribute('data-tab');
+if (!tab) return;
+
+tabContents.forEach(tc => {
+if (tc.id === tab) {
+tc.classList.remove('hidden');
+tc.classList.add('active');
+} else {
+tc.classList.add('hidden');
+tc.classList.remove('active');
+}
+});
+
+tabButtons.forEach(b => b.classList.remove('text-[#0f766e]', 'font-extrabold', 'active', 'text-white'));
+btn.classList.add('text-[#0f766e]', 'font-extrabold', 'active');
+
+if (tab === 'laporan') {
+updateChartPenjualanHarian();
+updateChartPenjualanBulanan();
+}
+});
+});
+
+function openDefaultTab() {
+const firstTab = tabButtons[0];
+if (firstTab) firstTab.click();
+}
+
+formKasir.addEventListener('submit', e => {
+e.preventDefault();
+const produkId = kasirProdukSelect.value;
+const jumlah = parseInt(kasirJumlahInput.value);
+const namaPelanggan = kasirNamaPelangganInput.value.trim();
+
+if (!produkId || jumlah < 1 || !namaPelanggan) {
+alert('Mohon isi semua data dengan benar.');
+return;
+}
+
+currentProduk = produk.find(p => p.id === produkId);
+if (!currentProduk) {
+alert('Produk tidak ditemukan.');
+return;
+}
+
+if (currentProduk.jenis === 'air_isi_ulang') {
+const totalLiter = currentProduk.liter * jumlah;
+if (stok.sisaLiter < totalLiter) {
+alert(`Stok air toren tidak cukup. Sisa liter: ${stok.sisaLiter} L`);
+return;
+}
+}
+
+let pelangganObj = pelanggan.find(p => p.nama.toLowerCase() === namaPelanggan.toLowerCase());
+if (!pelangganObj) {
+pelangganObj = {
+id: generateId('pel'),
+nama: namaPelanggan,
+kontak: '',
+galonTitipan: 0,
+piutang: '',
+};
+pelanggan.push(pelangganObj);
+updatePelangganDatalist();
+}
+
+const totalHarga = currentProduk.harga * jumlah;
+
+currentTransaksi = {
+id: generateId('trx'),
+produkId,
+jumlah,
+namaPelanggan,
+pelangganId: pelangganObj.id,
+tanggal: new Date().toISOString(),
+totalHarga,
+};
+
+// Open payment modal
+totalTagihanInput.value = formatRupiah(totalHarga);
+metodePembayaranSelect.value = 'cash';
+pembayaranCashDiv.classList.remove('hidden');
+pembayaranHutangDiv.classList.add('hidden');
+jumlahBayarInput.value = '';
+kembalianInfoDiv.classList.add('hidden');
+modalPembayaran.classList.remove('hidden');
+jumlahBayarInput.focus();
+});
+
+metodePembayaranSelect.addEventListener('change', () => {
+if (metodePembayaranSelect.value === 'cash') {
+pembayaranCashDiv.classList.remove('hidden');
+pembayaranHutangDiv.classList.add('hidden');
+} else {
+pembayaranCashDiv.classList.add('hidden');
+pembayaranHutangDiv.classList.remove('hidden');
+}
+kembalianInfoDiv.classList.add('hidden');
+});
+
+jumlahBayarInput.addEventListener('input', () => {
+const totalTagihan = currentTransaksi ? currentTransaksi.totalHarga : 0;
+const jumlahBayar = parseInt(jumlahBayarInput.value) || 0;
+
+if (jumlahBayar >= totalTagihan) {
+const kembalian = jumlahBayar - totalTagihan;
+kembalianInfoDiv.textContent = `Kembalian: ${formatRupiah(kembalian)}`;
+kembalianInfoDiv.classList.remove('hidden');
+} else {
+kembalianInfoDiv.classList.add('hidden');
+}
+});
+
+jumlahBayarHutangInput.addEventListener('input', () => {
+const totalHutangText = totalHutangInput.value;
+const totalHutang = parseInt(totalHutangText.replace(/[^0-9]/g, '')) || 0;
+const jumlahBayar = parseInt(jumlahBayarHutangInput.value) || 0;
+
+if (jumlahBayar > 0) {
+const sisaHutang = totalHutang - jumlahBayar;
+sisaHutangInfoDiv.textContent = `Sisa Hutang: ${formatRupiah(sisaHutang)}`;
+sisaHutangInfoDiv.classList.remove('hidden');
+} else {
+sisaHutangInfoDiv.classList.add('hidden');
+}
+});
+
+formPembayaran.addEventListener('submit', e => {
+e.preventDefault();
+
+if (!currentTransaksi || !currentProduk) {
+alert('Terjadi kesalahan. Silakan coba lagi.');
+return;
+}
+
+const metode = metodePembayaranSelect.value;
+
+if (metode === 'cash') {
+const jumlahBayar = parseInt(jumlahBayarInput.value) || 0;
+if (jumlahBayar < currentTransaksi.totalHarga) {
+alert('Jumlah bayar kurang dari total tagihan.');
+return;
+}
+
+currentTransaksi.status = 'cash';
+} else {
+currentTransaksi.status = 'hutang';
+const jatuhTempo = document.getElementById('jatuhTempo').value;
+if (jatuhTempo) {
+currentTransaksi.jatuhTempo = jatuhTempo;
+}
+}
+
+// Add transaction
+transaksi.push({...currentTransaksi});
+
+if (currentProduk.jenis === 'air_isi_ulang') {
+const totalLiter = currentProduk.liter * currentTransaksi.jumlah;
+stok.sisaLiter -= totalLiter;
+stok.literTerpakai += totalLiter;
+}
+
+saveData();
+updateKasirRiwayat();
+updateStokDisplay();
+updateKeuanganRingkasan();
+updateLaporan();
+updatePelangganList();
+
+kasirJumlahInput.value = '1';
+kasirNamaPelangganInput.value = '';
+kasirProdukSelect.value = produk[0].id;
+
+modalPembayaran.classList.add('hidden');
+currentTransaksi = null;
+currentProduk = null;
+
+alert('Transaksi berhasil disimpan.');
+});
+
+btnCancelPembayaran.addEventListener('click', () => {
+modalPembayaran.classList.add('hidden');
+currentTransaksi = null;
+currentProduk = null;
+});
+
+formBayarHutang.addEventListener('submit', e => {
+e.preventDefault();
+
+if (!currentPelangganId) return;
+
+const totalHutangText = totalHutangInput.value;
+const totalHutang = parseInt(totalHutangText.replace(/[^0-9]/g, '')) || 0;
+const jumlahBayar = parseInt(jumlahBayarHutangInput.value) || 0;
+
+if (jumlahBayar <= 0) {
+alert('Jumlah bayar harus lebih dari 0.');
+return;
+}
+
+if (jumlahBayar > totalHutang) {
+alert('Jumlah bayar melebihi total hutang.');
+return;
+}
+
+// Add payment record
+pembayaranHutang.push({
+id: generateId('ph'),
+pelangganId: currentPelangganId,
+jumlahBayar,
+tanggal: new Date().toISOString(),
+});
+
+// Update transaction status if debt is fully paid
+if (jumlahBayar === totalHutang) {
+const customerTransactions = transaksi.filter(t =>
+t.pelangganId === currentPelangganId && t.status === 'hutang'
+);
+
+customerTransactions.forEach(t => {
+t.status = 'lunas';
+});
+}
+
+saveData();
+updatePelangganList();
+updateKasirRiwayat();
+updateKeuanganRingkasan();
+updateLaporan();
+
+closeBayarHutangModal();
+alert('Pembayaran hutang berhasil dicatat.');
+});
+
+btnCancelBayarHutang.addEventListener('click', () => {
+closeBayarHutangModal();
+});
+
+formProduk.addEventListener('submit', e => {
+e.preventDefault();
+const nama = produkNamaInput.value.trim();
+const harga = parseInt(produkHargaInput.value);
+
+if (!nama || isNaN(harga) || harga < 0) {
+alert('Mohon isi nama dan harga produk dengan benar.');
+return;
+}
+
+const exists = produk.find(p => p.nama.toLowerCase() === nama.toLowerCase());
+if (exists) {
+alert('Produk dengan nama tersebut sudah ada.');
+return;
+}
+
+let jenis = 'lain';
+let liter = 0;
+const lowerNama = nama.toLowerCase();
+
+if (lowerNama.includes('air isi ulang')) {
+jenis = 'air_isi_ulang';
+const litMatch = nama.match(/(\d+)\s*l/i);
+if (litMatch) {
+liter = parseInt(litMatch[1]);
+}
+} else if (lowerNama.includes('galon')) {
+jenis = 'galon_baru';
+liter = 0;
+}
+
+produk.push({
+id: generateId('p'),
+nama,
+harga,
+jenis,
+liter,
+});
+
+saveData();
+updateProdukList();
+updateKasirProdukOptions();
+
+produkNamaInput.value = '';
+produkHargaInput.value = '';
+
+alert('Produk baru berhasil ditambahkan.');
+});
+
+formEditHarga.addEventListener('submit', e => {
+e.preventDefault();
+if (!editProdukId) return;
+
+const hargaBaru = parseInt(editProdukHargaInput.value);
+if (isNaN(hargaBaru) || hargaBaru < 0) {
+alert('Harga harus berupa angka positif.');
+return;
+}
+
+const p = produk.find(pr => pr.id === editProdukId);
+if (!p) return;
+
+p.harga = hargaBaru;
+
+saveData();
+updateProdukList();
+updateKasirProdukOptions();
+updateKasirRiwayat();
+updateKeuanganRingkasan();
+updateLaporan();
+
+closeEditHargaModal();
+alert('Harga produk berhasil diperbarui.');
+});
+
+btnCancelEditHarga.addEventListener('click', () => {
+closeEditHargaModal();
+});
+
+btnIsiTangki.addEventListener('click', () => {
+if (stok.sisaLiter + TORREN_KAPASITAS > TORREN_KAPASITAS) {
+stok.sisaLiter = TORREN_KAPASITAS;
+} else {
+stok.sisaLiter += TORREN_KAPASITAS;
+}
+
+pengeluaran.push({
+id: generateId('peng'),
+keterangan: 'Biaya Suplai Isi Tangki',
+nominal: HARGA_ISI_TANGKI,
+tanggal: new Date().toISOString(),
+});
+
+stok.totalBiayaSuplai += HARGA_ISI_TANGKI;
+
+saveData();
+updateStokDisplay();
+updateKeuanganRingkasan();
+updateLaporan();
+
+alert(`Tangki berhasil diisi ulang ${TORREN_KAPASITAS.toLocaleString('id-ID')} liter.`);
+});
+
+formPelanggan.addEventListener('submit', e => {
+e.preventDefault();
+const nama = pelangganNamaInput.value.trim();
+const kontak = pelangganKontakInput.value.trim();
+const galonTitipan = parseInt(pelangganGalonTitipanInput.value) || 0;
+const piutang = pelangganPiutangInput.value.trim();
+
+if (!nama) {
+alert('Nama pelanggan wajib diisi.');
+return;
+}
+
+let p = pelanggan.find(pl => pl.nama.toLowerCase() === nama.toLowerCase());
+if (p) {
+p.kontak = kontak;
+p.galonTitipan = galonTitipan;
+p.piutang = piutang;
+alert('Data pelanggan berhasil diperbarui.');
+} else {
+p = {
+id: generateId('pel'),
+nama,
+kontak,
+galonTitipan,
+piutang,
+};
+pelanggan.push(p);
+alert('Pelanggan baru berhasil ditambahkan.');
+}
+
+saveData();
+updatePelangganList();
+updatePelangganDatalist();
+
+pelangganNamaInput.value = '';
+pelangganKontakInput.value = '';
+pelangganGalonTitipanInput.value = '0';
+pelangganPiutangInput.value = '';
+});
+
+btnCloseDetailPelanggan.addEventListener('click', () => {
+closeDetailPelangganModal();
+});
+
+formPengeluaran.addEventListener('submit', e => {
+e.preventDefault();
+const keterangan = pengeluaranKeteranganInput.value.trim();
+const nominal = parseInt(pengeluaranNominalInput.value);
+
+if (!keterangan || isNaN(nominal) || nominal <= 0) {
+alert('Mohon isi keterangan dan nominal pengeluaran dengan benar.');
+return;
+}
+
+pengeluaran.push({
+id: generateId('peng'),
+keterangan,
+nominal,
+tanggal: new Date().toISOString(),
+});
+
+saveData();
+updateKeuanganRingkasan();
+
+pengeluaranKeteranganInput.value = '';
+pengeluaranNominalInput.value = '';
+
+alert('Pengeluaran berhasil ditambahkan.');
+});
+
+formPengaturan.addEventListener('submit', e => {
+e.preventDefault();
+
+const namaUsaha = pengaturanNamaUsaha.value.trim();
+const kapasitasToren = parseInt(pengaturanKapasitasToren.value);
+const biayaSuplai = parseInt(pengaturanBiayaSuplai.value);
+
+if (!namaUsaha || isNaN(kapasitasToren) || kapasitasToren <= 0 || isNaN(biayaSuplai) || biayaSuplai < 0) {
+alert('Mohon isi semua pengaturan dengan benar.');
+return;
+}
+
+// Check if settings have changed
+const kapasitasChanged = kapasitasToren !== pengaturan.kapasitasToren;
+const biayaChanged = biayaSuplai !== pengaturan.biayaSuplai;
+
+if (kapasitasChanged || biayaChanged) {
+if (!confirm('Mengubah pengaturan ini akan mereset stok air sisa liter dan total biaya suplai. Data liter terpakai akan tetap disesuaikan dengan data transaksi. Apakah Anda yakin?')) {
+return;
+}
+}
+
+// Update settings
+pengaturan.namaUsaha = namaUsaha;
+pengaturan.kapasitasToren = kapasitasToren;
+pengaturan.biayaSuplai = biayaSuplai;
+
+// Update global variables
+TORREN_KAPASITAS = kapasitasToren;
+HARGA_ISI_TANGKI = biayaSuplai;
+
+// Update header
+namaUsahaHeader.textContent = namaUsaha;
+
+// Reset stock if settings changed
+if (kapasitasChanged || biayaChanged) {
+stok.sisaLiter = TORREN_KAPASITAS;
+stok.totalBiayaSuplai = 0;
+stok.kapasitasToren = TORREN_KAPASITAS;
+
+// Recalculate total biaya suplai based on liter terpakai
+if (stok.literTerpakai > 0) {
+const ratio = stok.literTerpakai / TORREN_KAPASITAS;
+stok.totalBiayaSuplai = Math.round(HARGA_ISI_TANGKI * ratio);
+}
+}
+
+// Update button text
+updateBtnIsiTangkiState();
+
+saveData();
+updateStokDisplay();
+alert('Pengaturan berhasil disimpan.');
+});
+
+btnResetPengaturan.addEventListener('click', resetAllData);
+
+btnExportExcel.addEventListener('click', () => {
+const wb = XLSX.utils.book_new();
+
+const produkData = produk.map(p => ({
+'ID Produk': p.id,
+'Nama Produk': p.nama,
+'Harga (Rp)': p.harga,
+'Jenis': p.jenis,
+'Liter': p.liter,
+}));
+const wsProduk = XLSX.utils.json_to_sheet(produkData);
+XLSX.utils.book_append_sheet(wb, wsProduk, 'Produk');
+
+const stokData = [{
+'Sisa Liter': stok.sisaLiter,
+'Liter Terpakai': stok.literTerpakai,
+'Total Biaya Suplai (Rp)': stok.totalBiayaSuplai,
+'Kapasitas Toren': stok.kapasitasToren || TORREN_KAPASITAS,
+}];
+const wsStok = XLSX.utils.json_to_sheet(stokData);
+XLSX.utils.book_append_sheet(wb, wsStok, 'Stok Air');
+
+const transaksiData = transaksi.map(t => {
+const p = produk.find(pr => pr.id === t.produkId);
+return {
+'ID Transaksi': t.id,
+'Tanggal': t.tanggal,
+'Produk': p ? p.nama : '',
+'Jumlah': t.jumlah,
+'Harga Jual (Rp)': p ? p.harga * t.jumlah : 0,
+'Nama Pelanggan': t.namaPelanggan,
+'Status': t.status || 'cash',
+};
+});
+const wsTransaksi = XLSX.utils.json_to_sheet(transaksiData);
+XLSX.utils.book_append_sheet(wb, wsTransaksi, 'Transaksi');
+
+const pelangganData = pelanggan.map(p => {
+// Calculate total debt for this customer
+let totalPiutang = 0;
+if (transaksi) {
+const customerTransactions = transaksi.filter(t => t.pelangganId === p.id && t.status === 'hutang');
+customerTransactions.forEach(t => {
+const produkTrans = produk.find(pr => pr.id === t.produkId);
+if (produkTrans) {
+totalPiutang += produkTrans.harga * t.jumlah;
+}
+});
+
+// Subtract any payments made
+if (pembayaranHutang) {
+const customerPayments = pembayaranHutang.filter(ph => ph.pelangganId === p.id);
+customerPayments.forEach(ph => {
+totalPiutang -= ph.jumlahBayar;
+});
+}
+}
+
+return {
+'ID Pelanggan': p.id,
+'Nama': p.nama,
+'Kontak': p.kontak,
+'Galon Titipan': p.galonTitipan,
+'Total Piutang (Rp)': totalPiutang > 0 ? totalPiutang : 0,
+};
+});
+const wsPelanggan = XLSX.utils.json_to_sheet(pelangganData);
+XLSX.utils.book_append_sheet(wb, wsPelanggan, 'Pelanggan');
+
+const pengeluaranData = pengeluaran.map(p => ({
+'ID Pengeluaran': p.id,
+'Keterangan': p.keterangan,
+'Nominal (Rp)': p.nominal,
+'Tanggal': p.tanggal,
+}));
+const wsPengeluaran = XLSX.utils.json_to_sheet(pengeluaranData);
+XLSX.utils.book_append_sheet(wb, wsPengeluaran, 'Pengeluaran');
+
+const pembayaranHutangData = pembayaranHutang.map(ph => {
+const p = pelanggan.find(pl => pl.id === ph.pelangganId);
+return {
+'ID Pembayaran': ph.id,
+'Nama Pelanggan': p ? p.nama : '',
+'Jumlah Bayar (Rp)': ph.jumlahBayar,
+'Tanggal': ph.tanggal,
+};
+});
+const wsPembayaranHutang = XLSX.utils.json_to_sheet(pembayaranHutangData);
+XLSX.utils.book_append_sheet(wb, wsPembayaranHutang, 'Pembayaran Hutang');
+
+XLSX.writeFile(wb, 'laporan_depot_air.xlsx');
+});
+
+btnExportPDF.addEventListener('click', () => {
+const { jsPDF } = window.jspdf;
+const doc = new jsPDF();
+
+doc.setFontSize(18);
+doc.text(pengaturan.namaUsaha, 14, 22);
+doc.setFontSize(12);
+doc.text(`Tanggal: ${new Date().toLocaleDateString('id-ID')}`, 14, 32);
+
+doc.setFontSize(14);
+doc.text('Stok Air (Toren)', 14, 44);
+doc.setFontSize(12);
+doc.text(`Sisa Liter: ${stok.sisaLiter.toLocaleString('id-ID')} L`, 14, 52);
+doc.text(`Liter Terpakai: ${stok.literTerpakai.toLocaleString('id-ID')} L`, 14, 60);
+doc.text(`Total Biaya Suplai: ${formatRupiah(stok.totalBiayaSuplai)}`, 14, 68);
+
+doc.setFontSize(14);
+doc.text('Ringkasan Keuangan', 14, 82);
+doc.setFontSize(12);
+doc.text(`Total Pemasukan Bulanan: ${keuPemasukanBulananEl.textContent}`, 14, 90);
+doc.text(`Total Pengeluaran: ${keuPengeluaranEl.textContent}`, 14, 98);
+doc.text(`Laba Bersih: ${keuLabaBersihEl.textContent}`, 14, 106);
+
+doc.setFontSize(14);
+doc.text('Produk Terlaris', 14, 120);
+doc.setFontSize(12);
+if (laporanProdukTerlarisEl.children.length === 0) {
+doc.text('Tidak ada data penjualan.', 14, 128);
+} else {
+let y = 128;
+Array.from(laporanProdukTerlarisEl.children).forEach(li => {
+doc.text(`- ${li.textContent}`, 14, y);
+y += 8;
+});
+}
+
+doc.setFontSize(14);
+doc.text('Pelanggan Terbanyak', 14, 160);
+doc.setFontSize(12);
+if (laporanPelangganTerbanyakEl.children.length === 0) {
+doc.text('Tidak ada data transaksi pelanggan.', 14, 168);
+} else {
+let y = 168;
+Array.from(laporanPelangganTerbanyakEl.children).forEach(li => {
+doc.text(`- ${li.textContent}`, 14, y);
+y += 8;
+});
+}
+
+doc.save('laporan_depot_air.pdf');
+});
+
+// Initialize app
+function init() {
+try {
+loadData();
+updateKasirProdukOptions();
+updateProdukList();
+updateKasirRiwayat();
+updateStokDisplay();
+updatePelangganList();
+updatePelangganDatalist();
+updateKeuanganRingkasan();
+updateLaporan();
+openDefaultTab();
+} catch (e) {
+console.error('Error initializing app:', e);
+alert('Terjadi kesalahan saat memuat aplikasi. Silakan refresh halaman.');
+}
+}
+
+// Start the app
+init();
+})();
