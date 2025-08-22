@@ -1,0 +1,1763 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Agama Islam</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+        }
+        .live-score {
+            background-color: #f0f0f0;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .correct-score {
+            color: #4caf50;
+        }
+        .incorrect-score {
+            color: #f44336;
+        }
+        .name-form {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .name-form input {
+            padding: 10px;
+            width: 250px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .name-form button {
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .name-form button:hover {
+            background-color: #45a049;
+        }
+        .quiz-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .player-name {
+            font-weight: bold;
+            color: #2196f3;
+        }
+        .question {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .option:hover {
+            background-color: #f0f0f0;
+        }
+        .option.selected {
+            background-color: #e3f2fd;
+            border-color: #2196f3;
+        }
+        .progress {
+            margin-bottom: 20px;
+            height: 10px;
+            background-color: #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #4caf50;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .score-container {
+            text-align: center;
+            display: none;
+        }
+        .score {
+            font-size: 36px;
+            color: #4caf50;
+            margin: 20px 0;
+        }
+        .answer-key-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .answer-key-button:hover {
+            background-color: #0b7dda;
+        }
+        .reset-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .reset-button:hover {
+            background-color: #e68900;
+        }
+        .ranking-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #9c27b0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .ranking-button:hover {
+            background-color: #7b1fa2;
+        }
+        .answer-key {
+            margin-top: 30px;
+            text-align: left;
+            display: none;
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #f9f9f9;
+        }
+        .answer-key h3 {
+            margin-top: 0;
+            text-align: center;
+            color: #333;
+        }
+        .answer-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .answer-item:last-child {
+            border-bottom: none;
+        }
+        .answer-number {
+            font-weight: bold;
+            color: #2196f3;
+        }
+        .answer-question {
+            margin: 5px 0;
+        }
+        .answer-correct {
+            color: #4caf50;
+            font-weight: bold;
+        }
+        .feedback {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: none;
+        }
+        .feedback.correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        .feedback.incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        .ranking-container {
+            display: none;
+            text-align: center;
+        }
+        .ranking-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .ranking-table th, .ranking-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .ranking-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .ranking-table tr:hover {
+            background-color: #f5f5f5;
+        }
+        .rank-1 {
+            color: #ffd700;
+            font-weight: bold;
+        }
+        .rank-2 {
+            color: #c0c0c0;
+            font-weight: bold;
+        }
+        .rank-3 {
+            color: #cd7f32;
+            font-weight: bold;
+        }
+        .back-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #607d8b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .back-button:hover {
+            background-color: #455a64;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="header">
+            <h1>Kuis Agama Islam</h1>
+            <div class="live-score">
+                <span class="correct-score">Benar: <span id="correct-count">0</span></span> | 
+                <span class="incorrect-score">Salah: <span id="incorrect-count">0</span></span>
+            </div>
+        </div>
+
+        <!-- Form Input Nama -->
+        <div id="name-form-container" class="name-form">
+            <h2>Selamat Datang di Kuis Agama Islam</h2>
+            <p>Silakan masukkan nama Anda untuk memulai kuis:</p>
+            <input type="text" id="player-name" placeholder="Masukkan nama Anda" maxlength="30">
+            <button id="start-quiz">Mulai Kuis</button>
+        </div>
+
+        <!-- Info Pemain -->
+        <div id="quiz-info" class="quiz-info hidden">
+            <div class="player-name">Pemain: <span id="current-player-name"></span></div>
+            <div>Pertanyaan: <span id="current-question">1</span> / 100</div>
+        </div>
+
+        <div class="progress hidden" id="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+
+        <div id="question-container" class="hidden">
+            <div class="question" id="question-text"></div>
+            <div class="options" id="options-container"></div>
+            <div class="feedback" id="feedback"></div>
+        </div>
+
+        <div class="score-container" id="score-container">
+            <h2>Hasil Kuis</h2>
+            <div class="score" id="score"></div>
+            <p id="score-message"></p>
+            <button class="answer-key-button" id="answer-key-button">Lihat Kunci Jawaban</button>
+            <button class="reset-button" id="reset-button">Ulangi Kuis</button>
+            <button class="ranking-button" id="ranking-button">Lihat Ranking</button>
+            <div class="answer-key" id="answer-key">
+                <h3>Kunci Jawaban</h3>
+                <div id="answer-list"></div>
+            </div>
+        </div>
+
+        <div class="ranking-container" id="ranking-container">
+            <h2>Ranking Pemain</h2>
+            <table class="ranking-table">
+                <thead>
+                    <tr>
+                        <th>Peringkat</th>
+                        <th>Nama</th>
+                        <th>Skor</th>
+                        <th>Tanggal</th>
+                    </tr>
+                </thead>
+                <tbody id="ranking-list">
+                    <!-- Data ranking akan diisi oleh JavaScript -->
+                </tbody>
+            </table>
+            <button class="back-button" id="back-to-score">Kembali ke Hasil</button>
+        </div>
+    </div>
+
+    <script>
+        // Data untuk semua pertanyaan
+        const questions = [
+            {
+                number: 1,
+                question: "Membaca syahadat dengan kesadaran adalah syarat utama masuk Islam.",
+                type: "true-false",
+                options: ["salah", "Benar"],
+                correctAnswer: "Benar"
+            },
+            {
+                number: 2,
+                question: "Huruf \"tha\" keluar dari tenggorokan bagian dalam (halq).",
+                type: "true-false",
+                options: ["salah", "benar"],
+                correctAnswer: "salah"
+            },
+            {
+                number: 3,
+                question: "Al-Qur'an diturunkan secara bertahap selama 33 tahun untuk memudahkan pemahaman umat.",
+                type: "true-false",
+                options: ["benar", "salah"],
+                correctAnswer: "salah"
+            },
+            {
+                number: 4,
+                question: "Surah Al-Fil mengisahkan kehancuran pasukan gajah yang menyerang Ka'bah.",
+                type: "true-false",
+                options: ["benar", "salah"],
+                correctAnswer: "benar"
+            },
+            {
+                number: 5,
+                question: "Tajwid wajib diterapkan saat membaca Al-Qur'an agar makna ayat tidak berubah.",
+                type: "true-false",
+                options: ["benar", "salah"],
+                correctAnswer: "benar"
+            },
+            {
+                number: 6,
+                question: "Nabi Sulaiman a.s. memiliki mukjizat menafsirkan mimpi dengan petunjuk Allah.",
+                type: "true-false",
+                options: ["salah", "benar"],
+                correctAnswer: "salah"
+            },
+            {
+                number: 7,
+                question: "Rukun Islam kelima adalah haji bagi muslim yang mampu secara fisik dan finansial.",
+                type: "true-false",
+                options: ["benar", "salah"],
+                correctAnswer: "benar"
+            },
+            {
+                number: 8,
+                question: "Huruf \"ra\" dalam \"الرَّحْمِ\" dibaca tipis (tarqiq) jika berharakat fathah.",
+                type: "true-false",
+                options: ["salah", "benar"],
+                correctAnswer: "salah"
+            },
+            {
+                number: 9,
+                question: "Takdir mubram, seperti waktu kematian, dapat diubah melalui doa dan ikhtiar.",
+                type: "true-false",
+                options: ["salah", "benar"],
+                correctAnswer: "salah"
+            },
+            {
+                number: 10,
+                question: "Asmaul Husna Ar Rahman berarti Allah Maha Perkasa dan tidak terkalahkan.",
+                type: "true-false",
+                options: ["benar", "salah"],
+                correctAnswer: "salah"
+            },
+            {
+                number: 11,
+                question: "Najis mughallazah dapat disucikan hanya dengan air biasa tanpa proses khusus.",
+                type: "true-false",
+                options: ["benar", "salah"],
+                correctAnswer: "salah"
+            },
+            {
+                number: 12,
+                question: "Nabi Isa a.s. diberi mukjizat menghidupkan orang mati atas izin Allah.",
+                type: "true-false",
+                options: ["salah", "benar"],
+                correctAnswer: "benar"
+            },
+            {
+                number: 13,
+                question: "Puasa Senin-Kamis termasuk puasa wajib bagi setiap muslim baligh.",
+                type: "true-false",
+                options: ["salah", "benar"],
+                correctAnswer: "salah"
+            },
+            {
+                number: 14,
+                question: "Surah Al-Ikhlash terdiri dari 4 ayat yang menjelaskan keesaan Allah.",
+                type: "true-false",
+                options: ["salah", "benar"],
+                correctAnswer: "benar"
+            },
+            {
+                number: 15,
+                question: "Hukum idzhar terjadi saat nun sukun bertemu ba, menghasilkan suara \"m\" dengan dengung.",
+                type: "true-false",
+                options: ["benar", "salah"],
+                correctAnswer: "salah"
+            },
+            {
+                number: 16,
+                question: "Khalifah Ali bin Abi Talib dikenal sebagai ahli fiqih dan digelari Babul Ilmi.",
+                type: "true-false",
+                options: ["salah", "benar"],
+                correctAnswer: "benar"
+            },
+            {
+                number: 17,
+                question: "Wudu menjadi batal jika seseorang tertawa keras.",
+                type: "true-false",
+                options: ["benar", "salah"],
+                correctAnswer: "salah"
+            },
+            {
+                number: 18,
+                question: "Harakat kasrah pada huruf hijaiyah menghasilkan bunyi \"u\".",
+                type: "true-false",
+                options: ["salah", "benar"],
+                correctAnswer: "salah"
+            },
+            {
+                number: 19,
+                question: "Asma Al-Baqi menunjukkan Allah Maha Kekal selamanya.",
+                type: "true-false",
+                options: ["benar", "salah"],
+                correctAnswer: "benar"
+            },
+            {
+                number: 20,
+                question: "Sabun adalah akhlak terpuji karena mencerminkan kebersihan hati.",
+                type: "true-false",
+                options: ["benar", "salah"],
+                correctAnswer: "salah"
+            },
+            {
+                number: 21,
+                question: "Jika seseorang membaca Al-Qur'an tanpa tajwid hingga mengubah makna ayat, hukumnya…",
+                type: "multiple-choice",
+                options: [
+                    "Dilarang keras karena dosa besar",
+                    "Diperbolehkan jika tidak disengaja",
+                    "Sah tetapi kurang sempurna",
+                    "Tidak sah dan harus diulang"
+                ],
+                correctAnswer: "Dilarang keras karena dosa besar"
+            },
+            {
+                number: 22,
+                question: "Manakah contoh idgham bilaghunnah berikut ini?",
+                type: "multiple-choice",
+                options: [
+                    "سَمِيعٌ عَلِيمٌ",
+                    "مَن يَقُولُ",
+                    "غَفُورٌ رَحِيمٌ",
+                    "مِنْ وَلِيٍّ"
+                ],
+                correctAnswer: "غَفُورٌ رَحِيمٌ"
+            },
+            {
+                number: 23,
+                question: "Pesan utama Surah Al-Falaq dalam kehidupan sehari-hari adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Mendorong kedermawanan kepada fakir miskin",
+                    "Memohon perlindungan dari kejahatan makhluk",
+                    "Menegaskan keesaan Allah tanpa sekutu",
+                    "Menekankan pentingnya salat tepat waktu"
+                ],
+                correctAnswer: "Memohon perlindungan dari kejahatan makhluk"
+            },
+            {
+                number: 24,
+                question: "Nabi yang menerima kitab Taurat untuk membimbing umatnya adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Nabi Yusuf a.s. untuk menafsirkan mimpi",
+                    "Nabi Ibrahim a.s. untuk melawan Namrud",
+                    "Nabi Musa a.s. untuk Bani Israil",
+                    "Nabi Isa a.s. untuk menyebarkan Injil"
+                ],
+                correctAnswer: "Nabi Musa a.s. untuk Bani Israil"
+            },
+            {
+                number: 25,
+                question: "Ayat: يَا أَيُّهَا النَّاسُ إِنَّا خَلَقْنَاكُمْ مِنْ ذَكَرٍ وَأُنْثَىٰ (Al-Hujurat:13) Hukum mim mati pada \"خَلَقْنَاكُمْ مِنْ\" adalah...",
+                type: "multiple-choice",
+                options: [
+                    "Izhar halqi karena nun sukun bertemu ha",
+                    "Ikhfa syafawi karena mim sukun bertemu ba",
+                    "Idgham mimi karena mim sukun bertemu mim",
+                    "Idgham bighunnah karena nun sukun bertemu lam"
+                ],
+                correctAnswer: "Izhar halqi karena nun sukun bertemu ha"
+            },
+            {
+                number: 26,
+                question: "Hikmah menjaga kebersihan diri menurut ajaran Islam adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Mengurangi kenyamanan hidup sehari-hari",
+                    "Menimbulkan penyakit untuk ujian iman",
+                    "Merusak lingkungan dengan limbah sabun",
+                    "Menjaga kesehatan dan mendukung ibadah"
+                ],
+                correctAnswer: "Menjaga kesehatan dan mendukung ibadah"
+            },
+            {
+                number: 27,
+                question: "Gelar Babul Ilmi diberikan kepada Khalifah…",
+                type: "multiple-choice",
+                options: [
+                    "Utsman bin Affan karena kedermawanannya",
+                    "Ali bin Abi Talib karena ilmunya",
+                    "Umar bin Khattab karena keadilannya",
+                    "Abu Bakar karena kejujurannya"
+                ],
+                correctAnswer: "Ali bin Abi Talib karena ilmunya"
+            },
+            {
+                number: 28,
+                question: "Mukjizat Nabi Adam a.s. yang menunjukkan keistimewaannya adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Menafsirkan mimpi dengan petunjuk Allah",
+                    "Membelah laut untuk menyelamatkan kaumnya",
+                    "Diciptakan tanpa ayah dan ibu oleh Allah",
+                    "Menyembuhkan orang sakit dengan doa"
+                ],
+                correctAnswer: "Diciptakan tanpa ayah dan ibu oleh Allah"
+            },
+            {
+                number: 29,
+                question: "Apa arti Surah Al-Ma'un dan pelajaran utamanya?",
+                type: "multiple-choice",
+                options: [
+                    "Barang bermanfaat, mengajarkan kepedulian sosial",
+                    "Keikhlasan, menekankan ibadah yang tulus",
+                    "Cahaya, menjelaskan keimanan sejati",
+                    "Manusia, meminta perlindungan dari godaan"
+                ],
+                correctAnswer: "Barang bermanfaat, mengajarkan kepedulian sosial"
+            },
+            {
+                number: 30,
+                question: "Hukum tajwid pada \"رَبِّ الْفَلَقِ\" dalam Q.S. Al-Falaq ayat 1 adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Qolqolah karena huruf qof di akhir ayat",
+                    "Ikhfa karena nun sukun bertemu fa",
+                    "Izhar syafawi karena mim sukun bertemu lam",
+                    "Idgham bighunnah karena nun sukun bertemu ba"
+                ],
+                correctAnswer: "Qolqolah karena huruf qof di akhir ayat"
+            },
+            {
+                number: 31,
+                question: "Puasa sunnah yang dilakukan sehari berpuasa dan sehari tidak adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Puasa Daud sebagai bentuk ibadah nabi",
+                    "Puasa Asyura untuk menghapus dosa kecil",
+                    "Puasa Syawal untuk melengkapi Ramadan",
+                    "Puasa Arafah untuk keutamaan haji"
+                ],
+                correctAnswer: "Puasa Daud sebagai bentuk ibadah nabi"
+            },
+            {
+                number: 32,
+                question: "Asmaul Husna Al-Baqi menunjukkan bahwa Allah…",
+                type: "multiple-choice",
+                options: [
+                    "Maha Pengasih kepada semua makhluk",
+                    "Maha Perkasa dalam segala kuasa",
+                    "Maha Penyayang kepada hamba-Nya",
+                    "Maha Kekal dan tidak pernah lenyap"
+                ],
+                correctAnswer: "Maha Kekal dan tidak pernah lenyap"
+            },
+            {
+                number: 33,
+                question: "Taharah dalam Islam berarti…",
+                type: "multiple-choice",
+                options: [
+                    "Bersuci dari hadas dan najis untuk ibadah",
+                    "Membaca Al-Qur'an dengan tartil setiap hari",
+                    "Melaksanakan salat lima waktu dengan khusyuk",
+                    "Menjaga lingkungan dari polusi dan sampah"
+                ],
+                correctAnswer: "Bersuci dari hadas dan najis untuk ibadah"
+            },
+            {
+                number: 34,
+                question: "Contoh takdir mubram yang tidak dapat diubah adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Kesuksesan seseorang dalam pendidikan",
+                    "Kesehatan seseorang melalui pola hidup",
+                    "Rezeki seseorang melalui usaha keras",
+                    "Kelahiran seseorang di waktu tertentu"
+                ],
+                correctAnswer: "Kelahiran seseorang di waktu tertentu"
+            },
+            {
+                number: 35,
+                question: "Huruf hijaiyah dengan harakat fathah dibaca dengan bunyi…",
+                type: "multiple-choice",
+                options: [
+                    "u seperti pada harakat dammah",
+                    "e seperti pada huruf ya",
+                    "i seperti pada harakat kasrah",
+                    "a seperti pada huruf alif"
+                ],
+                correctAnswer: "a seperti pada huruf alif"
+            },
+            {
+                number: 36,
+                question: "Khalifah Abu Bakar berjasa dalam menjaga persatuan umat Islam dengan…",
+                type: "multiple-choice",
+                options: [
+                    "Memerangi kaum murtad dan menegakkan zakat",
+                    "Menyusun kalender Hijriyah untuk ibadah",
+                    "Menyusun mushaf Al-Qur'an secara resmi",
+                    "Membentuk angkatan laut untuk ekspansi"
+                ],
+                correctAnswer: "Memerangi kaum murtad dan menegakkan zakat"
+            },
+            {
+                number: 37,
+                question: "Pengumpulan Al-Qur'an menjadi mushaf pertama kali dimulai pada masa…",
+                type: "multiple-choice",
+                options: [
+                    "Khalifah Abu Bakar untuk mencegah hilangnya ayat",
+                    "Khalifah Utsman bin Affan untuk standarisasi",
+                    "Khalifah Ali bin Abi Talib untuk pendidikan",
+                    "Khalifah Umar bin Khattab untuk keadilan"
+                ],
+                correctAnswer: "Khalifah Abu Bakar untuk mencegah hilangnya ayat"
+            },
+            {
+                number: 38,
+                question: "Lingkungan biotik yang harus dijaga menurut Islam mencakup…",
+                type: "multiple-choice",
+                options: [
+                    "Bangunan dan infrastruktur kota",
+                    "Makhluk hidup seperti manusia dan tumbuhan",
+                    "Sumber energi seperti listrik dan gas",
+                    "Benda mati seperti udara dan cahaya matahari"
+                ],
+                correctAnswer: "Makhluk hidup seperti manusia dan tumbuhan"
+            },
+            {
+                number: 39,
+                question: "Cara menjaga kebersihan diri yang sesuai ajaran Islam adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Mengucapkan hamdalah setelah makan",
+                    "Mandi dengan sabun untuk menghilangkan kotoran",
+                    "Membaca syahadat untuk kesucian hati",
+                    "Menghafal Asmaul Husna untuk iman"
+                ],
+                correctAnswer: "Mandi dengan sabun untuk menghilangkan kotoran"
+            },
+            {
+                number: 40,
+                question: "Dalam Q.S. Al-Ma'un ayat 5, \"الَّذِينَ هُمْ عَنْ صَلَاتِهِمْ سَاهُونَ\" memiliki hukum tajwid…",
+                type: "multiple-choice",
+                options: [
+                    "Idgham bighunnah dan mad wajib muttasil",
+                    "ikhfa dan idzhar syafawi",
+                    "Idgham bilaghunnah dan qalqalah",
+                    "Izhar halqi dan izhar syafawi"
+                ],
+                correctAnswer: "Izhar halqi dan izhar syafawi"
+            },
+            {
+                number: 41,
+                question: "Puasa Arafah dilakukan pada tanggal…",
+                type: "multiple-choice",
+                options: [
+                    "Enam hari setelah Idulfitri untuk Syawal",
+                    "13, 14, 15 bulan kamariah untuk Ayyamul Bid",
+                    "9 Zulhijjah untuk keutamaan haji",
+                    "10 Muharram untuk memperingati Asyura"
+                ],
+                correctAnswer: "9 Zulhijjah untuk keutamaan haji"
+            },
+            {
+                number: 42,
+                question: "Nabi yang selamat dari kobaran api sebagai mukjizat adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Nabi Ibrahim a.s. yang menentang Namrud",
+                    "Nabi Nuh a.s. yang membangun bahtera",
+                    "Nabi Musa a.s. yang membelah laut",
+                    "Nabi Isa a.s. yang menghidupkan orang mati"
+                ],
+                correctAnswer: "Nabi Ibrahim a.s. yang menentang Namrud"
+            },
+            {
+                number: 43,
+                question: "Arti kalimat \"Subhanallah\" yang diucapkan saat melihat keajaiban Allah adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Tiada Tuhan yang berhak disembah kecuali Allah",
+                    "Segala puji hanya milik Allah",
+                    "Allah Maha Besar dalam kekuasaan",
+                    "Maha Suci Allah dari segala kekurangan"
+                ],
+                correctAnswer: "Maha Suci Allah dari segala kekurangan"
+            },
+            {
+                number: 44,
+                question: "Huruf hijaiyah dengan tasydid harus dibaca…",
+                type: "multiple-choice",
+                options: [
+                    "Dobel dengan penekanan suara",
+                    "Pendek dengan getaran qalqalah",
+                    "Mati tanpa bunyi vokal",
+                    "Panjang seperti hukum mad"
+                ],
+                correctAnswer: "Dobel dengan penekanan suara"
+            },
+            {
+                number: 45,
+                question: "Najis menurut ajaran Islam adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Tanda baca huruf hijaiyah seperti fathah",
+                    "Kotoran fisik yang harus disucikan",
+                    "Keadaan yang menghalangi sahnya salat",
+                    "Perbuatan dosa yang merusak hati"
+                ],
+                correctAnswer: "Kotoran fisik yang harus disucikan"
+            },
+            {
+                number: 46,
+                question: "Qada dalam ajaran Islam merujuk pada…",
+                type: "multiple-choice",
+                options: [
+                    "Doa untuk meminta keselamatan akhirat",
+                    "Usaha manusia untuk mengubah nasibnya",
+                    "Perwujudan ketetapan Allah di alam semesta",
+                    "Ketetapan Allah sejak azali sebelum terjadi"
+                ],
+                correctAnswer: "Perwujudan ketetapan Allah di alam semesta"
+            },
+            {
+                number: 47,
+                question: "Khalifah Ali bin Abi Talib digelari…",
+                type: "multiple-choice",
+                options: [
+                    "Babul Ilmi karena ilmunya yang luas",
+                    "Al-Hakim karena kebijaksanaannya",
+                    "Al-Faruq karena keadilannya",
+                    "Al-Shiddiq karena kejujurannya"
+                ],
+                correctAnswer: "Babul Ilmi karena ilmunya yang luas"
+            },
+            {
+                number: 48,
+                question: "Surah Al-Fil termasuk surah Makkiyah karena…",
+                type: "multiple-choice",
+                options: [
+                    "Memiliki ayat-ayat yang rumit dipahami",
+                    "Berisi perintah keadilan sosial",
+                    "Diturunkan di Makkah sebelum hijrah",
+                    "Diturunkan di Madinah setelah hijrah"
+                ],
+                correctAnswer: "Diturunkan di Makkah sebelum hijrah"
+            },
+            {
+                number: 49,
+                question: "Langkah terakhir dalam wudu yang benar adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Membasuh tangan hingga siku",
+                    "Membasuh muka untuk kesucian wajah",
+                    "Membasuh kaki hingga mata kaki",
+                    "Mengusap kepala dengan air secukupnya"
+                ],
+                correctAnswer: "Membasuh kaki hingga mata kaki"
+            },
+            {
+                number: 50,
+                question: "Rukun iman keempat yang wajib diyakini seorang muslim adalah iman kepada…",
+                type: "multiple-choice",
+                options: [
+                    "Kitab-kitab Allah yang diturunkan",
+                    "Nabi dan rasul yang diutus Allah",
+                    "Malaikat-malaikat Allah sebagai perantara",
+                    "Hari kiamat sebagai akhir kehidupan"
+                ],
+                correctAnswer: "Nabi dan rasul yang diutus Allah"
+            },
+            {
+                number: 51,
+                question: "Jika seseorang memberikan sedekah untuk pamer, apakah sedekahnya diterima Allah?",
+                type: "multiple-choice",
+                options: [
+                    "Diterima jika diberikan kepada mustahik",
+                    "Tidak diterima karena riya",
+                    "Diterima jika jumlahnya besar",
+                    "Tidak diterima kecuali untuk haji"
+                ],
+                correctAnswer: "Tidak diterima karena riya"
+            },
+            {
+                number: 52,
+                question: "Dalam Q.S. Al-Ikhlash ayat 2, \"اللَّهُ الصَّمَدُ\" menunjukkan sifat Allah sebagai…",
+                type: "multiple-choice",
+                options: [
+                    "Maha Pengasih kepada semua ciptaan",
+                    "Maha Penyayang hanya kepada mukmin",
+                    "Maha Perkasa dalam segala kuasa",
+                    "Tempat bergantung segala makhluk"
+                ],
+                correctAnswer: "Tempat bergantung segala makhluk"
+            },
+            {
+                number: 53,
+                question: "Hikmah wudu sebelum salat menurut Islam adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Mengurangi ketakwaan karena kesulitan",
+                    "Menimbulkan kemalasan dalam beribadah",
+                    "Membersihkan hati dan badan untuk ibadah",
+                    "Menjauhkan diri dari ketaatan kepada Allah"
+                ],
+                correctAnswer: "Membersihkan hati dan badan untuk ibadah"
+            },
+            {
+                number: 54,
+                question: "Huruf hijaiyah \"sin\" keluar dari…",
+                type: "multiple-choice",
+                options: [
+                    "Tenggorokan bagian dalam (halq)",
+                    "Bibir atas dan bawah yang rapat",
+                    "Ujung lidah yang menyentuh gigi atas",
+                    "Rongga hidung dengan getaran suara"
+                ],
+                correctAnswer: "Ujung lidah yang menyentuh gigi atas"
+            },
+            {
+                number: 55,
+                question: "Khalifah yang memperluas Masjid Nabawi untuk menampung jamaah adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Abu Bakar untuk menjaga persatuan umat",
+                    "Umar bin Khattab untuk kebutuhan ibadah",
+                    "Utsman bin Affan untuk standarisasi mushaf",
+                    "Ali bin Abi Talib untuk pendidikan umat"
+                ],
+                correctAnswer: "Umar bin Khattab untuk kebutuhan ibadah"
+            },
+            {
+                number: 56,
+                question: "Qadar dalam Islam merujuk pada…",
+                type: "multiple-choice",
+                options: [
+                    "Ketetapan Allah sejak azali sebelum terjadi",
+                    "Perwujudan ketetapan Allah di alam semesta",
+                    "Doa untuk meminta rezeki berlimpah",
+                    "Usaha manusia untuk mengubah nasibnya"
+                ],
+                correctAnswer: "Ketetapan Allah sejak azali sebelum terjadi"
+            },
+            {
+                number: 57,
+                question: "Hukum tajwid pada \"إِلَٰهِ النَّاسِ\" dalam Q.S. An-Nas ayat 3 adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Ghunnah, karena nun tasydid",
+                    "Idgham bighunnah, karena tanwin bertemu huruf nun",
+                    "Izhar halqi, karena tanwin bertemu huruf halqi",
+                    "Idgham bilaghunnah, karena tanwin bertemu lam"
+                ],
+                correctAnswer: "Izhar halqi, karena tanwin bertemu huruf halqi"
+            },
+            {
+                number: 58,
+                question: "Huruf hijaiyah yang tidak bisa disambung dengan huruf setelahnya adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Alif karena bentuknya tetap",
+                    "Mim karena selalu di tengah kata",
+                    "Ra karena bisa dibaca tebal atau tipis",
+                    "Nun karena memiliki sifat ghunnah"
+                ],
+                correctAnswer: "Alif karena bentuknya tetap"
+            },
+            {
+                number: 59,
+                question: "Khalifah Umar bin Khattab berjasa dalam…",
+                type: "multiple-choice",
+                options: [
+                    "Menyusun kalender Hijriyah untuk ibadah",
+                    "Menyusun mushaf Al-Qur'an secara resmi",
+                    "Menulis ilmu nahwu untuk Al-Qur'an",
+                    "Membentuk angkatan laut untuk ekspansi"
+                ],
+                correctAnswer: "Menyusun kalender Hijriyah untuk ibadah"
+            },
+            {
+                number: 60,
+                question: "Asmaul Husna Al-'Aziz berarti Allah yang…",
+                type: "multiple-choice",
+                options: [
+                    "Maha Pencipta segala sesuatu",
+                    "Maha Pengampun terhadap dosa hamba",
+                    "Maha Penyayang kepada semua makhluk",
+                    "Maha Perkasa dan tidak terkalahkan"
+                ],
+                correctAnswer: "Maha Perkasa dan tidak terkalahkan"
+            },
+            {
+                number: 61,
+                question: "Dalam Q.S. Al-Fil ayat 1, \"أَلَمْ تَرَ كَيْفَ فَعَلَ رَبُّكَ\" mengisahkan…",
+                type: "multiple-choice",
+                options: [
+                    "Kehancuran pasukan gajah oleh burung ababil",
+                    "Keutamaan bersedekah kepada fakir miskin",
+                    "Keesaan Allah yang tidak bersekutu",
+                    "Perintah menjaga salat lima waktu"
+                ],
+                correctAnswer: "Kehancuran pasukan gajah oleh burung ababil"
+            },
+            {
+                number: 62,
+                question: "Hibah dalam Islam adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Pemberian untuk membiayai ibadah haji",
+                    "Pemberian wajib kepada 8 golongan mustahik",
+                    "Pemberian untuk kepentingan umum masyarakat",
+                    "Pemberian sukarela untuk hubungan baik"
+                ],
+                correctAnswer: "Pemberian sukarela untuk hubungan baik"
+            },
+            {
+                number: 63,
+                question: "Mukjizat Nabi Yusuf a.s. yang membantu memimpin Mesir adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Membelah laut untuk menyelamatkan umat",
+                    "Menyembuhkan orang sakit dengan doa",
+                    "Selamat dari api sebagai tanda kenabian",
+                    "Menafsirkan mimpi dengan petunjuk Allah"
+                ],
+                correctAnswer: "Menafsirkan mimpi dengan petunjuk Allah"
+            },
+            {
+                number: 64,
+                question: "Huruf hijaiyah \"qaf\" keluar dari…",
+                type: "multiple-choice",
+                options: [
+                    "Ujung lidah yang menyentuh gigi atas",
+                    "Tenggorokan bagian terdalam (halq)",
+                    "Rongga hidung dengan suara dengung",
+                    "Bibir bawah yang menyentuh gigi atas"
+                ],
+                correctAnswer: "Tenggorokan bagian terdalam (halq)"
+            },
+            {
+                number: 65,
+                question: "Tayamum dilakukan menggunakan…",
+                type: "multiple-choice",
+                options: [
+                    "Air bersih untuk menghilangkan hadas",
+                    "Sabun untuk membersihkan badan",
+                    "Daun kering sebagai pengganti air",
+                    "Debu suci saat tidak ada air"
+                ],
+                correctAnswer: "Debu suci saat tidak ada air"
+            },
+            {
+                number: 66,
+                question: "Khalifah Utsman bin Affan berjasa dalam…",
+                type: "multiple-choice",
+                options: [
+                    "Menstandarisasi mushaf Al-Qur'an",
+                    "Memajukan ilmu fiqih untuk hukum Islam",
+                    "Menyusun kalender Hijriyah untuk ibadah",
+                    "Menulis ilmu nahwu untuk tata bahasa"
+                ],
+                correctAnswer: "Menstandarisasi mushaf Al-Qur'an"
+            },
+            {
+                number: 67,
+                question: "Seorang siswa membaca Surah An-Nas: مِنْ شَرِّ الْوَسْوَاسِ dengan menggabungkan \"مِنْ شَرِّ\" seolah-olah ada idgham. Kesalahannya adalah...",
+                type: "multiple-choice",
+                options: [
+                    "Tidak ada kesalahan",
+                    "Ada idgham karena mim mati bertemu syin",
+                    "Termasuk qalqalah kubra",
+                    "Tidak ada idgham karena nun mati bertemu syin"
+                ],
+                correctAnswer: "Tidak ada idgham karena nun mati bertemu syin"
+            },
+            {
+                number: 68,
+                question: "Akhlak mazmumah ditunjukkan oleh perilaku…",
+                type: "multiple-choice",
+                options: [
+                    "Sabar dalam menghadapi cobaan",
+                    "Sombong dan berbohong",
+                    "Jujur dan menjaga amanah",
+                    "Dermawan kepada fakir miskin"
+                ],
+                correctAnswer: "Sombong dan berbohong"
+            },
+            {
+                number: 69,
+                question: "Lingkungan abiotik yang harus dijaga menurut Islam mencakup…",
+                type: "multiple-choice",
+                options: [
+                    "Bangunan dan jalan di perkotaan",
+                    "Manusia dan komunitas sosial",
+                    "Makhluk hidup seperti hewan dan tumbuhan",
+                    "Benda mati seperti air dan udara"
+                ],
+                correctAnswer: "Benda mati seperti air dan udara"
+            },
+            {
+                number: 70,
+                question: "Hukum tajwid pada \" مِنْ نِّعْمَةٍ  \" adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Iqlab karena nun sukun bertemu ba",
+                    "Ikhfa karena nun sukun bertemu fa",
+                    "Izhar halqi karena nun sukun bertemu ha",
+                    "Idgham bighunnah karena nun sukun bertemu nun"
+                ],
+                correctAnswer: "Idgham bighunnah karena nun sukun bertemu nun"
+            },
+            {
+                number: 71,
+                question: "Puasa Asyura dilakukan pada tanggal…",
+                type: "multiple-choice",
+                options: [
+                    "13, 14, 15 bulan kamariah untuk Ayyamul Bid",
+                    "Enam hari setelah Idulfitri untuk Syawal",
+                    "10 Muharram untuk menghapus dosa kecil",
+                    "9 Zulhijjah untuk keutamaan haji"
+                ],
+                correctAnswer: "10 Muharram untuk menghapus dosa kecil"
+            },
+            {
+                number: 72,
+                question: "Di sekolah, guru menunjuk kata \"فَاسْتَجِبْ لِي\" dan bertanya tentang hukum bacaan huruf ba (ب) jika berhenti, tidak melanjutkan ke \"لِي\", maka huruf ba termasuk qalqalah apa?",
+                type: "multiple-choice",
+                options: [
+                    "Qalqalah sughra",
+                    "Tidak ada qalqalah",
+                    "Ikhfa'",
+                    "Qalqalah kubra"
+                ],
+                correctAnswer: "Qalqalah kubra"
+            },
+            {
+                number: 73,
+                question: "Halal menurut ajaran Islam adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Sesuatu yang makruh karena sulit",
+                    "Sesuatu yang diperbolehkan oleh syariat",
+                    "Sesuatu yang dilarang karena merugikan",
+                    "Sesuatu yang wajib dilakukan setiap hari"
+                ],
+                correctAnswer: "Sesuatu yang diperbolehkan oleh syariat"
+            },
+            {
+                number: 74,
+                question: "Manfaat menjaga lingkungan menurut Islam adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Menimbulkan polusi untuk pembangunan",
+                    "Menjaga keseimbangan ekosistem sebagai amanah",
+                    "Merusak keindahan alam untuk keuntungan",
+                    "Mengurangi kesehatan masyarakat sekitar"
+                ],
+                correctAnswer: "Menjaga keseimbangan ekosistem sebagai amanah"
+            },
+            {
+                number: 75,
+                question: "Asmaul Husna Al-Mu'min berarti Allah yang…",
+                type: "multiple-choice",
+                options: [
+                    "Maha Pencipta segala sesuatu",
+                    "Maha Pemberi rasa aman kepada hamba",
+                    "Maha Perkasa dalam segala kuasa",
+                    "Maha Penyayang kepada yang beriman"
+                ],
+                correctAnswer: "Maha Pemberi rasa aman kepada hamba"
+            },
+            {
+                number: 76,
+                question: "Dalam Q.S. Al-Baqarah ayat 186, \"وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ\" menunjukkan sifat Allah…",
+                type: "multiple-choice",
+                options: [
+                    "Maha Pengampun terhadap dosa",
+                    "Maha Perkasa dalam menghukum",
+                    "Maha Dekat yang mengabulkan doa",
+                    "Maha Pengasih kepada semua makhluk"
+                ],
+                correctAnswer: "Maha Dekat yang mengabulkan doa"
+            },
+            {
+                number: 77,
+                question: "Rukun wudu yang wajib dilakukan adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Menghafal Al-Qur'an untuk keimanan",
+                    "Mengucapkan syahadat setelah selesai",
+                    "Membasuh tangan hingga siku dua kali",
+                    "Membaca basmalah sebelum memulai"
+                ],
+                correctAnswer: "Membaca basmalah sebelum memulai"
+            },
+            {
+                number: 78,
+                question: "Harga 1 kg beras di daerah Amir adalah Rp14.000. Jika Amir ingin membayar zakat fitrah dengan uang, berapa total uang yang harus ia bayarkan untuk dirinya sendiri?",
+                type: "multiple-choice",
+                options: [
+                    "Rp40.000",
+                    "Rp35.000",
+                    "Rp36.000",
+                    "Rp37.000"
+                ],
+                correctAnswer: "Rp35.000"
+            },
+            {
+                number: 79,
+                question: "Perhatikan huruf hijaiyah: ب ت ث. Manakah yang termasuk huruf qalqalah?",
+                type: "multiple-choice",
+                options: [
+                    "Tidak ada",
+                    "ث",
+                    "ت",
+                    "ب"
+                ],
+                correctAnswer: "Tidak ada"
+            },
+            {
+                number: 80,
+                question: "Hikmah puasa menurut Q.S. Al-Baqarah ayat 183 adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Mengurangi kesehatan untuk ujian iman",
+                    "Menjauhkan diri dari nikmat Allah",
+                    "Meningkatkan ketakwaan melalui pengendalian",
+                    "Menimbulkan kemalasan dalam ibadah"
+                ],
+                correctAnswer: "Meningkatkan ketakwaan melalui pengendalian"
+            },
+            {
+                number: 81,
+                question: "Khalifah Umar bin Khattab berjasa dalam…",
+                type: "multiple-choice",
+                options: [
+                    "Memperluas Masjidil Haram di Makkah",
+                    "Menulis ilmu nahwu untuk Al-Qur'an",
+                    "Menyusun mushaf Al-Qur'an secara resmi",
+                    "Membentuk sistem perbendaharaan negara"
+                ],
+                correctAnswer: "Membentuk sistem perbendaharaan negara"
+            },
+            {
+                number: 82,
+                question: "Asmaul Husna Al-Wahhab berarti Allah yang…",
+                type: "multiple-choice",
+                options: [
+                    "Maha Pemberi karunia tanpa pamrih",
+                    "Maha Pengampun terhadap dosa hamba",
+                    "Maha Penyayang kepada semua makhluk",
+                    "Maha Perkasa dalam segala kuasa"
+                ],
+                correctAnswer: "Maha Pemberi karunia tanpa pamrih"
+            },
+            {
+                number: 83,
+                question: "Ayat: إِنَّ أَكْرَمَكُمْ عِندَ اللَّهِ أَتْقَاكُمْ Hukum qalqalah pada \"أَتْقَاكُمْ\" adalah...",
+                type: "multiple-choice",
+                options: [
+                    "Qalqalah kubra",
+                    "Qalqalah sughra",
+                    "Tidak ada",
+                    "Idgham"
+                ],
+                correctAnswer: "Qalqalah sughra"
+            },
+            {
+                number: 84,
+                question: "Zakat wajib diberikan kepada…",
+                type: "multiple-choice",
+                options: [
+                    "8 golongan mustahik sesuai syariat",
+                    "Keluarga dekat untuk hubungan baik",
+                    "Panitia haji untuk biaya ibadah",
+                    "Siapa saja yang membutuhkan bantuan"
+                ],
+                correctAnswer: "8 golongan mustahik sesuai syariat"
+            },
+            {
+                number: 85,
+                question: "Nabi Musa a.s. menerima wahyu dari Allah di…",
+                type: "multiple-choice",
+                options: [
+                    "Masjidil Haram saat berdoa",
+                    "Bukit Tursina saat menerima Taurat",
+                    "Gua Hira saat menerima Al-Qur'an",
+                    "Jabal Rahmah saat melaksanakan haji"
+                ],
+                correctAnswer: "Bukit Tursina saat menerima Taurat"
+            },
+            {
+                number: 86,
+                question: "Huruf hijaiyah \"kha\" keluar dari…",
+                type: "multiple-choice",
+                options: [
+                    "Ujung lidah yang menyentuh gigi atas",
+                    "Bibir bawah yang menyentuh gigi atas",
+                    "Rongga hidung dengan suara dengung",
+                    "Tenggorokan bagian tengah (halq)"
+                ],
+                correctAnswer: "Tenggorokan bagian tengah (halq)"
+            },
+            {
+                number: 87,
+                question: "Syahadat dalam Islam adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Doa sebelum memulai kegiatan ibadah",
+                    "Kesaksian tiada Tuhan selain Allah dan Muhammad utusan-Nya",
+                    "Puji syukur atas nikmat dari Allah",
+                    "Perintah untuk berdakwah kepada umat"
+                ],
+                correctAnswer: "Kesaksian tiada Tuhan selain Allah dan Muhammad utusan-Nya"
+            },
+            {
+                number: 88,
+                question: "Keutamaan puasa Syawal menurut hadis adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Seperti berpuasa setahun penuh",
+                    "Menimbulkan kesombongan dalam ibadah",
+                    "Mengurangi ketakwaan jika sulit",
+                    "Menghapus dosa kecil selama setahun"
+                ],
+                correctAnswer: "Seperti berpuasa setahun penuh"
+            },
+            {
+                number: 89,
+                question: "Asmaul Husna Al-Quddus berarti Allah yang…",
+                type: "multiple-choice",
+                options: [
+                    "Maha Perkasa dalam segala kuasa",
+                    "Maha Suci dari segala kekurangan",
+                    "Maha Penyayang kepada hamba beriman",
+                    "Maha Pengasih kepada semua makhluk"
+                ],
+                correctAnswer: "Maha Suci dari segala kekurangan"
+            },
+            {
+                number: 90,
+                question: "Dalam Q.S. Al-Ma'un ayat 6, \"الَّذِينَ هُمْ يُرَاءُونَ\" mengkritik orang yang…",
+                type: "multiple-choice",
+                options: [
+                    "Tidak berpuasa di bulan Ramadan",
+                    "Beribadah dengan riya untuk dilihat orang",
+                    "Tidak melaksanakan salat lima waktu",
+                    "Tidak bersedekah kepada fakir miskin"
+                ],
+                correctAnswer: "Beribadah dengan riya untuk dilihat orang"
+            },
+            {
+                number: 91,
+                question: "Mad arid lissukun terjadi jika…",
+                type: "multiple-choice",
+                options: [
+                    "Huruf mad diikuti huruf yang dibaca sukun di akhir kalimat",
+                    "Huruf mad diikuti huruf tanpa harakat",
+                    "Huruf mad diikuti huruf bertasydid",
+                    "Huruf mad diikuti hamzah dalam satu kata"
+                ],
+                correctAnswer: "Huruf mad diikuti huruf yang dibaca sukun di akhir kalimat"
+            },
+            {
+                number: 92,
+                question: "Manfaat menjaga kebersihan lingkungan menurut Islam adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Merusak keindahan alam untuk keuntungan",
+                    "Menjaga keseimbangan ekosistem sebagai amanah",
+                    "Menimbulkan polusi untuk pembangunan",
+                    "Mengurangi kesehatan masyarakat sekitar"
+                ],
+                correctAnswer: "Menjaga keseimbangan ekosistem sebagai amanah"
+            },
+            {
+                number: 93,
+                question: "Taubat nasuha menurut Islam adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Melakukan salat sunnah untuk keimanan",
+                    "Penyesalan sungguh-sungguh dan tidak mengulangi dosa",
+                    "Meminta maaf kepada orang lain atas kesalahan",
+                    "Membaca Al-Qur'an dengan tartil setiap hari"
+                ],
+                correctAnswer: "Penyesalan sungguh-sungguh dan tidak mengulangi dosa"
+            },
+            {
+                number: 94,
+                question: "Puasa Daud dilakukan dengan pola…",
+                type: "multiple-choice",
+                options: [
+                    "Tanggal 9 Zulhijjah untuk haji",
+                    "Enam hari berturut-turut setelah Idulfitri",
+                    "Tanggal 10 Muharram setiap tahun",
+                    "Sehari berpuasa dan sehari tidak"
+                ],
+                correctAnswer: "Sehari berpuasa dan sehari tidak"
+            },
+            {
+                number: 95,
+                question: "Ayat: لَقَدْ خَلَقْنَا الْإِنسَانَ فِي أَحْسَنِ تَقْوِيمٍ (At-Tin: 4) Hukum لَقَدْ adalah...",
+                type: "multiple-choice",
+                options: [
+                    "Izhar syafawi",
+                    "Qolqolah",
+                    "Idgham mimi",
+                    "Tidak ada"
+                ],
+                correctAnswer: "Qolqolah"
+            },
+            {
+                number: 96,
+                question: "Rukun salat yang wajib dilakukan agar salat sah adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Membaca Al-Qur'an dengan tartil",
+                    "Mengucapkan hamdalah setelah salat",
+                    "Menghafal Asmaul Husna sebelum salat",
+                    "Sujud dua kali dalam setiap rakaat"
+                ],
+                correctAnswer: "Sujud dua kali dalam setiap rakaat"
+            },
+            {
+                number: 97,
+                question: "Hadis tentang sedekah menyatakan bahwa sedekah…",
+                type: "multiple-choice",
+                options: [
+                    "Menolak bala dan mendatangkan berkah",
+                    "Tidak penting jika harta sedikit",
+                    "Hanya diwajibkan untuk keluarga dekat",
+                    "Mengurangi rezeki seseorang di dunia"
+                ],
+                correctAnswer: "Menolak bala dan mendatangkan berkah"
+            },
+            {
+                number: 98,
+                question: "Akhlak terpuji menurut Islam ditunjukkan oleh perilaku…",
+                type: "multiple-choice",
+                options: [
+                    "Kikir untuk menjaga harta pribadi",
+                    "Berbohong untuk menghindari konflik",
+                    "Sombong untuk menunjukkan keberhasilan",
+                    "Jujur dan menjaga amanah kepada orang lain"
+                ],
+                correctAnswer: "Jujur dan menjaga amanah kepada orang lain"
+            },
+            {
+                number: 99,
+                question: "Khalifah Abu Bakar berjasa dalam…",
+                type: "multiple-choice",
+                options: [
+                    "Membenarkan Isra' dan Mi'raj Rasulullah",
+                    "Menyusun kalender Hijriyah untuk ibadah",
+                    "Menulis ilmu nahwu untuk Al-Qur'an",
+                    "Membentuk angkatan laut untuk ekspansi"
+                ],
+                correctAnswer: "Membenarkan Isra' dan Mi'raj Rasulullah"
+            },
+            {
+                number: 100,
+                question: "Hukum mim sukun pada \"وَأَرْسَلَ عَلَيْهِمْ طَيْرًا أَبَابِيلَ\" dalam Q.S. Al-Fil ayat 3 adalah…",
+                type: "multiple-choice",
+                options: [
+                    "Idgham bilaghunnah karena nun sukun bertemu lam",
+                    "Izhar halqi karena nun sukun bertemu ha",
+                    "Ikhfa karena nun sukun bertemu ta",
+                    "Izhar syafawi karena mim sukun bertemu tho"
+                ],
+                correctAnswer: "Izhar syafawi karena mim sukun bertemu tho"
+            }
+        ];
+
+        // Variabel global
+        let currentQuestion = 0;
+        let correctCount = 0;
+        let incorrectCount = 0;
+        let selectedAnswer = null;
+        let isProcessing = false; // Untuk mencegah klik ganda
+        let playerName = "";
+
+        // Elemen DOM
+        const nameFormContainer = document.getElementById('name-form-container');
+        const playerNameInput = document.getElementById('player-name');
+        const startQuizButton = document.getElementById('start-quiz');
+        const quizInfo = document.getElementById('quiz-info');
+        const currentPlayerNameElement = document.getElementById('current-player-name');
+        const currentQuestionElement = document.getElementById('current-question');
+        const progressContainer = document.getElementById('progress-container');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const progressBar = document.getElementById('progress-bar');
+        const questionContainer = document.getElementById('question-container');
+        const scoreContainer = document.getElementById('score-container');
+        const scoreElement = document.getElementById('score');
+        const scoreMessage = document.getElementById('score-message');
+        const answerKeyButton = document.getElementById('answer-key-button');
+        const answerKey = document.getElementById('answer-key');
+        const answerList = document.getElementById('answer-list');
+        const feedback = document.getElementById('feedback');
+        const correctCountElement = document.getElementById('correct-count');
+        const incorrectCountElement = document.getElementById('incorrect-count');
+        const resetButton = document.getElementById('reset-button');
+        const rankingButton = document.getElementById('ranking-button');
+        const rankingContainer = document.getElementById('ranking-container');
+        const rankingList = document.getElementById('ranking-list');
+        const backToScoreButton = document.getElementById('back-to-score');
+
+        // Fungsi untuk memulai kuis
+        function startQuiz() {
+            playerName = playerNameInput.value.trim();
+            if (playerName === "") {
+                alert("Silakan masukkan nama Anda terlebih dahulu!");
+                return;
+            }
+
+            // Sembunyikan form nama dan tampilkan kuis
+            nameFormContainer.style.display = 'none';
+            quizInfo.classList.remove('hidden');
+            progressContainer.classList.remove('hidden');
+            questionContainer.classList.remove('hidden');
+            
+            // Tampilkan nama pemain
+            currentPlayerNameElement.textContent = playerName;
+            
+            // Reset variabel
+            currentQuestion = 0;
+            correctCount = 0;
+            incorrectCount = 0;
+            selectedAnswer = null;
+            isProcessing = false;
+            
+            // Reset tampilan
+            correctCountElement.textContent = '0';
+            incorrectCountElement.textContent = '0';
+            progressBar.style.width = '0%';
+            currentQuestionElement.textContent = '1';
+            
+            // Tampilkan pertanyaan pertama
+            displayQuestion();
+        }
+
+        // Fungsi untuk menampilkan pertanyaan
+        function displayQuestion() {
+            const question = questions[currentQuestion];
+            questionText.textContent = `${question.number}. ${question.question}`;
+            optionsContainer.innerHTML = '';
+            selectedAnswer = null;
+            isProcessing = false;
+
+            // Update nomor pertanyaan
+            currentQuestionElement.textContent = currentQuestion + 1;
+
+            // Tampilkan pilihan jawaban
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.addEventListener('click', () => selectOption(optionElement, option));
+                optionsContainer.appendChild(optionElement);
+            });
+
+            // Update progress bar
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            // Sembunyikan feedback
+            feedback.style.display = 'none';
+        }
+
+        // Fungsi untuk memilih opsi jawaban
+        function selectOption(element, answer) {
+            // Cegah klik ganda
+            if (isProcessing) return;
+            isProcessing = true;
+
+            // Hapus kelas selected dari semua opsi
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected');
+            });
+
+            // Tambahkan kelas selected ke opsi yang dipilih
+            element.classList.add('selected');
+            selectedAnswer = answer;
+
+            // Periksa jawaban
+            const isCorrect = selectedAnswer === questions[currentQuestion].correctAnswer;
+            if (isCorrect) {
+                correctCount++;
+                correctCountElement.textContent = correctCount;
+            } else {
+                incorrectCount++;
+                incorrectCountElement.textContent = incorrectCount;
+            }
+
+            // Tampilkan feedback
+            feedback.textContent = isCorrect ? "✓ Jawaban Benar!" : "✗ Jawaban Salah!";
+            feedback.className = isCorrect ? 'feedback correct' : 'feedback incorrect';
+            feedback.style.display = 'block';
+
+            // Tunggu sebentar sebelum pindah ke pertanyaan berikutnya
+            setTimeout(() => {
+                // Pindah ke pertanyaan berikutnya atau tampilkan skor
+                currentQuestion++;
+                if (currentQuestion < questions.length) {
+                    displayQuestion();
+                } else {
+                    displayScore();
+                }
+            }, 1000); // 1 detik delay
+        }
+
+        // Fungsi untuk menampilkan skor akhir
+        function displayScore() {
+            questionContainer.style.display = 'none';
+            scoreContainer.style.display = 'block';
+            scoreElement.textContent = `${correctCount} / ${questions.length}`;
+
+            // Simpan skor ke localStorage
+            saveScore();
+
+            // Pesan berdasarkan skor
+            let message = '';
+            const percentage = (correctCount / questions.length) * 100;
+            if (percentage >= 90) {
+                message = 'Luar biasa! Anda sangat paham tentang agama Islam.';
+            } else if (percentage >= 70) {
+                message = 'Bagus! Anda memiliki pemahaman yang baik tentang agama Islam.';
+            } else if (percentage >= 50) {
+                message = 'Cukup baik. Ada beberapa hal yang perlu dipelajari lagi.';
+            } else {
+                message = 'Anda perlu mempelajari lebih banyak tentang agama Islam.';
+            }
+            scoreMessage.textContent = message;
+        }
+
+        // Fungsi untuk menyimpan skor ke localStorage
+        function saveScore() {
+            // Ambil data skor yang sudah ada
+            let scores = JSON.parse(localStorage.getItem('quizScores')) || [];
+            
+            // Tambahkan skor baru
+            const newScore = {
+                name: playerName,
+                score: correctCount,
+                date: new Date().toLocaleDateString('id-ID')
+            };
+            
+            scores.push(newScore);
+            
+            // Simpan kembali ke localStorage
+            localStorage.setItem('quizScores', JSON.stringify(scores));
+        }
+
+        // Fungsi untuk menampilkan kunci jawaban
+        function displayAnswerKey() {
+            // Kosongkan daftar jawaban sebelumnya
+            answerList.innerHTML = '';
+            
+            // Tampilkan semua pertanyaan dan jawaban benar
+            questions.forEach(question => {
+                const answerItem = document.createElement('div');
+                answerItem.className = 'answer-item';
+                
+                const answerNumber = document.createElement('div');
+                answerNumber.className = 'answer-number';
+                answerNumber.textContent = `Pertanyaan ${question.number}`;
+                
+                const answerQuestion = document.createElement('div');
+                answerQuestion.className = 'answer-question';
+                answerQuestion.textContent = question.question;
+                
+                const answerCorrect = document.createElement('div');
+                answerCorrect.className = 'answer-correct';
+                answerCorrect.textContent = `Jawaban: ${question.correctAnswer}`;
+                
+                answerItem.appendChild(answerNumber);
+                answerItem.appendChild(answerQuestion);
+                answerItem.appendChild(answerCorrect);
+                
+                answerList.appendChild(answerItem);
+            });
+            
+            // Tampilkan kunci jawaban
+            answerKey.style.display = 'block';
+            
+            // Ubah teks tombol
+            answerKeyButton.textContent = 'Sembunyikan Kunci Jawaban';
+        }
+
+        // Fungsi untuk menyembunyikan kunci jawaban
+        function hideAnswerKey() {
+            answerKey.style.display = 'none';
+            answerKeyButton.textContent = 'Lihat Kunci Jawaban';
+        }
+
+        // Fungsi untuk mereset kuis
+        function resetQuiz() {
+            // Reset variabel
+            currentQuestion = 0;
+            correctCount = 0;
+            incorrectCount = 0;
+            selectedAnswer = null;
+            isProcessing = false;
+
+            // Reset tampilan
+            correctCountElement.textContent = '0';
+            incorrectCountElement.textContent = '0';
+            progressBar.style.width = '0%';
+            currentQuestionElement.textContent = '1';
+            
+            // Sembunyikan skor container dan tampilkan question container
+            scoreContainer.style.display = 'none';
+            questionContainer.style.display = 'block';
+            
+            // Reset tombol kunci jawaban
+            answerKey.style.display = 'none';
+            answerKeyButton.textContent = 'Lihat Kunci Jawaban';
+            
+            // Tampilkan pertanyaan pertama
+            displayQuestion();
+        }
+
+        // Fungsi untuk menampilkan ranking
+        function displayRanking() {
+            // Sembunyikan score container dan tampilkan ranking container
+            scoreContainer.style.display = 'none';
+            rankingContainer.style.display = 'block';
+            
+            // Ambil data skor dari localStorage
+            const scores = JSON.parse(localStorage.getItem('quizScores')) || [];
+            
+            // Urutkan skor dari tertinggi ke terendah
+            scores.sort((a, b) => b.score - a.score);
+            
+            // Kosongkan daftar ranking
+            rankingList.innerHTML = '';
+            
+            // Tampilkan 10 skor tertinggi
+            const topScores = scores.slice(0, 10);
+            
+            if (topScores.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = '<td colspan="4">Belum ada data ranking</td>';
+                rankingList.appendChild(row);
+            } else {
+                topScores.forEach((score, index) => {
+                    const row = document.createElement('tr');
+                    
+                    // Tambahkan kelas khusus untuk 3 peringkat teratas
+                    let rankClass = '';
+                    if (index === 0) rankClass = 'rank-1';
+                    else if (index === 1) rankClass = 'rank-2';
+                    else if (index === 2) rankClass = 'rank-3';
+                    
+                    row.innerHTML = `
+                        <td class="${rankClass}">${index + 1}</td>
+                        <td>${score.name}</td>
+                        <td>${score.score} / ${questions.length}</td>
+                        <td>${score.date}</td>
+                    `;
+                    
+                    rankingList.appendChild(row);
+                });
+            }
+        }
+
+        // Fungsi untuk kembali ke halaman skor
+        function backToScore() {
+            rankingContainer.style.display = 'none';
+            scoreContainer.style.display = 'block';
+        }
+
+        // Event listener untuk tombol start quiz
+        startQuizButton.addEventListener('click', startQuiz);
+
+        // Event listener untuk input nama (Enter key)
+        playerNameInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                startQuiz();
+            }
+        });
+
+        // Event listener untuk tombol kunci jawaban
+        answerKeyButton.addEventListener('click', function() {
+            if (answerKey.style.display === 'none' || answerKey.style.display === '') {
+                displayAnswerKey();
+            } else {
+                hideAnswerKey();
+            }
+        });
+
+        // Event listener untuk tombol reset
+        resetButton.addEventListener('click', resetQuiz);
+
+        // Event listener untuk tombol ranking
+        rankingButton.addEventListener('click', displayRanking);
+
+        // Event listener untuk tombol kembali ke skor
+        backToScoreButton.addEventListener('click', backToScore);
+    </script>
+</body>
+</html>
