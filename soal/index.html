@@ -27,6 +27,14 @@
         .header h1 {
             margin: 0;
         }
+        .timer {
+            background-color: #ff9800;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 16px;
+        }
         .live-score {
             background-color: #f0f0f0;
             padding: 8px 15px;
@@ -117,6 +125,12 @@
             font-size: 36px;
             color: #4caf50;
             margin: 20px 0;
+        }
+        .time-info {
+            margin: 15px 0;
+            font-size: 18px;
+            color: #ff9800;
+            font-weight: bold;
         }
         .answer-key-button {
             margin-top: 20px;
@@ -264,10 +278,7 @@
     <div class="quiz-container">
         <div class="header">
             <h1>Kuis Agama Islam</h1>
-            <div class="live-score">
-                <span class="correct-score">Benar: <span id="correct-count">0</span></span> | 
-                <span class="incorrect-score">Salah: <span id="incorrect-count">0</span></span>
-            </div>
+            <div class="timer" id="timer">00:00</div>
         </div>
 
         <!-- Form Input Nama -->
@@ -282,6 +293,10 @@
         <div id="quiz-info" class="quiz-info hidden">
             <div class="player-name">Pemain: <span id="current-player-name"></span></div>
             <div>Pertanyaan: <span id="current-question">1</span> / 100</div>
+            <div class="live-score">
+                <span class="correct-score">Benar: <span id="correct-count">0</span></span> | 
+                <span class="incorrect-score">Salah: <span id="incorrect-count">0</span></span>
+            </div>
         </div>
 
         <div class="progress hidden" id="progress-container">
@@ -297,6 +312,7 @@
         <div class="score-container" id="score-container">
             <h2>Hasil Kuis</h2>
             <div class="score" id="score"></div>
+            <div class="time-info" id="time-info"></div>
             <p id="score-message"></p>
             <button class="answer-key-button" id="answer-key-button">Lihat Kunci Jawaban</button>
             <button class="reset-button" id="reset-button">Ulangi Kuis</button>
@@ -315,6 +331,7 @@
                         <th>Peringkat</th>
                         <th>Nama</th>
                         <th>Skor</th>
+                        <th>Waktu</th>
                         <th>Tanggal</th>
                     </tr>
                 </thead>
@@ -1438,11 +1455,15 @@
         let selectedAnswer = null;
         let isProcessing = false; // Untuk mencegah klik ganda
         let playerName = "";
+        let startTime = 0;
+        let endTime = 0;
+        let timerInterval = null;
 
         // Elemen DOM
         const nameFormContainer = document.getElementById('name-form-container');
         const playerNameInput = document.getElementById('player-name');
         const startQuizButton = document.getElementById('start-quiz');
+        const timerElement = document.getElementById('timer');
         const quizInfo = document.getElementById('quiz-info');
         const currentPlayerNameElement = document.getElementById('current-player-name');
         const currentQuestionElement = document.getElementById('current-question');
@@ -1453,6 +1474,7 @@
         const questionContainer = document.getElementById('question-container');
         const scoreContainer = document.getElementById('score-container');
         const scoreElement = document.getElementById('score');
+        const timeInfoElement = document.getElementById('time-info');
         const scoreMessage = document.getElementById('score-message');
         const answerKeyButton = document.getElementById('answer-key-button');
         const answerKey = document.getElementById('answer-key');
@@ -1495,9 +1517,46 @@
             incorrectCountElement.textContent = '0';
             progressBar.style.width = '0%';
             currentQuestionElement.textContent = '1';
+            timerElement.textContent = '00:00';
+            
+            // Mulai timer
+            startTime = Date.now();
+            startTimer();
             
             // Tampilkan pertanyaan pertama
             displayQuestion();
+        }
+
+        // Fungsi untuk memulai timer
+        function startTimer() {
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        // Fungsi untuk menghentikan timer
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
+        // Fungsi untuk memperbarui tampilan timer
+        function updateTimer() {
+            const now = Date.now();
+            const elapsed = Math.floor((now - startTime) / 1000); // dalam detik
+            
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            
+            const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            timerElement.textContent = formattedTime;
+        }
+
+        // Fungsi untuk format waktu (detik ke format MM:SS)
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         }
 
         // Fungsi untuk menampilkan pertanyaan
@@ -1572,12 +1631,20 @@
 
         // Fungsi untuk menampilkan skor akhir
         function displayScore() {
+            // Hentikan timer
+            stopTimer();
+            endTime = Date.now();
+            
+            // Hitung waktu yang ditempuh
+            const elapsedTime = Math.floor((endTime - startTime) / 1000); // dalam detik
+            
             questionContainer.style.display = 'none';
             scoreContainer.style.display = 'block';
             scoreElement.textContent = `${correctCount} / ${questions.length}`;
+            timeInfoElement.textContent = `Waktu: ${formatTime(elapsedTime)}`;
 
             // Simpan skor ke localStorage
-            saveScore();
+            saveScore(elapsedTime);
 
             // Pesan berdasarkan skor
             let message = '';
@@ -1595,7 +1662,7 @@
         }
 
         // Fungsi untuk menyimpan skor ke localStorage
-        function saveScore() {
+        function saveScore(elapsedTime) {
             // Ambil data skor yang sudah ada
             let scores = JSON.parse(localStorage.getItem('quizScores')) || [];
             
@@ -1603,6 +1670,7 @@
             const newScore = {
                 name: playerName,
                 score: correctCount,
+                time: elapsedTime,
                 date: new Date().toLocaleDateString('id-ID')
             };
             
@@ -1656,6 +1724,9 @@
 
         // Fungsi untuk mereset kuis
         function resetQuiz() {
+            // Hentikan timer
+            stopTimer();
+            
             // Reset variabel
             currentQuestion = 0;
             correctCount = 0;
@@ -1668,6 +1739,7 @@
             incorrectCountElement.textContent = '0';
             progressBar.style.width = '0%';
             currentQuestionElement.textContent = '1';
+            timerElement.textContent = '00:00';
             
             // Sembunyikan skor container dan tampilkan question container
             scoreContainer.style.display = 'none';
@@ -1676,6 +1748,10 @@
             // Reset tombol kunci jawaban
             answerKey.style.display = 'none';
             answerKeyButton.textContent = 'Lihat Kunci Jawaban';
+            
+            // Mulai timer kembali
+            startTime = Date.now();
+            startTimer();
             
             // Tampilkan pertanyaan pertama
             displayQuestion();
@@ -1690,8 +1766,14 @@
             // Ambil data skor dari localStorage
             const scores = JSON.parse(localStorage.getItem('quizScores')) || [];
             
-            // Urutkan skor dari tertinggi ke terendah
-            scores.sort((a, b) => b.score - a.score);
+            // Urutkan skor: pertama berdasarkan skor (terbanyak), kemudian berdasarkan waktu (tercepat)
+            scores.sort((a, b) => {
+                if (b.score !== a.score) {
+                    return b.score - a.score; // Skor tertinggi dulu
+                } else {
+                    return a.time - b.time; // Waktu tercepat dulu
+                }
+            });
             
             // Kosongkan daftar ranking
             rankingList.innerHTML = '';
@@ -1701,7 +1783,7 @@
             
             if (topScores.length === 0) {
                 const row = document.createElement('tr');
-                row.innerHTML = '<td colspan="4">Belum ada data ranking</td>';
+                row.innerHTML = '<td colspan="5">Belum ada data ranking</td>';
                 rankingList.appendChild(row);
             } else {
                 topScores.forEach((score, index) => {
@@ -1717,6 +1799,7 @@
                         <td class="${rankClass}">${index + 1}</td>
                         <td>${score.name}</td>
                         <td>${score.score} / ${questions.length}</td>
+                        <td>${formatTime(score.time)}</td>
                         <td>${score.date}</td>
                     `;
                     
