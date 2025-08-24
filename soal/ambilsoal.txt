@@ -1,0 +1,28 @@
+// === Auto Answer Google Form (always pick first option) ===
+let questions = document.querySelectorAll('[role="radiogroup"]');
+
+questions.forEach((q, i) => {
+  let options = q.querySelectorAll('[role="radio"]');
+  if (options.length > 0) {
+    options[0].click(); // pilih jawaban pertama
+  }
+  console.log(`Soal ${i+1}: opsi pertama dipilih`);
+});
+
+alert("✅ Semua soal sudah otomatis diisi (opsi pertama)!");
+
+
+
+
+
+⚡ Cara pakainya:
+
+Buka Google Form → tekan CTRL+SHIFT+I (Inspect Element).
+
+Masuk tab Console.
+
+Paste script di atas → Enter.
+
+Semua soal langsung otomatis kepilih (default = opsi pertama).
+
+👉 Kalau kamu mau selalu pilih "benar" (bukan sekadar opsi pertama), bisa diubah sedikit:
