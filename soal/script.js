@@ -125,14 +125,10 @@ function checkEditModeStatus() {
         const currentTime = new Date().getTime();
         
         if (currentTime < data.expiryTime) {
-            // Edit mode is still valid
             editMode = true;
-            
-            // Start timer with remaining time
             timeRemaining = data.expiryTime - currentTime;
             startEditModeTimer();
         } else {
-            // Edit mode expired
             localStorage.removeItem('editModeData');
         }
     }
@@ -142,3 +138,87 @@ function checkEditModeStatus() {
 function startEditModeTimer() {
     if (editTimer) {
         clearInterval(editTimer);
+    }
+    editTimer = setInterval(() => {
+        if (timeRemaining <= 0) {
+            clearInterval(editTimer);
+            editMode = false;
+            localStorage.removeItem('editModeData');
+        } else {
+            timeRemaining -= 1000;
+        }
+    }, 1000);
+}
+
+// Load selected package
+async function loadSelectedPackage() {
+    currentPackage = packageSelect.value; // paket1 / paket2 / paket3 / paket4
+    saveCurrentPackage();
+    quizData = await loadCSVFile(`${currentPackage}.csv`);
+    if (quizData) {
+        currentQuestionIndex = 0;
+        score = 0;
+        correctAnswers = 0;
+        incorrectAnswers = 0;
+        userAnswers = [];
+        showQuestion();
+    }
+}
+
+// Init Quiz
+async function initQuiz() {
+    initDOMElements();
+    currentPackage = getSavedPackage();
+    packageSelect.value = currentPackage;
+    quizData = await loadCSVFile(`${currentPackage}.csv`);
+    if (quizData) {
+        showQuestion();
+    }
+
+    // Event listener ganti paket
+    if (loadPackage) {
+        loadPackage.addEventListener('click', async () => {
+            await loadSelectedPackage();
+            packageModal.style.display = 'none';
+        });
+    }
+    if (cancelPackage) {
+        cancelPackage.addEventListener('click', () => {
+            packageModal.style.display = 'none';
+        });
+    }
+}
+
+// Example showQuestion function (dummy, sesuaikan denganmu)
+function showQuestion() {
+    if (!quizData || quizData.length === 0) return;
+    const q = quizData[currentQuestionIndex];
+    questionText.textContent = q["Soal"];
+    optionsContainer.innerHTML = "";
+    const options = q["Opsi"].split(";");
+    options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.onclick = () => checkAnswer(opt, q["Kunci"]);
+        optionsContainer.appendChild(btn);
+    });
+}
+
+// Example checkAnswer function (dummy)
+function checkAnswer(selected, correct) {
+    if (selected === correct) {
+        score++;
+        correctAnswers++;
+    } else {
+        incorrectAnswers++;
+    }
+    currentQuestionIndex++;
+    if (currentQuestionIndex < quizData.length) {
+        showQuestion();
+    } else {
+        alert(`Selesai! Skor: ${score}/${quizData.length}`);
+    }
+}
+
+// Run init
+window.onload = initQuiz;
