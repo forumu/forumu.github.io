@@ -13,9 +13,12 @@
     <header class="main-header">
         <div class="container">
             <h1>Aplikasi Kuis BTQ</h1>
+            <div class="package-indicator">
+                <i class="bi bi-collection-fill"></i>
+                <span id="currentPackage">Paket 1</span>
+            </div>
         </div>
     </header>
-
     <div class="main-container">
         <div class="quiz-container">
             <div class="admin-panel">
@@ -98,7 +101,7 @@
             <span>Hasil</span>
         </a>
         <a href="#" class="nav-item" id="packageNav">
-            <i class="bi bi-folder-fill"></i>
+            <i class="bi bi-collection-fill"></i>
             <span>Paket</span>
         </a>
         <a href="#" class="nav-item" id="keyNav">
@@ -106,7 +109,7 @@
             <span>Kunci</span>
         </a>
     </nav>
-
+    
     <!-- Modal PIN -->
     <div id="pinModal" class="pin-modal">
         <div class="pin-modal-content">
@@ -119,7 +122,7 @@
             </div>
         </div>
     </div>
-
+    
     <!-- Edit Key Modal -->
     <div id="editKeyModal" class="edit-key-modal">
         <div class="edit-key-modal-content">
@@ -139,22 +142,50 @@
             </div>
         </div>
     </div>
-
+    
     <!-- Package Selection Modal -->
-    <div id="packageModal" class="edit-key-modal">
-        <div class="edit-key-modal-content">
+    <div id="packageModal" class="package-modal">
+        <div class="package-modal-content">
             <h3>Pilih Paket Soal</h3>
-            <div class="mb-3">
-                <label for="packageSelect" class="form-label">Paket:</label>
-                <select id="packageSelect" class="form-select">
-                    <option value="paket1">Paket 1</option>
-                    <option value="paket2">Paket 2</option>
-                    <option value="paket3">Paket 3</option>
-                    <option value="paket4">Paket 4</option>
-                </select>
+            <div class="package-list">
+                <div class="package-item" data-package="1">
+                    <div class="package-icon">
+                        <i class="bi bi-file-earmark-text-fill"></i>
+                    </div>
+                    <div class="package-info">
+                        <h4>Paket 1</h4>
+                        <p>100 soal BTQ dasar</p>
+                    </div>
+                </div>
+                <div class="package-item" data-package="2">
+                    <div class="package-icon">
+                        <i class="bi bi-file-earmark-text-fill"></i>
+                    </div>
+                    <div class="package-info">
+                        <h4>Paket 2</h4>
+                        <p>100 soal BTQ menengah</p>
+                    </div>
+                </div>
+                <div class="package-item" data-package="3">
+                    <div class="package-icon">
+                        <i class="bi bi-file-earmark-text-fill"></i>
+                    </div>
+                    <div class="package-info">
+                        <h4>Paket 3</h4>
+                        <p>100 soal BTQ lanjutan</p>
+                    </div>
+                </div>
+                <div class="package-item" data-package="4">
+                    <div class="package-icon">
+                        <i class="bi bi-file-earmark-text-fill"></i>
+                    </div>
+                    <div class="package-info">
+                        <h4>Paket 4</h4>
+                        <p>100 soal BTQ campuran</p>
+                    </div>
+                </div>
             </div>
-            <div class="edit-key-actions">
-                <button id="loadPackage" class="btn btn-custom">Muat</button>
+            <div class="package-actions">
                 <button id="cancelPackage" class="btn btn-secondary">Batal</button>
             </div>
         </div>
