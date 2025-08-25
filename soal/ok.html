@@ -1,0 +1,1706 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Kuis BTQ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+    :root {
+    --primary-color: #0f766e;
+    --secondary-color: #000000;
+    --gradient-primary: linear-gradient(135deg, #0f766e, #000000);
+    --gradient-success: linear-gradient(135deg, #10b981, #059669);
+    --gradient-danger: linear-gradient(135deg, #ef4444, #dc2626);
+    --text-light: #f8f9fa;
+    --bg-light: #f8f9fa;
+    --bg-white: #ffffff;
+    --border-light: #e9ecef;
+    --success: #10b981;
+    --danger: #ef4444;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-light);
+    color: var(--secondary-color);
+    line-height: 1.6;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+.main-header {
+    background: var(--gradient-primary);
+    color: var(--text-light);
+    padding: 1.5rem 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+.main-header h1 {
+    font-weight: 600;
+    margin: 0;
+    font-size: 1.8rem;
+    text-align: center;
+}
+.package-indicator {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.main-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+}
+.quiz-container {
+    background-color: var(--bg-white);
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+.quiz-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: var(--gradient-primary);
+}
+.question-box {
+    background-color: var(--bg-light);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border-light);
+    position: relative;
+}
+.question-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--gradient-primary);
+    border-radius: 12px 12px 0 0;
+}
+.question-text {
+    font-weight: 500;
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+    position: relative;
+    padding-left: 1.5rem;
+}
+.question-text::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--gradient-primary);
+    border-radius: 2px;
+}
+.options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+.form-check {
+    position: relative;
+    margin-bottom: 0;
+    cursor: pointer;
+}
+.form-check-input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+.form-check-label {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background-color: var(--bg-white);
+    border: 2px solid var(--border-light);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+.form-check-label::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(15, 118, 110, 0.1), rgba(15, 118, 110, 0.05));
+    transition: width 0.3s ease;
+    z-index: 0;
+}
+.form-check-label::after {
+    content: '';
+    position: absolute;
+    left: 1.5rem;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #d1d5db;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+.form-check-input:checked + .form-check-label {
+    border-color: var(--primary-color);
+    background-color: rgba(15, 118, 110, 0.05);
+    font-weight: 500;
+}
+.form-check-input:checked + .form-check-label::before {
+    width: 100%;
+}
+.form-check-input:checked + .form-check-label::after {
+    border-color: var(--primary-color);
+    background-color: var(--primary-color);
+    box-shadow: inset 0 0 0 3px white;
+}
+.form-check-label:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(15, 118, 110, 0.1);
+}
+.form-check-label .option-text {
+    margin-left: 2.5rem;
+    position: relative;
+    z-index: 1;
+}
+.feedback-correct .form-check-label {
+    border-color: var(--success);
+    background-color: rgba(16, 185, 129, 0.1);
+}
+.feedback-correct .form-check-label::after {
+    border-color: var(--success);
+    background-color: var(--success);
+    box-shadow: inset 0 0 0 3px white;
+}
+.feedback-incorrect .form-check-label {
+    border-color: var(--danger);
+    background-color: rgba(239, 68, 68, 0.1);
+}
+.feedback-incorrect .form-check-label::after {
+    border-color: var(--danger);
+    background-color: var(--danger);
+    box-shadow: inset 0 0 0 3px white;
+}
+.result-container {
+    text-align: center;
+    padding: 2rem;
+}
+.result-title {
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.score-display {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin: 1rem 0;
+}
+.score-value {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+.result-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+.btn-custom {
+    background: var(--gradient-primary);
+    color: var(--text-light);
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.btn-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(15, 118, 110, 0.3);
+    color: var(--text-light);
+}
+.pin-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+.pin-modal-content {
+    background-color: var(--bg-white);
+    margin: 15% auto;
+    padding: 2rem;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 350px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+.pin-modal h3 {
+    margin-bottom: 0.5rem;
+    color: var(--secondary-color);
+}
+.pin-modal p {
+    margin-bottom: 1.5rem;
+    color: #6b7280;
+}
+.edit-key-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+.edit-key-modal-content {
+    background-color: var(--bg-white);
+    margin: 10% auto;
+    padding: 2rem;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+.edit-key-modal h3 {
+    margin-bottom: 1.5rem;
+    color: var(--secondary-color);
+    text-align: center;
+}
+.current-question-display {
+    background-color: var(--bg-light);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid var(--primary-color);
+}
+.edit-key-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+}
+.bottom-nav {
+    background: var(--gradient-primary);
+    color: var(--text-light);
+    padding: 1rem 0;
+    display: flex;
+    justify-content: space-around;
+    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+}
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 0.5rem 0;
+}
+.nav-item:hover {
+    color: var(--text-light);
+    transform: translateY(-2px);
+}
+.nav-item i {
+    font-size: 1.2rem;
+}
+.nav-item.active {
+    color: var(--text-light);
+    font-weight: 500;
+}
+.nav-score {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+.nav-label {
+    font-size: 0.8rem;
+    opacity: 0.9;
+}
+.nav-score.correct {
+    color: #10b981;
+}
+.nav-score.incorrect {
+    color: #ef4444;
+}
+.nav-score-item {
+    pointer-events: none;
+    cursor: default;
+}
+.package-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+.package-modal-content {
+    background-color: var(--bg-white);
+    margin: 10% auto;
+    padding: 2rem;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+.package-modal h3 {
+    margin-bottom: 1.5rem;
+    color: var(--secondary-color);
+    text-align: center;
+}
+.package-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+.package-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 12px;
+    background-color: var(--bg-light);
+    border: 2px solid var(--border-light);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.package-item:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(15, 118, 110, 0.1);
+}
+.package-item.active {
+    border-color: var(--primary-color);
+    background-color: rgba(15, 118, 110, 0.05);
+}
+.package-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--gradient-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-light);
+}
+.package-info h4 {
+    margin: 0;
+    font-weight: 600;
+    color: var(--secondary-color);
+}
+.package-info p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+.package-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+.timer-display {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+.sound-control {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.sound-control:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+.sound-control.active {
+    background: rgba(16, 185, 129, 0.3);
+}
+.progress-nav {
+    background: var(--bg-white);
+    padding: 1rem 1.5rem;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    border-top: 1px solid var(--border-light);
+}
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+.question-counter {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+.progress {
+    height: 10px;
+    border-radius: 10px;
+    background-color: var(--border-light);
+    overflow: hidden;
+}
+.progress-bar {
+    background: var(--gradient-primary);
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+.start-quiz-container {
+    background-color: var(--bg-white);
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+.start-quiz-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: var(--gradient-primary);
+}
+.form-group {
+    margin-bottom: 1.5rem;
+}
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--secondary-color);
+}
+.form-control {
+    border: 2px solid var(--border-light);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(15, 118, 110, 0.25);
+}
+.quiz-timer {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.quiz-timer.warning {
+    background: rgba(239, 68, 68, 0.2);
+    animation: pulse 1s infinite;
+}
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+@media (max-width: 768px) {
+    .main-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .package-indicator {
+        position: static;
+        margin-top: 1rem;
+        justify-content: center;
+    }
+    
+    .quiz-container {
+        padding: 1.5rem;
+    }
+    
+    .start-quiz-container {
+        padding: 1.5rem;
+    }
+}
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <h1>Aplikasi Kuis BTQ</h1>
+            <div class="package-indicator">
+                <i class="bi bi-collection-fill"></i>
+                <span id="currentPackage">Paket 1</span>
+            </div>
+        </div>
+    </header>
+    <div class="main-container">
+        <!-- Form untuk memulai kuis -->
+        <div id="startQuizContainer" class="start-quiz-container">
+            <h3 class="text-center mb-4">Mulai Kuis</h3>
+            <div class="form-group">
+                <label for="userName" class="form-label">Nama Lengkap</label>
+                <input type="text" id="userName" class="form-control" placeholder="Masukkan nama Anda" required>
+            </div>
+            <div class="form-group">
+                <label for="quizDuration" class="form-label">Durasi Kuis (menit)</label>
+                <input type="number" id="quizDuration" class="form-control" placeholder="Masukkan durasi kuis" min="1" required>
+            </div>
+            <div class="text-center">
+                <button id="startQuizBtn" class="btn btn-custom">
+                    <i class="bi bi-play-fill"></i> Mulai Kuis
+                </button>
+            </div>
+        </div>
+        
+        <!-- Kontainer kuis -->
+        <div id="quizContainer" class="quiz-container" style="display: none;">
+            <div class="quiz-timer" id="quizTimer">
+                <i class="bi bi-clock-fill"></i>
+                <span id="timerText">00:00</span>
+            </div>
+            <div id="quizArea">
+                <div class="question-box">
+                    <button id="soundToggle" class="sound-control" title="Bacakan soal">
+                        <i class="bi bi-volume-up-fill"></i>
+                    </button>
+                    <h4 id="questionText" class="question-text">Memuat soal...</h4>
+                    <div id="optionsContainer" class="options-container">
+                        <!-- Opsi akan dimuat di sini -->
+                    </div>
+                </div>
+            </div>
+            
+            <div id="resultArea" style="display: none;">
+                <div class="result-container">
+                    <h2 class="result-title">Hasil Kuis</h2>
+                    <div class="score-display">
+                        <p>Nama: <span id="userNameResult" class="score-value"></span></p>
+                        <p>Skor: <span id="scoreValue" class="score-value">0</span> dari <span id="totalScore">100</span></p>
+                        <p>Persentase: <span id="percentageValue" class="score-value">0</span>%</p>
+                        <p>Waktu: <span id="timeSpent" class="score-value">00:00</span></p>
+                    </div>
+                    <div class="result-actions">
+                        <button id="restartButton" class="btn btn-custom">
+                            <i class="bi bi-arrow-clockwise"></i> Mulai Kuis Lagi
+                        </button>
+                        <button id="speakResult" class="btn btn-custom" title="Dengarkan Hasil">
+                            <i class="bi bi-volume-up-fill"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Progress di atas navigasi -->
+    <div id="progressNav" class="progress-nav" style="display: none;">
+        <div class="progress-info">
+            <span>Progress</span>
+            <span class="question-counter">Soal <span id="currentQuestion">1</span> dari <span id="totalQuestions">100</span></span>
+        </div>
+        <div class="progress">
+            <div id="progressBar" class="progress-bar" role="progressbar" style="width: 1%"></div>
+        </div>
+    </div>
+    
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active nav-score-item" id="homeNav">
+            <div class="nav-score correct" id="navCorrectCount">0</div>
+            <div class="nav-label">Benar</div>
+        </a>
+        <a href="#" class="nav-item nav-score-item" id="resultNav">
+            <div class="nav-score incorrect" id="navIncorrectCount">0</div>
+            <div class="nav-label">Salah</div>
+        </a>
+        <a href="#" class="nav-item" id="packageNav">
+            <i class="bi bi-collection-fill"></i>
+            <span>Paket</span>
+        </a>
+        <a href="#" class="nav-item" id="keyNav">
+            <i class="bi bi-key-fill"></i>
+            <span>Kunci</span>
+            <span id="timerDisplay" class="timer-display" style="display: none;"></span>
+        </a>
+    </nav>
+    
+    <!-- Modal PIN -->
+    <div id="pinModal" class="pin-modal">
+        <div class="pin-modal-content">
+            <h3>Masukkan PIN</h3>
+            <p>Untuk mengaktifkan mode edit kunci jawaban</p>
+            <input type="password" id="pinInput" class="form-control mb-3" placeholder="PIN">
+            <div class="d-flex justify-content-between">
+                <button id="cancelPin" class="btn btn-secondary">Batal</button>
+                <button id="submitPin" class="btn btn-custom">Konfirmasi</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Key Modal -->
+    <div id="editKeyModal" class="edit-key-modal">
+        <div class="edit-key-modal-content">
+            <h3>Edit Kunci Jawaban</h3>
+            <div class="current-question-display">
+                <strong>Soal:</strong> <span id="currentQuestionText"></span>
+            </div>
+            <div class="mb-3">
+                <label for="answerKeyEditor" class="form-label">Kunci Jawaban:</label>
+                <select id="answerKeyEditor" class="form-select">
+                    <!-- Options will be populated dynamically -->
+                </select>
+            </div>
+            <div class="edit-key-actions">
+                <button id="saveKeyChanges" class="btn btn-custom">Simpan</button>
+                <button id="cancelKeyEdit" class="btn btn-secondary">Batal</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Package Selection Modal -->
+    <div id="packageModal" class="package-modal">
+        <div class="package-modal-content">
+            <h3>Pilih Paket Soal</h3>
+            <div class="package-list">
+                <div class="package-item" data-package="1">
+                    <div class="package-icon">
+                        <i class="bi bi-file-earmark-text-fill"></i>
+                    </div>
+                    <div class="package-info">
+                        <h4>Paket 1</h4>
+                        <p>100 soal BTQ dasar</p>
+                    </div>
+                </div>
+                <div class="package-item" data-package="2">
+                    <div class="package-icon">
+                        <i class="bi bi-file-earmark-text-fill"></i>
+                    </div>
+                    <div class="package-info">
+                        <h4>Paket 2</h4>
+                        <p>100 soal BTQ menengah</p>
+                    </div>
+                </div>
+                <div class="package-item" data-package="3">
+                    <div class="package-icon">
+                        <i class="bi bi-file-earmark-text-fill"></i>
+                    </div>
+                    <div class="package-info">
+                        <h4>Paket 3</h4>
+                        <p>100 soal BTQ lanjutan</p>
+                    </div>
+                </div>
+                <div class="package-item" data-package="4">
+                    <div class="package-icon">
+                        <i class="bi bi-file-earmark-text-fill"></i>
+                    </div>
+                    <div class="package-info">
+                        <h4>Paket 4</h4>
+                        <p>100 soal BTQ campuran</p>
+                    </div>
+                </div>
+            </div>
+            <div class="package-actions">
+                <button id="cancelPackage" class="btn btn-secondary">Batal</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    // DOM elements
+let questionText, optionsContainer, quizArea, resultArea, scoreValue, totalScore, percentageValue;
+let correctCount, incorrectCount, restartButton, speakResult, saveChanges, resetQuiz;
+let currentQuestionSpan, totalQuestionsSpan, progressBar, pinModal, pinInput, submitPin, cancelPin;
+let timerDisplay, keyNav, editKeyModal, currentQuestionText, answerKeyEditor, saveKeyChanges;
+let cancelKeyEdit, feedbackMessage, packageNav, packageModal, currentPackage, packageItems, cancelPackage;
+let navCorrectCount, navIncorrectCount, homeNav, resultNav, soundToggle;
+let startQuizContainer, quizContainer, startQuizBtn, userName, quizDuration, userNameResult, timeSpent;
+let quizTimer, timerText, progressNav;
+// Initialize quiz data
+let quizData = [];
+let currentQuestionIndex = 0;
+let score = 0;
+let correctAnswers = 0;
+let incorrectAnswers = 0;
+let userAnswers = [];
+let editMode = false;
+let editTimer = null;
+let timeRemaining = 0;
+let currentPackageNumber = 1;
+let soundEnabled = true;
+let quizStartTime = null;
+let quizEndTime = null;
+let questionTimer = null;
+let questionTimeLimit = 0; // in seconds
+let questionTimeRemaining = 0;
+const defaultPin = "777";
+const EDIT_MODE_DURATION = 5 * 60 * 1000; // 5 menit dalam milidetik
+// Initialize DOM elements
+function initDOMElements() {
+    questionText = document.getElementById('questionText');
+    optionsContainer = document.getElementById('optionsContainer');
+    quizArea = document.getElementById('quizArea');
+    resultArea = document.getElementById('resultArea');
+    scoreValue = document.getElementById('scoreValue');
+    totalScore = document.getElementById('totalScore');
+    percentageValue = document.getElementById('percentageValue');
+    correctCount = document.getElementById('correctCount');
+    incorrectCount = document.getElementById('incorrectCount');
+    restartButton = document.getElementById('restartButton');
+    speakResult = document.getElementById('speakResult');
+    saveChanges = document.getElementById('saveChanges');
+    resetQuiz = document.getElementById('resetQuiz');
+    currentQuestionSpan = document.getElementById('currentQuestion');
+    totalQuestionsSpan = document.getElementById('totalQuestions');
+    progressBar = document.getElementById('progressBar');
+    pinModal = document.getElementById('pinModal');
+    pinInput = document.getElementById('pinInput');
+    submitPin = document.getElementById('submitPin');
+    cancelPin = document.getElementById('cancelPin');
+    timerDisplay = document.getElementById('timerDisplay');
+    keyNav = document.getElementById('keyNav');
+    editKeyModal = document.getElementById('editKeyModal');
+    currentQuestionText = document.getElementById('currentQuestionText');
+    answerKeyEditor = document.getElementById('answerKeyEditor');
+    saveKeyChanges = document.getElementById('saveKeyChanges');
+    cancelKeyEdit = document.getElementById('cancelKeyEdit');
+    feedbackMessage = document.getElementById('feedbackMessage');
+    packageNav = document.getElementById('packageNav');
+    packageModal = document.getElementById('packageModal');
+    currentPackage = document.getElementById('currentPackage');
+    packageItems = document.querySelectorAll('.package-item');
+    cancelPackage = document.getElementById('cancelPackage');
+    navCorrectCount = document.getElementById('navCorrectCount');
+    navIncorrectCount = document.getElementById('navIncorrectCount');
+    homeNav = document.getElementById('homeNav');
+    resultNav = document.getElementById('resultNav');
+    soundToggle = document.getElementById('soundToggle');
+    startQuizContainer = document.getElementById('startQuizContainer');
+    quizContainer = document.getElementById('quizContainer');
+    startQuizBtn = document.getElementById('startQuizBtn');
+    userName = document.getElementById('userName');
+    quizDuration = document.getElementById('quizDuration');
+    userNameResult = document.getElementById('userNameResult');
+    timeSpent = document.getElementById('timeSpent');
+    quizTimer = document.getElementById('quizTimer');
+    timerText = document.getElementById('timerText');
+    progressNav = document.getElementById('progressNav');
+}
+// Load package data from CSV file
+async function loadPackageData(packageNumber) {
+    try {
+        const response = await fetch(`paket${packageNumber}.csv`);
+        if (!response.ok) {
+            throw new Error(`Failed to load package ${packageNumber}`);
+        }
+        const csvText = await response.text();
+        return parseCSV(csvText);
+    } catch (error) {
+        console.error('Error loading package data:', error);
+        return null;
+    }
+}
+// Parse CSV data
+function parseCSV(csvText) {
+    const lines = csvText.trim().split('\n');
+    const headers = lines[0].split(',');
+    const result = [];
+    
+    for (let i = 1; i < lines.length; i++) {
+        const obj = {};
+        let currentLine = lines[i];
+        let inQuotes = false;
+        let field = '';
+        const fields = [];
+        
+        for (let j = 0; j < currentLine.length; j++) {
+            if (currentLine[j] === '"') {
+                inQuotes = !inQuotes;
+            } else if (currentLine[j] === ',' && !inQuotes) {
+                fields.push(field);
+                field = '';
+            } else {
+                field += currentLine[j];
+            }
+        }
+        fields.push(field);
+        
+        for (let k = 0; k < headers.length; k++) {
+            obj[headers[k]] = fields[k];
+        }
+        
+        result.push(obj);
+    }
+    
+    return result;
+}
+// Save current package to localStorage
+function saveCurrentPackage() {
+    localStorage.setItem('currentPackage', currentPackageNumber.toString());
+}
+// Load current package from localStorage
+function loadCurrentPackage() {
+    const savedPackage = localStorage.getItem('currentPackage');
+    if (savedPackage) {
+        currentPackageNumber = parseInt(savedPackage);
+    } else {
+        currentPackageNumber = 1; // Default to package 1
+        saveCurrentPackage();
+    }
+    updatePackageIndicator();
+}
+// Update package indicator in header
+function updatePackageIndicator() {
+    if (currentPackage) {
+        currentPackage.textContent = `Paket ${currentPackageNumber}`;
+    }
+}
+// Switch to a different package
+async function switchPackage(packageNumber) {
+    if (packageNumber === currentPackageNumber) {
+        return; // Already on this package
+    }
+    
+    // Load new package data
+    const newPackageData = await loadPackageData(packageNumber);
+    if (!newPackageData) {
+        alert(`Gagal memuat paket ${packageNumber}. Silakan coba lagi.`);
+        return;
+    }
+    
+    // Update package number and save to localStorage
+    currentPackageNumber = packageNumber;
+    saveCurrentPackage();
+    updatePackageIndicator();
+    
+    // Update quiz data and reset quiz
+    quizData = newPackageData;
+    resetToStartScreen();
+    
+    // Close package modal
+    if (packageModal) {
+        packageModal.style.display = 'none';
+    }
+    
+    // Show success message
+    alert(`Berhasil beralih ke Paket ${packageNumber}!`);
+}
+// Check if edit mode is already active from localStorage
+function checkEditModeStatus() {
+    const editModeData = localStorage.getItem('editModeData');
+    if (editModeData) {
+        const data = JSON.parse(editModeData);
+        const currentTime = new Date().getTime();
+        
+        if (currentTime < data.expiryTime) {
+            // Edit mode is still valid
+            editMode = true;
+            
+            // Start timer with remaining time
+            timeRemaining = data.expiryTime - currentTime;
+            startEditModeTimer();
+        } else {
+            // Edit mode expired
+            localStorage.removeItem('editModeData');
+        }
+    }
+}
+// Start edit mode timer
+function startEditModeTimer() {
+    if (editTimer) {
+        clearInterval(editTimer);
+    }
+    
+    if (timerDisplay) {
+        timerDisplay.style.display = 'inline';
+    }
+    
+    editTimer = setInterval(() => {
+        timeRemaining -= 1000; // Kurangi 1 detik
+        
+        if (timeRemaining <= 0) {
+            // Timer expired, exit edit mode
+            exitEditMode();
+            clearInterval(editTimer);
+        } else {
+            // Update timer display
+            const minutes = Math.floor(timeRemaining / 60000);
+            const seconds = Math.floor((timeRemaining % 60000) / 1000);
+            if (timerDisplay) {
+                timerDisplay.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }
+    }, 1000);
+}
+// Play sound for correct answer
+function playCorrectSound() {
+    // Create audio context for correct sound
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+    oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+    oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
+    
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.5);
+}
+// Play sound for incorrect answer
+function playIncorrectSound() {
+    // Create audio context for incorrect sound
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(220, audioContext.currentTime); // A3
+    oscillator.frequency.setValueAtTime(196, audioContext.currentTime + 0.1); // G3
+    
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.5);
+}
+// Speak text with Indonesian voice
+function speakText(text) {
+    if (soundEnabled && 'speechSynthesis' in window) {
+        // Cancel any ongoing speech
+        speechSynthesis.cancel();
+        
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'id-ID';
+        utterance.rate = 0.9;
+        utterance.pitch = 1;
+        speechSynthesis.speak(utterance);
+    }
+}
+// Toggle sound on/off
+function toggleSound() {
+    soundEnabled = !soundEnabled;
+    if (soundToggle) {
+        if (soundEnabled) {
+            soundToggle.innerHTML = '<i class="bi bi-volume-up-fill"></i>';
+            soundToggle.classList.add('active');
+        } else {
+            soundToggle.innerHTML = '<i class="bi bi-volume-mute-fill"></i>';
+            soundToggle.classList.remove('active');
+            // Cancel any ongoing speech
+            if ('speechSynthesis' in window) {
+                speechSynthesis.cancel();
+            }
+        }
+    }
+}
+// Reset to start screen
+function resetToStartScreen() {
+    if (startQuizContainer) startQuizContainer.style.display = 'block';
+    if (quizContainer) quizContainer.style.display = 'none';
+    if (progressNav) progressNav.style.display = 'none';
+    
+    // Reset form
+    if (userName) userName.value = '';
+    if (quizDuration) quizDuration.value = '';
+    
+    // Reset quiz data
+    currentQuestionIndex = 0;
+    score = 0;
+    correctAnswers = 0;
+    incorrectAnswers = 0;
+    userAnswers = [];
+    updateScoreIndicators();
+}
+// Start quiz
+function startQuiz() {
+    const name = userName ? userName.value.trim() : '';
+    const duration = quizDuration ? parseInt(quizDuration.value) : 0;
+    
+    if (!name) {
+        alert('Silakan masukkan nama Anda!');
+        return;
+    }
+    
+    if (!duration || duration <= 0) {
+        alert('Silakan masukkan durasi kuis yang valid!');
+        return;
+    }
+    
+    // Load package data if not already loaded
+    if (quizData.length === 0) {
+        loadPackageData(currentPackageNumber).then(data => {
+            if (!data) {
+                alert(`Gagal memuat paket ${currentPackageNumber}. Silakan refresh halaman.`);
+                return;
+            }
+            quizData = data;
+            initializeQuiz(name, duration);
+        });
+    } else {
+        initializeQuiz(name, duration);
+    }
+}
+// Initialize quiz with name and duration
+function initializeQuiz(name, duration) {
+    // Set user name
+    if (userNameResult) userNameResult.textContent = name;
+    
+    // Calculate time per question
+    questionTimeLimit = (duration * 60) / quizData.length; // in seconds
+    
+    // Reset quiz data
+    currentQuestionIndex = 0;
+    score = 0;
+    correctAnswers = 0;
+    incorrectAnswers = 0;
+    userAnswers = [];
+    updateScoreIndicators();
+    
+    // Show quiz container and hide start form
+    if (startQuizContainer) startQuizContainer.style.display = 'none';
+    if (quizContainer) quizContainer.style.display = 'block';
+    if (progressNav) progressNav.style.display = 'block';
+    
+    // Set total questions
+    if (totalQuestionsSpan) totalQuestionsSpan.textContent = quizData.length;
+    
+    // Record start time
+    quizStartTime = new Date();
+    
+    // Show first question
+    showQuestion();
+    updateProgress();
+    
+    // Start question timer
+    startQuestionTimer();
+}
+// Start question timer
+function startQuestionTimer() {
+    // Reset question time remaining
+    questionTimeRemaining = questionTimeLimit;
+    
+    // Clear existing timer
+    if (questionTimer) {
+        clearInterval(questionTimer);
+    }
+    
+    // Update timer display
+    updateQuestionTimerDisplay();
+    
+    // Start new timer
+    questionTimer = setInterval(() => {
+        questionTimeRemaining--;
+        
+        // Update timer display
+        updateQuestionTimerDisplay();
+        
+        // Check if time is up
+        if (questionTimeRemaining <= 0) {
+            // Time's up, move to next question
+            clearInterval(questionTimer);
+            advanceToNextQuestion();
+        }
+    }, 1000);
+}
+// Update question timer display
+function updateQuestionTimerDisplay() {
+    if (timerText) {
+        const minutes = Math.floor(questionTimeRemaining / 60);
+        const seconds = Math.floor(questionTimeRemaining % 60);
+        timerText.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+        // Add warning class if less than 10 seconds
+        if (quizTimer) {
+            if (questionTimeRemaining <= 10) {
+                quizTimer.classList.add('warning');
+            } else {
+                quizTimer.classList.remove('warning');
+            }
+        }
+    }
+}
+// Update score indicators
+function updateScoreIndicators() {
+    if (correctCount) correctCount.textContent = correctAnswers;
+    if (incorrectCount) incorrectCount.textContent = incorrectAnswers;
+    if (navCorrectCount) navCorrectCount.textContent = correctAnswers;
+    if (navIncorrectCount) navIncorrectCount.textContent = incorrectAnswers;
+}
+// Show current question
+function showQuestion() {
+    if (!questionText || !optionsContainer || !quizData || currentQuestionIndex >= quizData.length) return;
+    
+    const question = quizData[currentQuestionIndex];
+    questionText.textContent = question.Soal;
+    if (currentQuestionSpan) currentQuestionSpan.textContent = currentQuestionIndex + 1;
+    
+    // Speak the question if sound is enabled
+    if (soundEnabled) {
+        setTimeout(() => {
+            speakText(question.Soal);
+        }, 500);
+    }
+    
+    // Clear previous options
+    optionsContainer.innerHTML = '';
+    
+    // Get options
+    const options = question.Opsi.split(';');
+    
+    // Create option buttons
+    options.forEach((option, index) => {
+        const optionDiv = document.createElement('div');
+        optionDiv.className = 'form-check';
+        
+        const optionInput = document.createElement('input');
+        optionInput.className = 'form-check-input';
+        optionInput.type = 'radio';
+        optionInput.name = 'questionOption';
+        optionInput.id = `option${index}`;
+        optionInput.value = option;
+        
+        const optionLabel = document.createElement('label');
+        optionLabel.className = 'form-check-label option-button';
+        optionLabel.htmlFor = `option${index}`;
+        
+        const optionText = document.createElement('span');
+        optionText.className = 'option-text';
+        optionText.textContent = option;
+        
+        optionLabel.appendChild(optionText);
+        optionDiv.appendChild(optionInput);
+        optionDiv.appendChild(optionLabel);
+        optionsContainer.appendChild(optionDiv);
+        
+        // Add click event to option
+        optionLabel.addEventListener('click', () => {
+            // Only process if options are not disabled
+            if (!optionInput.disabled) {
+                optionInput.checked = true;
+                handleAnswerSelect(option, optionDiv);
+            }
+        });
+        
+        optionInput.addEventListener('change', () => {
+            // Only process if options are not disabled
+            if (!optionInput.disabled) {
+                handleAnswerSelect(option, optionDiv);
+            }
+        });
+    });
+}
+// Handle answer selection
+function handleAnswerSelect(answer, optionDiv) {
+    // Clear question timer
+    if (questionTimer) {
+        clearInterval(questionTimer);
+    }
+    
+    userAnswers[currentQuestionIndex] = answer;
+    
+    // Show feedback
+    const question = quizData[currentQuestionIndex];
+    const isCorrect = answer === question.Kunci;
+    
+    // Clear previous feedback
+    document.querySelectorAll('.form-check').forEach(div => {
+        div.classList.remove('feedback-correct', 'feedback-incorrect');
+    });
+    
+    if (isCorrect) {
+        optionDiv.classList.add('feedback-correct');
+        score++;
+        correctAnswers++;
+        playCorrectSound();
+        if (soundEnabled) {
+            speakText("Jawaban benar!");
+        }
+    } else {
+        optionDiv.classList.add('feedback-incorrect');
+        incorrectAnswers++;
+        playIncorrectSound();
+        if (soundEnabled) {
+            speakText("Jawaban salah!");
+        }
+    }
+    
+    // Update score indicators immediately
+    updateScoreIndicators();
+    
+    // Disable all options after selection
+    disableAllOptions();
+    
+    // Auto advance to next question after a short delay
+    setTimeout(() => {
+        advanceToNextQuestion();
+    }, 1500); // 1.5 detik delay
+}
+// Disable all options
+function disableAllOptions() {
+    const allInputs = document.querySelectorAll('input[name="questionOption"]');
+    const allLabels = document.querySelectorAll('.option-button');
+    
+    allInputs.forEach(input => {
+        input.disabled = true;
+    });
+    
+    allLabels.forEach(label => {
+        label.classList.add('disabled');
+    });
+}
+// Advance to next question or show results
+function advanceToNextQuestion() {
+    // Move to next question or show results
+    currentQuestionIndex++;
+    updateProgress();
+    
+    if (currentQuestionIndex < quizData.length) {
+        showQuestion();
+        startQuestionTimer();
+    } else {
+        showResults();
+    }
+}
+// Update progress bar
+function updateProgress() {
+    if (progressBar) {
+        const progress = ((currentQuestionIndex + 1) / quizData.length) * 100;
+        progressBar.style.width = `${progress}%`;
+    }
+}
+// Show quiz results
+function showResults() {
+    // Record end time
+    quizEndTime = new Date();
+    
+    // Calculate time spent
+    const timeDiff = quizEndTime - quizStartTime;
+    const minutes = Math.floor(timeDiff / 60000);
+    const seconds = Math.floor((timeDiff % 60000) / 1000);
+    const timeSpentText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    
+    if (quizArea && resultArea) {
+        quizArea.style.display = 'none';
+        resultArea.style.display = 'block';
+        
+        if (scoreValue && totalScore) {
+            scoreValue.textContent = score;
+            totalScore.textContent = quizData.length;
+            const percentage = Math.round((score / quizData.length) * 100);
+            if (percentageValue) percentageValue.textContent = percentage;
+        }
+        
+        if (timeSpent) {
+            timeSpent.textContent = timeSpentText;
+        }
+        
+        // Speak the results
+        setTimeout(() => {
+            speakResults();
+        }, 500);
+    }
+}
+// Speak the results in Indonesian
+function speakResults() {
+    const percentage = Math.round((score / quizData.length) * 100);
+    let message = `Selamat! Anda telah menyelesaikan kuis. `;
+    message += `Dari total ${quizData.length} soal, Anda menjawab benar ${score} soal dan salah ${quizData.length - score} soal. `;
+    
+    if (percentage >= 90) {
+        message += `Nilai Anda sangat bagus, ${percentage} persen. Pertahankan prestasi Anda!`;
+    } else if (percentage >= 70) {
+        message += `Nilai Anda bagus, ${percentage} persen. Tingkatkan lagi belajar Anda!`;
+    } else if (percentage >= 50) {
+        message += `Nilai Anda cukup, ${percentage} persen. Perbanyak lagi latihan soal!`;
+    } else {
+        message += `Nilai Anda ${percentage} persen. Jangan menyerah, terus belajar dan mencoba lagi!`;
+    }
+    
+    speakText(message);
+}
+// Restart quiz
+function restartQuiz() {
+    resetToStartScreen();
+}
+// Toggle edit mode
+function toggleEditModeHandler() {
+    if (editMode) {
+        // If already in edit mode, exit without PIN
+        exitEditMode();
+    } else {
+        // Show PIN modal to enter edit mode
+        if (pinModal) {
+            pinModal.style.display = 'block';
+            if (pinInput) {
+                pinInput.value = '';
+                pinInput.focus();
+            }
+        }
+    }
+}
+// Show edit key modal
+function showEditKeyModal() {
+    if (editMode && currentQuestionIndex < quizData.length && editKeyModal && currentQuestionText && answerKeyEditor) {
+        const question = quizData[currentQuestionIndex];
+        currentQuestionText.textContent = question.Soal;
+        
+        // Clear and populate answer key options
+        answerKeyEditor.innerHTML = '';
+        const options = question.Opsi.split(';');
+        
+        options.forEach(option => {
+            const optionElement = document.createElement('option');
+            optionElement.value = option;
+            optionElement.textContent = option;
+            if (option === question.Kunci) {
+                optionElement.selected = true;
+            }
+            answerKeyEditor.appendChild(optionElement);
+        });
+        
+        // Show modal
+        editKeyModal.style.display = 'block';
+    }
+}
+// Submit PIN
+function submitPinHandler() {
+    if (!pinInput) return;
+    
+    const enteredPin = pinInput.value;
+    
+    if (enteredPin === defaultPin) {
+        // Activate edit mode
+        editMode = true;
+        if (pinModal) pinModal.style.display = 'none';
+        
+        // Set expiry time and save to localStorage
+        const expiryTime = new Date().getTime() + EDIT_MODE_DURATION;
+        localStorage.setItem('editModeData', JSON.stringify({
+            expiryTime: expiryTime
+        }));
+        
+        // Start timer
+        timeRemaining = EDIT_MODE_DURATION;
+        startEditModeTimer();
+    } else {
+        alert('PIN salah! Akses ditolak.');
+        if (pinInput) {
+            pinInput.value = '';
+            pinInput.focus();
+        }
+    }
+}
+// Cancel PIN
+function cancelPinHandler() {
+    if (pinModal) {
+        pinModal.style.display = 'none';
+    }
+}
+// Exit edit mode
+function exitEditMode() {
+    editMode = false;
+    if (timerDisplay) timerDisplay.style.display = 'none';
+    
+    // Clear timer and localStorage
+    if (editTimer) {
+        clearInterval(editTimer);
+    }
+    localStorage.removeItem('editModeData');
+}
+// Save key changes
+function saveKeyChangesHandler() {
+    if (editMode && currentQuestionIndex < quizData.length && answerKeyEditor) {
+        const selectedKey = answerKeyEditor.value;
+        quizData[currentQuestionIndex].Kunci = selectedKey;
+        
+        // Close modal
+        if (editKeyModal) editKeyModal.style.display = 'none';
+        
+        // Show success message
+        alert('Kunci jawaban telah diperbarui!');
+    }
+}
+// Cancel key edit
+function cancelKeyEditHandler() {
+    if (editKeyModal) {
+        editKeyModal.style.display = 'none';
+    }
+}
+// Save changes to answer keys
+function saveChangesHandler() {
+    // In a real application, you would save this to a server or local storage
+    alert('Perubahan kunci jawaban telah disimpan!');
+}
+// Reset quiz
+function resetQuizHandler() {
+    if (confirm('Apakah Anda yakin ingin mereset kuis? Semua jawaban akan dihapus.')) {
+        // Reset to original data
+        loadPackageData(currentPackageNumber).then(data => {
+            if (data) {
+                quizData = data;
+                resetToStartScreen();
+                alert('Kuis telah direset ke data awal!');
+            }
+        });
+    }
+}
+// Show package modal
+function showPackageModal() {
+    if (packageModal) {
+        packageModal.style.display = 'block';
+        
+        // Update active package item
+        packageItems.forEach(item => {
+            const packageNumber = parseInt(item.dataset.package);
+            if (packageNumber === currentPackageNumber) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+    }
+}
+// Cancel package selection
+function cancelPackageHandler() {
+    if (packageModal) {
+        packageModal.style.display = 'none';
+    }
+}
+// Handle navigation clicks
+function handleNavigationClick(e, navId) {
+    e.preventDefault();
+    
+    // Don't process clicks on score items
+    if (navId === homeNav || navId === resultNav) {
+        if (navId.classList.contains('nav-score-item')) {
+            return;
+        }
+    }
+    
+    // Remove active class from all nav items
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    // Add active class to clicked nav item
+    if (navId) {
+        navId.classList.add('active');
+    }
+    
+    // Handle specific navigation actions
+    if (navId === homeNav) {
+        // If on results page, go back to quiz
+        if (resultArea && resultArea.style.display !== 'none') {
+            resetToStartScreen();
+        }
+    } else if (navId === resultNav) {
+        // If quiz is in progress, show results
+        if (quizArea && quizArea.style.display !== 'none' && (correctAnswers > 0 || incorrectAnswers > 0)) {
+            showResults();
+        }
+    } else if (navId === packageNav) {
+        showPackageModal();
+    } else if (navId === keyNav) {
+        if (editMode) {
+            showEditKeyModal();
+        } else {
+            toggleEditModeHandler();
+        }
+    }
+}
+// Initialize event listeners
+function initEventListeners() {
+    if (restartButton) restartButton.addEventListener('click', restartQuiz);
+    if (speakResult) speakResult.addEventListener('click', speakResults);
+    if (soundToggle) soundToggle.addEventListener('click', toggleSound);
+    if (startQuizBtn) startQuizBtn.addEventListener('click', startQuiz);
+    
+    // Navigation event listeners
+    if (homeNav) {
+        homeNav.addEventListener('click', (e) => {
+            handleNavigationClick(e, homeNav);
+        });
+    }
+    
+    if (resultNav) {
+        resultNav.addEventListener('click', (e) => {
+            handleNavigationClick(e, resultNav);
+        });
+    }
+    
+    if (packageNav) {
+        packageNav.addEventListener('click', (e) => {
+            handleNavigationClick(e, packageNav);
+        });
+    }
+    
+    if (keyNav) {
+        keyNav.addEventListener('click', (e) => {
+            handleNavigationClick(e, keyNav);
+        });
+    }
+    
+    if (saveChanges) saveChanges.addEventListener('click', saveChangesHandler);
+    if (resetQuiz) resetQuiz.addEventListener('click', resetQuizHandler);
+    if (submitPin) submitPin.addEventListener('click', submitPinHandler);
+    if (cancelPin) cancelPin.addEventListener('click', cancelPinHandler);
+    if (saveKeyChanges) saveKeyChanges.addEventListener('click', saveKeyChangesHandler);
+    if (cancelKeyEdit) cancelKeyEdit.addEventListener('click', cancelKeyEditHandler);
+    if (cancelPackage) cancelPackage.addEventListener('click', cancelPackageHandler);
+    
+    // Package item click handlers
+    packageItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const packageNumber = parseInt(item.dataset.package);
+            switchPackage(packageNumber);
+        });
+    });
+    
+    // Close modal when clicking outside
+    window.addEventListener('click', (event) => {
+        if (event.target === pinModal) {
+            if (pinModal) pinModal.style.display = 'none';
+        }
+        if (event.target === editKeyModal) {
+            if (editKeyModal) editKeyModal.style.display = 'none';
+        }
+        if (event.target === packageModal) {
+            if (packageModal) packageModal.style.display = 'none';
+        }
+    });
+    
+    // Handle Enter key in PIN input
+    if (pinInput) {
+        pinInput.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') {
+                submitPinHandler();
+            }
+        });
+    }
+    
+    // Handle Enter key in start quiz form
+    if (userName && quizDuration) {
+        userName.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') {
+                startQuiz();
+            }
+        });
+        
+        quizDuration.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') {
+                startQuiz();
+            }
+        });
+    }
+}
+// Initialize the application
+async function initApp() {
+    // Initialize DOM elements
+    initDOMElements();
+    
+    // Initialize event listeners
+    initEventListeners();
+    
+    // Set initial sound state
+    if (soundToggle) {
+        soundToggle.innerHTML = '<i class="bi bi-volume-up-fill"></i>';
+        soundToggle.classList.add('active');
+    }
+    
+    // Load current package from localStorage
+    loadCurrentPackage();
+    
+    // Check edit mode status
+    checkEditModeStatus();
+    
+    // Load package data but don't start quiz yet
+    quizData = await loadPackageData(currentPackageNumber);
+    if (!quizData) {
+        alert(`Gagal memuat paket ${currentPackageNumber}. Silakan refresh halaman.`);
+    }
+}
+// Start the application when DOM is loaded
+document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
