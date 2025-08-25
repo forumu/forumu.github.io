@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengaturan - Depot Air Minum Isi Ulang</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .sidebar-mobile {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        .sidebar-mobile.active {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-teal-700 text-white shadow-lg">
+            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-tint text-3xl"></i>
+                    <h1 id="namaUsahaHeader" class="text-2xl font-bold">Depot Air Minum Isi Ulang</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span id="currentDate" class="text-sm"></span>
+                    <button id="btnSidebarToggle" class="md:hidden">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <div class="flex flex-1">
+            <!-- Sidebar (Desktop) -->
+            <aside id="sidebar" class="hidden md:block w-64 bg-white shadow-md">
+                <nav class="py-4">
+                    <a href="kasir.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-cash-register"></i>
+                        <span>Kasir</span>
+                    </a>
+                    <a href="produk.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-box"></i>
+                        <span>Produk</span>
+                    </a>
+                    <a href="stok.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-water"></i>
+                        <span>Stok Air</span>
+                    </a>
+                    <a href="pelanggan.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-users"></i>
+                        <span>Pelanggan</span>
+                    </a>
+                    <a href="keuangan.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>Keuangan</span>
+                    </a>
+                    <a href="laporan.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Laporan</span>
+                    </a>
+                    <a href="pengaturan.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800 font-semibold bg-teal-100">
+                        <i class="fas fa-cog"></i>
+                        <span>Pengaturan</span>
+                    </a>
+                </nav>
+            </aside>
+            
+            <!-- Sidebar (Mobile) -->
+            <aside id="sidebarMobile" class="sidebar-mobile fixed top-0 left-0 z-50 w-64 h-full bg-white shadow-lg md:hidden">
+                <div class="flex justify-between items-center p-4 border-b">
+                    <h2 class="text-lg font-semibold text-teal-800">Menu</h2>
+                    <button id="btnCloseSidebar" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <nav class="py-4">
+                    <a href="kasir.html" class="sidebar-btn-mobile w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-cash-register"></i>
+                        <span>Kasir</span>
+                    </a>
+                    <a href="produk.html" class="sidebar-btn-mobile w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-box"></i>
+                        <span>Produk</span>
+                    </a>
+                    <a href="stok.html" class="sidebar-btn-mobile w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-water"></i>
+                        <span>Stok Air</span>
+                    </a>
+                    <a href="pelanggan.html" class="sidebar-btn-mobile w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-users"></i>
+                        <span>Pelanggan</span>
+                    </a>
+                    <a href="keuangan.html" class="sidebar-btn-mobile w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>Keuangan</span>
+                    </a>
+                    <a href="laporan.html" class="sidebar-btn-mobile w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Laporan</span>
+                    </a>
+                    <a href="pengaturan.html" class="sidebar-btn-mobile w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800 font-semibold bg-teal-100">
+                        <i class="fas fa-cog"></i>
+                        <span>Pengaturan</span>
+                    </a>
+                </nav>
+            </aside>
+            
+            <!-- Overlay untuk sidebar mobile -->
+            <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden"></div>
+            
+            <!-- Main Content Area -->
+            <main class="flex-1 p-4 md:p-6">
+                <!-- Tab Content: Pengaturan -->
+                <div id="pengaturan" class="tab-content active">
+                    <div class="bg-white rounded-xl shadow-md p-6">
+                        <h2 class="text-2xl font-bold text-teal-800 mb-6">Pengaturan Sistem</h2>
+                        
+                        <form id="formPengaturan" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-gray-700 mb-2">Nama Usaha</label>
+                                <input type="text" id="pengaturanNamaUsaha" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                                <p class="text-sm text-gray-500 mt-1">Nama usaha yang akan ditampilkan di header aplikasi</p>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 mb-2">Kapasitas Toren (Liter)</label>
+                                <input type="number" id="pengaturanKapasitasToren" min="1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                                <p class="text-sm text-gray-500 mt-1">Kapasitas maksimal tangki air</p>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 mb-2">Biaya Suplai Air Tangki (Rp)</label>
+                                <input type="number" id="pengaturanBiayaSuplai" min="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                                <p class="text-sm text-gray-500 mt-1">Biaya untuk mengisi tangki air penuh</p>
+                            </div>
+                            <div class="flex items-end space-x-3">
+                                <button type="submit" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                                    <i class="fas fa-save mr-2"></i>Simpan Pengaturan
+                                </button>
+                                <button type="button" id="btnResetPengaturan" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                                    <i class="fas fa-undo mr-2"></i>Reset Pengaturan
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <div class="mt-8 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                            <h3 class="font-bold text-yellow-800 mb-2">Informasi Penting</h3>
+                            <p class="text-yellow-700 text-sm">Mengubah pengaturan kapasitas toren atau biaya suplai akan mereset stok air sisa liter dan total biaya suplai. Data liter terpakai akan tetap disesuaikan dengan data transaksi.</p>
+                        </div>
+                        
+                        <div class="mt-4 p-4 bg-red-50 rounded-lg border border-red-200">
+                            <h3 class="font-bold text-red-800 mb-2">Peringatan Reset</h3>
+                            <p class="text-red-700 text-sm">Tombol "Reset Pengaturan" akan menghapus semua data dan mengembalikan aplikasi ke keadaan awal seperti pertama kali digunakan. Tindakan ini tidak dapat dibatalkan.</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+        
+        <!-- Mobile Bottom Navigation -->
+        <nav id="mobileBottomNav" class="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200">
+            <div class="flex justify-around">
+                <a href="kasir.html" class="flex-1 py-3 text-center text-gray-600">
+                    <i class="fas fa-cash-register text-xl"></i>
+                    <div class="text-xs mt-1">Kasir</div>
+                </a>
+                <a href="produk.html" class="flex-1 py-3 text-center text-gray-600">
+                    <i class="fas fa-box text-xl"></i>
+                    <div class="text-xs mt-1">Produk</div>
+                </a>
+                <a href="pelanggan.html" class="flex-1 py-3 text-center text-gray-600">
+                    <i class="fas fa-users text-xl"></i>
+                    <div class="text-xs mt-1">Pelanggan</div>
+                </a>
+                <a href="laporan.html" class="flex-1 py-3 text-center text-gray-600">
+                    <i class="fas fa-chart-line text-xl"></i>
+                    <div class="text-xs mt-1">Laporan</div>
+                </a>
+            </div>
+        </nav>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Constants for localStorage keys
+            const LS_KEYS = {
+                produk: 'depot_produk',
+                stok: 'depot_stok',
+                transaksi: 'depot_transaksi',
+                pelanggan: 'depot_pelanggan',
+                pengeluaran: 'depot_pengeluaran',
+                pengaturan: 'depot_pengaturan',
+                pembayaranHutang: 'depot_pembayaran_hutang'
+            };
+            
+            // Default data
+            const defaultProduk = [
+                { id: 'p1', nama: 'Air isi ulang 19L', harga: 6000, jenis: 'air_isi_ulang', liter: 19 },
+                { id: 'p2', nama: 'Air isi ulang 15L', harga: 4000, jenis: 'air_isi_ulang', liter: 15 },
+                { id: 'p3', nama: 'Galon baru', harga: 50000, jenis: 'galon_baru', liter: 0 },
+            ];
+            const defaultPengaturan = {
+                namaUsaha: 'Depot Air Minum Isi Ulang',
+                kapasitasToren: 7700,
+                biayaSuplai: 300000
+            };
+            
+            // Data variables
+            let produk = [];
+            let stok = {};
+            let transaksi = [];
+            let pelanggan = [];
+            let pengeluaran = [];
+            let pengaturan = {...defaultPengaturan};
+            let pembayaranHutang = [];
+            
+            // DOM elements
+            const formPengaturan = document.getElementById('formPengaturan');
+            const pengaturanNamaUsaha = document.getElementById('pengaturanNamaUsaha');
+            const pengaturanKapasitasToren = document.getElementById('pengaturanKapasitasToren');
+            const pengaturanBiayaSuplai = document.getElementById('pengaturanBiayaSuplai');
+            const btnResetPengaturan = document.getElementById('btnResetPengaturan');
+            const namaUsahaHeader = document.getElementById('namaUsahaHeader');
+            
+            // Mobile sidebar elements
+            const btnSidebarToggle = document.getElementById('btnSidebarToggle');
+            const sidebarMobile = document.getElementById('sidebarMobile');
+            const btnCloseSidebar = document.getElementById('btnCloseSidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            
+            // Set current date
+            document.getElementById('currentDate').textContent = new Date().toLocaleDateString('id-ID', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            // Mobile sidebar functionality
+            function openSidebar() {
+                sidebarMobile.classList.add('active');
+                sidebarOverlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling when sidebar is open
+            }
+            
+            function closeSidebar() {
+                sidebarMobile.classList.remove('active');
+                sidebarOverlay.classList.add('hidden');
+                document.body.style.overflow = ''; // Enable scrolling again
+            }
+            
+            // Event listeners for mobile sidebar
+            if (btnSidebarToggle) {
+                btnSidebarToggle.addEventListener('click', openSidebar);
+            }
+            
+            if (btnCloseSidebar) {
+                btnCloseSidebar.addEventListener('click', closeSidebar);
+            }
+            
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', closeSidebar);
+            }
+            
+            // Close sidebar when clicking on a menu item
+            document.querySelectorAll('.sidebar-btn-mobile').forEach(item => {
+                item.addEventListener('click', closeSidebar);
+            });
+            
+            // Utility functions
+            function saveData() {
+                try {
+                    localStorage.setItem(LS_KEYS.produk, JSON.stringify(produk));
+                    localStorage.setItem(LS_KEYS.stok, JSON.stringify(stok));
+                    localStorage.setItem(LS_KEYS.transaksi, JSON.stringify(transaksi));
+                    localStorage.setItem(LS_KEYS.pelanggan, JSON.stringify(pelanggan));
+                    localStorage.setItem(LS_KEYS.pengeluaran, JSON.stringify(pengeluaran));
+                    localStorage.setItem(LS_KEYS.pengaturan, JSON.stringify(pengaturan));
+                    localStorage.setItem(LS_KEYS.pembayaranHutang, JSON.stringify(pembayaranHutang));
+                } catch (e) {
+                    console.error('Error saving data to localStorage:', e);
+                }
+            }
+            
+            function loadData() {
+                try {
+                    const produkLS = localStorage.getItem(LS_KEYS.produk);
+                    const stokLS = localStorage.getItem(LS_KEYS.stok);
+                    const transaksiLS = localStorage.getItem(LS_KEYS.transaksi);
+                    const pelangganLS = localStorage.getItem(LS_KEYS.pelanggan);
+                    const pengeluaranLS = localStorage.getItem(LS_KEYS.pengeluaran);
+                    const pengaturanLS = localStorage.getItem(LS_KEYS.pengaturan);
+                    const pembayaranHutangLS = localStorage.getItem(LS_KEYS.pembayaranHutang);
+                    
+                    // Load data with fallbacks to defaults
+                    produk = produkLS ? JSON.parse(produkLS) : [...defaultProduk];
+                    transaksi = transaksiLS ? JSON.parse(transaksiLS) : [];
+                    pelanggan = pelangganLS ? JSON.parse(pelangganLS) : [];
+                    pengeluaran = pengeluaranLS ? JSON.parse(pengeluaranLS) : [];
+                    pengaturan = pengaturanLS ? JSON.parse(pengaturanLS) : {...defaultPengaturan};
+                    pembayaranHutang = pembayaranHutangLS ? JSON.parse(pembayaranHutangLS) : [];
+                    
+                    // Load stock if exists
+                    if (stokLS) {
+                        stok = JSON.parse(stokLS);
+                    }
+                    
+                    // Update header with business name
+                    if (namaUsahaHeader) {
+                        namaUsahaHeader.textContent = pengaturan.namaUsaha;
+                    }
+                    
+                    // Update settings form
+                    if (pengaturanNamaUsaha) {
+                        pengaturanNamaUsaha.value = pengaturan.namaUsaha;
+                    }
+                    if (pengaturanKapasitasToren) {
+                        pengaturanKapasitasToren.value = pengaturan.kapasitasToren;
+                    }
+                    if (pengaturanBiayaSuplai) {
+                        pengaturanBiayaSuplai.value = pengaturan.biayaSuplai;
+                    }
+                } catch (e) {
+                    console.error('Error loading data from localStorage:', e);
+                    // Initialize with defaults if there's an error
+                    produk = [...defaultProduk];
+                    stok = {};
+                    transaksi = [];
+                    pelanggan = [];
+                    pengeluaran = [];
+                    pengaturan = {...defaultPengaturan};
+                    pembayaranHutang = [];
+                    
+                    // Update UI
+                    if (namaUsahaHeader) {
+                        namaUsahaHeader.textContent = pengaturan.namaUsaha;
+                    }
+                    if (pengaturanNamaUsaha) {
+                        pengaturanNamaUsaha.value = pengaturan.namaUsaha;
+                    }
+                    if (pengaturanKapasitasToren) {
+                        pengaturanKapasitasToren.value = pengaturan.kapasitasToren;
+                    }
+                    if (pengaturanBiayaSuplai) {
+                        pengaturanBiayaSuplai.value = pengaturan.biayaSuplai;
+                    }
+                }
+            }
+            
+            function resetAllData() {
+                if (confirm('Apakah Anda yakin ingin mereset semua data? Tindakan ini tidak dapat dibatalkan dan akan menghapus semua transaksi, pelanggan, dan pengaturan yang telah disimpan.')) {
+                    try {
+                        // Clear all localStorage
+                        Object.values(LS_KEYS).forEach(key => {
+                            localStorage.removeItem(key);
+                        });
+                        
+                        // Reset all variables to defaults
+                        produk = [...defaultProduk];
+                        stok = {};
+                        transaksi = [];
+                        pelanggan = [];
+                        pengeluaran = [];
+                        pengaturan = {...defaultPengaturan};
+                        pembayaranHutang = [];
+                        
+                        // Update UI
+                        if (namaUsahaHeader) {
+                            namaUsahaHeader.textContent = pengaturan.namaUsaha;
+                        }
+                        if (pengaturanNamaUsaha) {
+                            pengaturanNamaUsaha.value = pengaturan.namaUsaha;
+                        }
+                        if (pengaturanKapasitasToren) {
+                            pengaturanKapasitasToren.value = pengaturan.kapasitasToren;
+                        }
+                        if (pengaturanBiayaSuplai) {
+                            pengaturanBiayaSuplai.value = pengaturan.biayaSuplai;
+                        }
+                        
+                        alert('Semua data telah direset ke pengaturan awal. Aplikasi akan dimuat ulang.');
+                        location.reload();
+                    } catch (e) {
+                        console.error('Error resetting data:', e);
+                        alert('Terjadi kesalahan saat mereset data. Silakan coba lagi.');
+                    }
+                }
+            }
+            
+            // Event listeners
+            if (formPengaturan) {
+                formPengaturan.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const namaUsaha = pengaturanNamaUsaha.value.trim();
+                    const kapasitasToren = parseInt(pengaturanKapasitasToren.value);
+                    const biayaSuplai = parseInt(pengaturanBiayaSuplai.value);
+                    
+                    if (!namaUsaha || isNaN(kapasitasToren) || kapasitasToren <= 0 || isNaN(biayaSuplai) || biayaSuplai < 0) {
+                        alert('Mohon isi semua pengaturan dengan benar.');
+                        return;
+                    }
+                    
+                    // Check if settings have changed
+                    const kapasitasChanged = kapasitasToren !== pengaturan.kapasitasToren;
+                    const biayaChanged = biayaSuplai !== pengaturan.biayaSuplai;
+                    
+                    if (kapasitasChanged || biayaChanged) {
+                        if (!confirm('Mengubah pengaturan ini akan mereset stok air sisa liter dan total biaya suplai. Data liter terpakai akan tetap disesuaikan dengan data transaksi. Apakah Anda yakin?')) {
+                            return;
+                        }
+                    }
+                    
+                    // Update settings
+                    pengaturan.namaUsaha = namaUsaha;
+                    pengaturan.kapasitasToren = kapasitasToren;
+                    pengaturan.biayaSuplai = biayaSuplai;
+                    
+                    // Update header
+                    if (namaUsahaHeader) {
+                        namaUsahaHeader.textContent = namaUsaha;
+                    }
+                    
+                    // Reset stock if settings changed
+                    if (kapasitasChanged || biayaChanged) {
+                        // Initialize stock with new capacity
+                        stok = {
+                            sisaLiter: kapasitasToren,
+                            literTerpakai: stok.literTerpakai || 0, // Keep used liters if exists
+                            totalBiayaSuplai: 0, // Reset cost
+                            kapasitasToren: kapasitasToren
+                        };
+                        
+                        // Recalculate total biaya suplai based on liter terpakai
+                        if (stok.literTerpakai > 0) {
+                            const ratio = stok.literTerpakai / kapasitasToren;
+                            stok.totalBiayaSuplai = Math.round(biayaSuplai * ratio);
+                        }
+                    }
+                    
+                    saveData();
+                    alert('Pengaturan berhasil disimpan.');
+                });
+            }
+            
+            if (btnResetPengaturan) {
+                btnResetPengaturan.addEventListener('click', resetAllData);
+            }
+            
+            // Initialize app
+            function init() {
+                try {
+                    loadData();
+                } catch (e) {
+                    console.error('Error initializing app:', e);
+                    alert('Terjadi kesalahan saat memuat aplikasi. Silakan refresh halaman.');
+                }
+            }
+            
+            // Start the app
+            init();
+        });
+    </script>
+</body>
+</html>

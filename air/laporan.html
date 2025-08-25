@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>Laporan - Depot Air Minum Isi Ulang</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        /* Custom styles untuk halaman laporan */
+        #sidebar {
+            height: calc(100vh - 4rem);
+        }
+        #mobileBottomNav {
+            height: 4rem;
+        }
+        /* Styling untuk container chart */
+        canvas {
+            max-height: 300px;
+        }
+        /* Adjustments untuk tampilan responsive */
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        /* Tambahan untuk sidebar mobile */
+        .mobile-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 80%;
+            max-width: 300px;
+            height: 100vh;
+            background-color: white;
+            z-index: 50;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .mobile-sidebar.active {
+            transform: translateX(0);
+        }
+        .mobile-sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 40;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+        .mobile-sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <div class="min-h-screen flex flex-col max-w-screen overflow-x-hidden">
+        <!-- Header -->
+        <header class="bg-teal-700 text-white shadow-lg">
+            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-tint text-3xl"></i>
+                    <h1 id="namaUsahaHeader" class="text-2xl font-bold">Depot Air Minum Isi Ulang</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span id="currentDate" class="text-sm"></span>
+                    <button id="btnSidebarToggle" class="md:hidden">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Mobile Sidebar -->
+        <div id="mobileSidebar" class="mobile-sidebar md:hidden">
+            <div class="p-4">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-teal-800">Menu Navigasi</h2>
+                    <button id="btnCloseSidebar" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <nav>
+                    <a href="kasir.html" class="sidebar-btn w-full text-left px-4 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800 rounded-lg mb-2">
+                        <i class="fas fa-cash-register"></i>
+                        <span>Kasir</span>
+                    </a>
+                    <a href="produk.html" class="sidebar-btn w-full text-left px-4 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800 rounded-lg mb-2">
+                        <i class="fas fa-box"></i>
+                        <span>Produk</span>
+                    </a>
+                    <a href="stok.html" class="sidebar-btn w-full text-left px-4 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800 rounded-lg mb-2">
+                        <i class="fas fa-water"></i>
+                        <span>Stok Air</span>
+                    </a>
+                    <a href="pelanggan.html" class="sidebar-btn w-full text-left px-4 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800 rounded-lg mb-2">
+                        <i class="fas fa-users"></i>
+                        <span>Pelanggan</span>
+                    </a>
+                    <a href="keuangan.html" class="sidebar-btn w-full text-left px-4 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800 rounded-lg mb-2">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>Keuangan</span>
+                    </a>
+                    <a href="laporan.html" class="sidebar-btn w-full text-left px-4 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800 font-semibold bg-teal-100 rounded-lg mb-2">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Laporan</span>
+                    </a>
+                    <a href="pengaturan.html" class="sidebar-btn w-full text-left px-4 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800 rounded-lg">
+                        <i class="fas fa-cog"></i>
+                        <span>Pengaturan</span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+        
+        <!-- Mobile Sidebar Overlay -->
+        <div id="mobileSidebarOverlay" class="mobile-sidebar-overlay md:hidden"></div>
+        
+        <!-- Konten Utama -->
+        <div class="flex flex-1 max-w-screen overflow-x-hidden">
+            <!-- Sidebar (Desktop) -->
+            <aside id="sidebar" class="hidden md:block w-64 bg-white shadow-md max-h-screen overflow-y-auto sticky top-0">
+                <nav class="py-4">
+                    <a href="kasir.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-cash-register"></i>
+                        <span>Kasir</span>
+                    </a>
+                    <a href="produk.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-box"></i>
+                        <span>Produk</span>
+                    </a>
+                    <a href="stok.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-water"></i>
+                        <span>Stok Air</span>
+                    </a>
+                    <a href="pelanggan.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-users"></i>
+                        <span>Pelanggan</span>
+                    </a>
+                    <a href="keuangan.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>Keuangan</span>
+                    </a>
+                    <a href="laporan.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800 font-semibold bg-teal-50">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Laporan</span>
+                    </a>
+                    <a href="pengaturan.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-cog"></i>
+                        <span>Pengaturan</span>
+                    </a>
+                </nav>
+            </aside>
+            
+            <!-- Area Konten Utama -->
+            <main class="flex-1 p-4 md:p-6 max-w-full overflow-x-hidden">
+                <div class="bg-white rounded-xl shadow-md p-6 mb-6 max-w-full">
+                    <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
+                        <h2 class="text-2xl font-bold text-teal-800">Laporan Depot Air</h2>
+                        <div class="flex space-x-3 mt-4 md:mt-0">
+                            <button id="btnExportExcel" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-colors flex items-center" aria-label="Export Excel">
+                                <i class="fas fa-file-excel mr-2"></i>Export Excel
+                            </button>
+                            <button id="btnExportPDF" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors flex items-center" aria-label="Export PDF">
+                                <i class="fas fa-file-pdf mr-2"></i>Export PDF
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-2 gap-6 mb-8 max-w-full">
+                        <div class="bg-teal-50 rounded-xl p-5 shadow-sm">
+                            <div class="text-teal-800 font-semibold mb-2">Liter Terpakai</div>
+                            <div id="laporanLiterTerpakai" class="text-3xl font-bold text-teal-700">0 L</div>
+                        </div>
+                        <div class="bg-teal-50 rounded-xl p-5 shadow-sm">
+                            <div class="text-teal-800 font-semibold mb-2">Liter Sisa</div>
+                            <div id="laporanLiterSisa" class="text-3xl font-bold text-teal-700">0 L</div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 max-w-full">
+                        <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                            <h3 class="text-lg font-bold text-teal-800 mb-4">Produk Terlaris</h3>
+                            <ul id="laporanProdukTerlaris" class="space-y-2"></ul>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                            <h3 class="text-lg font-bold text-teal-800 mb-4">Pelanggan Terbanyak</h3>
+                            <ul id="laporanPelangganTerbanyak" class="space-y-2"></ul>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-full">
+                        <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                            <h3 class="text-lg font-bold text-teal-800 mb-4">Grafik Penjualan Harian (30 Hari)</h3>
+                            <canvas id="chartPenjualanHarian"></canvas>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                            <h3 class="text-lg font-bold text-teal-800 mb-4">Grafik Penjualan Bulanan (12 Bulan)</h3>
+                            <canvas id="chartPenjualanBulanan"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+        
+        <!-- Navigasi Bawah untuk Mobile -->
+        <nav id="mobileBottomNav" class="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200">
+            <div class="flex justify-around">
+                <a href="kasir.html" class="flex-1 py-3 text-center text-gray-600" aria-label="Tab Kasir">
+                    <i class="fas fa-cash-register text-xl"></i>
+                    <div class="text-xs mt-1">Kasir</div>
+                </a>
+                <a href="produk.html" class="flex-1 py-3 text-center text-gray-600" aria-label="Tab Produk">
+                    <i class="fas fa-box text-xl"></i>
+                    <div class="text-xs mt-1">Produk</div>
+                </a>
+                <a href="pelanggan.html" class="flex-1 py-3 text-center text-gray-600" aria-label="Tab Pelanggan">
+                    <i class="fas fa-users text-xl"></i>
+                    <div class="text-xs mt-1">Pelanggan</div>
+                </a>
+                <a href="laporan.html" class="flex-1 py-3 text-center text-teal-800 font-semibold" aria-label="Tab Laporan">
+                    <i class="fas fa-chart-line text-xl"></i>
+                    <div class="text-xs mt-1">Laporan</div>
+                </a>
+            </div>
+        </nav>
+    </div>
+    <script>
+        (() => {
+            // Kunci untuk localStorage
+            const LS_KEYS = {
+                produk: 'depot_produk',
+                stok: 'depot_stok',
+                transaksi: 'depot_transaksi',
+                pelanggan: 'depot_pelanggan',
+                pengeluaran: 'depot_pengeluaran',
+                pengaturan: 'depot_pengaturan'
+            };
+            
+            // Data default
+            const defaultProduk = [
+                { id: 'p1', nama: 'Air isi ulang 19L', harga: 6000, hargaPokok: 3000, jenis: 'air_isi_ulang', liter: 19 },
+                { id: 'p2', nama: 'Air isi ulang 15L', harga: 4000, hargaPokok: 2000, jenis: 'air_isi_ulang', liter: 15 },
+                { id: 'p3', nama: 'Galon baru', harga: 50000, hargaPokok: 45000, jenis: 'galon_baru', liter: 0 },
+            ];
+            const defaultStok = {
+                sisaLiter: 0,
+                literTerpakai: 0,
+                totalBiayaSuplai: 0,
+                kapasitasToren: 7700
+            };
+            const defaultPengaturan = {
+                namaUsaha: 'Depot Air Minum Isi Ulang',
+                kapasitasToren: 7700,
+                biayaSuplai: 300000
+            };
+            
+            // Variabel data
+            let produk = [];
+            let stok = {...defaultStok};
+            let transaksi = [];
+            let pelanggan = [];
+            let pengeluaran = [];
+            let pengaturan = {...defaultPengaturan};
+            
+            // Variabel chart
+            let chartPenjualanHarian = null;
+            let chartPenjualanBulanan = null;
+            
+            // Elemen DOM
+            const laporanLiterTerpakaiEl = document.getElementById('laporanLiterTerpakai');
+            const laporanLiterSisaEl = document.getElementById('laporanLiterSisa');
+            const laporanProdukTerlarisEl = document.getElementById('laporanProdukTerlaris');
+            const laporanPelangganTerbanyakEl = document.getElementById('laporanPelangganTerbanyak');
+            const btnExportExcel = document.getElementById('btnExportExcel');
+            const btnExportPDF = document.getElementById('btnExportPDF');
+            const namaUsahaHeader = document.getElementById('namaUsahaHeader');
+            const btnSidebarToggle = document.getElementById('btnSidebarToggle');
+            const mobileSidebar = document.getElementById('mobileSidebar');
+            const mobileSidebarOverlay = document.getElementById('mobileSidebarOverlay');
+            const btnCloseSidebar = document.getElementById('btnCloseSidebar');
+            
+            // Set tanggal saat ini
+            document.getElementById('currentDate').textContent = new Date().toLocaleDateString('id-ID', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            // Event listener untuk toggle sidebar mobile
+            btnSidebarToggle.addEventListener('click', () => {
+                mobileSidebar.classList.add('active');
+                mobileSidebarOverlay.classList.add('active');
+            });
+            
+            // Event listener untuk menutup sidebar mobile
+            btnCloseSidebar.addEventListener('click', () => {
+                mobileSidebar.classList.remove('active');
+                mobileSidebarOverlay.classList.remove('active');
+            });
+            
+            // Event listener untuk overlay sidebar mobile
+            mobileSidebarOverlay.addEventListener('click', () => {
+                mobileSidebar.classList.remove('active');
+                mobileSidebarOverlay.classList.remove('active');
+            });
+            
+            // Fungsi utilitas
+            function saveData(key, data) {
+                try {
+                    localStorage.setItem(key, JSON.stringify(data));
+                    return true;
+                } catch (e) {
+                    console.error(`Error menyimpan data ke localStorage (${key}):`, e);
+                    return false;
+                }
+            }
+            
+            function loadData() {
+                try {
+                    // Load data dengan fallback ke default
+                    produk = JSON.parse(localStorage.getItem(LS_KEYS.produk) || '[]');
+                    if (!produk.length) {
+                        produk = [...defaultProduk];
+                        saveData(LS_KEYS.produk, produk);
+                    }
+                    
+                    stok = JSON.parse(localStorage.getItem(LS_KEYS.stok) || '{}');
+                    if (!stok.sisaLiter && stok.sisaLiter !== 0) {
+                        stok = {...defaultStok};
+                        saveData(LS_KEYS.stok, stok);
+                    }
+                    
+                    transaksi = JSON.parse(localStorage.getItem(LS_KEYS.transaksi) || '[]');
+                    pelanggan = JSON.parse(localStorage.getItem(LS_KEYS.pelanggan) || '[]');
+                    pengeluaran = JSON.parse(localStorage.getItem(LS_KEYS.pengeluaran) || '[]');
+                    
+                    pengaturan = JSON.parse(localStorage.getItem(LS_KEYS.pengaturan) || '{}');
+                    if (!pengaturan.namaUsaha) {
+                        pengaturan = {...defaultPengaturan};
+                        saveData(LS_KEYS.pengaturan, pengaturan);
+                    }
+                    
+                    // Update header dengan nama usaha
+                    namaUsahaHeader.textContent = pengaturan.namaUsaha;
+                } catch (e) {
+                    console.error('Error memuat data dari localStorage:', e);
+                    // Inisialisasi dengan default jika ada error
+                    produk = [...defaultProduk];
+                    stok = {...defaultStok};
+                    transaksi = [];
+                    pelanggan = [];
+                    pengeluaran = [];
+                    pengaturan = {...defaultPengaturan};
+                    
+                    // Simpan data default
+                    saveData(LS_KEYS.produk, produk);
+                    saveData(LS_KEYS.stok, stok);
+                    saveData(LS_KEYS.transaksi, transaksi);
+                    saveData(LS_KEYS.pelanggan, pelanggan);
+                    saveData(LS_KEYS.pengeluaran, pengeluaran);
+                    saveData(LS_KEYS.pengaturan, pengaturan);
+                }
+            }
+            
+            function formatRupiah(num) {
+                if (isNaN(num)) return 'Rp 0';
+                return 'Rp ' + Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            }
+            
+            function formatDateTime(date) {
+                try {
+                    const d = new Date(date);
+                    return d.toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
+                } catch (e) {
+                    return date;
+                }
+            }
+            
+            // Fungsi update
+            function updateLaporan() {
+                try {
+                    // Update data stok
+                    laporanLiterTerpakaiEl.textContent = (stok.literTerpakai || 0).toLocaleString('id-ID') + ' L';
+                    laporanLiterSisaEl.textContent = (stok.sisaLiter || 0).toLocaleString('id-ID') + ' L';
+                    
+                    // Produk Terlaris
+                    updateProdukTerlaris();
+                    
+                    // Pelanggan Terbanyak
+                    updatePelangganTerbanyak();
+                } catch (e) {
+                    console.error('Error update laporan:', e);
+                }
+            }
+            
+            function updateProdukTerlaris() {
+                try {
+                    // Inisialisasi objek counter
+                    const produkTerjualCount = {};
+                    
+                    // Jika ada produk, inisialisasi counter
+                    if (produk && produk.length > 0) {
+                        produk.forEach(p => {
+                            produkTerjualCount[p.id] = 0;
+                        });
+                    }
+                    
+                    // Hitung penjualan produk dari transaksi
+                    if (transaksi && transaksi.length > 0) {
+                        transaksi.forEach(t => {
+                            // Cek jika transaksi memiliki productId
+                            if (!t.produkId) return;
+                            
+                            // Inisialisasi counter jika belum ada
+                            if (!produkTerjualCount[t.produkId]) {
+                                produkTerjualCount[t.produkId] = 0;
+                            }
+                            
+                            // Tambahkan quantity ke counter
+                            produkTerjualCount[t.produkId] += parseInt(t.jumlah) || 1;
+                        });
+                    }
+                    
+                    // Konversi ke array dan urutkan berdasarkan quantity
+                    const produkTerlarisSorted = Object.entries(produkTerjualCount)
+                        .filter(([_, count]) => count > 0) // Hanya produk dengan penjualan
+                        .sort((a, b) => b[1] - a[1])
+                        .slice(0, 5); // Ambil 5 teratas
+                    
+                    // Hapus konten sebelumnya
+                    laporanProdukTerlarisEl.innerHTML = '';
+                    
+                    if (produkTerlarisSorted.length === 0) {
+                        const li = document.createElement('li');
+                        li.className = "text-gray-500 italic";
+                        li.textContent = 'Tidak ada data penjualan.';
+                        laporanProdukTerlarisEl.appendChild(li);
+                    } else {
+                        produkTerlarisSorted.forEach(([pid, jumlah]) => {
+                            const p = produk.find(pr => pr.id === pid);
+                            if (p) {
+                                const li = document.createElement('li');
+                                li.className = "flex justify-between items-center py-2 px-3 bg-gray-50 rounded-lg";
+                                li.innerHTML = `
+                                    <span class="font-medium">${p.nama}</span>
+                                    <span class="bg-teal-100 text-teal-800 px-2 py-1 rounded-full text-sm font-semibold">${jumlah} item</span>
+                                `;
+                                laporanProdukTerlarisEl.appendChild(li);
+                            }
+                        });
+                    }
+                } catch (e) {
+                    console.error('Error update produk terlaris:', e);
+                    laporanProdukTerlarisEl.innerHTML = '<li class="text-gray-500 italic">Terjadi kesalahan saat memuat data produk terlaris.</li>';
+                }
+            }
+            
+            function updatePelangganTerbanyak() {
+                try {
+                    // Inisialisasi objek counter
+                    const pelangganCount = {};
+                    
+                    // Jika ada pelanggan, inisialisasi counter
+                    if (pelanggan && pelanggan.length > 0) {
+                        pelanggan.forEach(p => {
+                            pelangganCount[p.id] = 0;
+                        });
+                    }
+                    
+                    // Hitung transaksi pelanggan
+                    if (transaksi && transaksi.length > 0) {
+                        transaksi.forEach(t => {
+                            // Cek jika transaksi memiliki pelangganId
+                            if (!t.pelangganId) return;
+                            
+                            // Inisialisasi counter jika belum ada
+                            if (!pelangganCount[t.pelangganId]) {
+                                pelangganCount[t.pelangganId] = 0;
+                            }
+                            
+                            // Increment counter
+                            pelangganCount[t.pelangganId]++;
+                        });
+                    }
+                    
+                    // Konversi ke array dan urutkan berdasarkan jumlah transaksi
+                    const pelangganTerbanyakSorted = Object.entries(pelangganCount)
+                        .filter(([_, count]) => count > 0) // Hanya pelanggan dengan transaksi
+                        .sort((a, b) => b[1] - a[1])
+                        .slice(0, 5); // Ambil 5 teratas
+                    
+                    // Hapus konten sebelumnya
+                    laporanPelangganTerbanyakEl.innerHTML = '';
+                    
+                    if (pelangganTerbanyakSorted.length === 0) {
+                        const li = document.createElement('li');
+                        li.className = "text-gray-500 italic";
+                        li.textContent = 'Tidak ada data transaksi pelanggan.';
+                        laporanPelangganTerbanyakEl.appendChild(li);
+                    } else {
+                        pelangganTerbanyakSorted.forEach(([pid, count]) => {
+                            const p = pelanggan.find(pl => pl.id === pid);
+                            if (p) {
+                                const li = document.createElement('li');
+                                li.className = "flex justify-between items-center py-2 px-3 bg-gray-50 rounded-lg";
+                                li.innerHTML = `
+                                    <span class="font-medium">${p.nama}</span>
+                                    <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm font-semibold">${count} transaksi</span>
+                                `;
+                                laporanPelangganTerbanyakEl.appendChild(li);
+                            }
+                        });
+                    }
+                } catch (e) {
+                    console.error('Error update pelanggan terbanyak:', e);
+                    laporanPelangganTerbanyakEl.innerHTML = '<li class="text-gray-500 italic">Terjadi kesalahan saat memuat data pelanggan terbanyak.</li>';
+                }
+            }
+            
+            function updateChartPenjualanHarian() {
+                try {
+                    const now = new Date();
+                    const days = [];
+                    const sales = [];
+                    
+                    for (let i = 29; i >= 0; i--) {
+                        const d = new Date(now);
+                        d.setDate(d.getDate() - i);
+                        d.setHours(0, 0, 0, 0); // Set ke jam 00:00:00
+                        const dEnd = new Date(d);
+                        dEnd.setHours(23, 59, 59, 999); // Set ke jam 23:59:59
+                        
+                        const dStr = d.toISOString().slice(0, 10);
+                        days.push(d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }));
+                        
+                        let total = 0;
+                        if (transaksi && transaksi.length > 0) {
+                            transaksi.forEach(t => {
+                                if (t.tanggal) {
+                                    const tDate = new Date(t.tanggal);
+                                    // Periksa apakah tanggal transaksi berada dalam rentang hari yang dimaksud
+                                    if (tDate >= d && tDate <= dEnd && (t.status === 'cash' || t.status === 'lunas')) {
+                                        const p = produk.find(pr => pr.id === t.produkId);
+                                        if (p) {
+                                            total += p.harga * t.jumlah;
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                        sales.push(total);
+                    }
+                    
+                    if (chartPenjualanHarian) chartPenjualanHarian.destroy();
+                    
+                    const ctx = document.getElementById('chartPenjualanHarian').getContext('2d');
+                    chartPenjualanHarian = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: days,
+                            datasets: [{
+                                label: 'Penjualan Harian (Rp)',
+                                data: sales,
+                                backgroundColor: 'rgba(15, 118, 110, 0.8)',
+                                borderRadius: 6,
+                            }],
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: val => val.toLocaleString('id-ID'),
+                                    },
+                                },
+                            },
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    callbacks: {
+                                        label: ctx => formatRupiah(ctx.parsed.y),
+                                    },
+                                },
+                            },
+                        },
+                    });
+                } catch (e) {
+                    console.error('Error update chart penjualan harian:', e);
+                }
+            }
+            
+            function updateChartPenjualanBulanan() {
+                try {
+                    const now = new Date();
+                    const months = [];
+                    const sales = [];
+                    
+                    for (let i = 11; i >= 0; i--) {
+                        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                        const monthStr = d.toISOString().slice(0, 7);
+                        months.push(d.toLocaleDateString('id-ID', { month: 'short', year: 'numeric' }));
+                        
+                        let total = 0;
+                        if (transaksi && transaksi.length > 0) {
+                            transaksi.forEach(t => {
+                                if (t.tanggal && t.tanggal.slice(0, 7) === monthStr && (t.status === 'cash' || t.status === 'lunas')) {
+                                    const p = produk.find(pr => pr.id === t.produkId);
+                                    if (p) {
+                                        total += p.harga * t.jumlah;
+                                    }
+                                }
+                            });
+                        }
+                        sales.push(total);
+                    }
+                    
+                    if (chartPenjualanBulanan) chartPenjualanBulanan.destroy();
+                    
+                    const ctx = document.getElementById('chartPenjualanBulanan').getContext('2d');
+                    chartPenjualanBulanan = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: months,
+                            datasets: [{
+                                label: 'Penjualan Bulanan (Rp)',
+                                data: sales,
+                                borderColor: 'rgba(15, 118, 110, 0.9)',
+                                backgroundColor: 'rgba(15, 118, 110, 0.3)',
+                                fill: true,
+                                tension: 0.3,
+                                pointRadius: 5,
+                            }],
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: val => val.toLocaleString('id-ID'),
+                                    },
+                                },
+                            },
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    callbacks: {
+                                        label: ctx => formatRupiah(ctx.parsed.y),
+                                    },
+                                },
+                            },
+                        },
+                    });
+                } catch (e) {
+                    console.error('Error update chart penjualan bulanan:', e);
+                }
+            }
+            
+            // Fungsi export
+            btnExportExcel.addEventListener('click', () => {
+                try {
+                    const wb = XLSX.utils.book_new();
+                    
+                    const produkData = produk.map(p => ({
+                        'ID Produk': p.id,
+                        'Nama Produk': p.nama,
+                        'Harga Jual (Rp)': p.harga,
+                        'Harga Pokok (Rp)': p.hargaPokok || 0,
+                        'Laba per Item (Rp)': p.harga - (p.hargaPokok || 0),
+                        'Margin (%)': p.hargaPokok ? (((p.harga - p.hargaPokok) / p.hargaPokok) * 100).toFixed(1) : 0,
+                        'Jenis': p.jenis,
+                        'Liter': p.liter,
+                    }));
+                    const wsProduk = XLSX.utils.json_to_sheet(produkData);
+                    XLSX.utils.book_append_sheet(wb, wsProduk, 'Produk');
+                    
+                    const stokData = [{
+                        'Sisa Liter': stok.sisaLiter || 0,
+                        'Liter Terpakai': stok.literTerpakai || 0,
+                        'Total Biaya Suplai (Rp)': stok.totalBiayaSuplai || 0,
+                        'Kapasitas Toren': stok.kapasitasToren || pengaturan.kapasitasToren,
+                    }];
+                    const wsStok = XLSX.utils.json_to_sheet(stokData);
+                    XLSX.utils.book_append_sheet(wb, wsStok, 'Stok Air');
+                    
+                    const transaksiData = transaksi.map(t => {
+                        const p = produk.find(pr => pr.id === t.produkId);
+                        const hargaPokok = p ? (p.hargaPokok || 0) : 0;
+                        const labaKotor = p ? (p.harga * t.jumlah) - (hargaPokok * t.jumlah) : 0;
+                        
+                        return {
+                            'ID Transaksi': t.id,
+                            'Tanggal': t.tanggal,
+                            'Produk': p ? p.nama : '',
+                            'Jumlah': t.jumlah,
+                            'Harga Jual (Rp)': p ? p.harga * t.jumlah : 0,
+                            'Harga Pokok (Rp)': hargaPokok * t.jumlah,
+                            'Laba Kotor (Rp)': labaKotor,
+                            'Nama Pelanggan': t.namaPelanggan,
+                            'Status': t.status || 'cash',
+                        };
+                    });
+                    const wsTransaksi = XLSX.utils.json_to_sheet(transaksiData);
+                    XLSX.utils.book_append_sheet(wb, wsTransaksi, 'Transaksi');
+                    
+                    const pelangganData = pelanggan.map(p => ({
+                        'ID Pelanggan': p.id,
+                        'Nama': p.nama,
+                        'Kontak': p.kontak,
+                        'Galon Titipan': p.galonTitipan,
+                    }));
+                    const wsPelanggan = XLSX.utils.json_to_sheet(pelangganData);
+                    XLSX.utils.book_append_sheet(wb, wsPelanggan, 'Pelanggan');
+                    
+                    const pengeluaranData = pengeluaran.map(p => ({
+                        'ID Pengeluaran': p.id,
+                        'Keterangan': p.keterangan,
+                        'Nominal (Rp)': p.nominal,
+                        'Tanggal': p.tanggal,
+                    }));
+                    const wsPengeluaran = XLSX.utils.json_to_sheet(pengeluaranData);
+                    XLSX.utils.book_append_sheet(wb, wsPengeluaran, 'Pengeluaran');
+                    
+                    XLSX.writeFile(wb, 'laporan_depot_air.xlsx');
+                } catch (e) {
+                    console.error('Error export ke Excel:', e);
+                    alert('Terjadi kesalahan saat mengekspor ke Excel. Silakan coba lagi.');
+                }
+            });
+            
+            btnExportPDF.addEventListener('click', () => {
+                try {
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+                    
+                    doc.setFontSize(18);
+                    doc.text(pengaturan.namaUsaha, 14, 22);
+                    doc.setFontSize(12);
+                    doc.text(`Tanggal: ${new Date().toLocaleDateString('id-ID')}`, 14, 32);
+                    
+                    doc.setFontSize(14);
+                    doc.text('Stok Air (Toren)', 14, 44);
+                    doc.setFontSize(12);
+                    doc.text(`Sisa Liter: ${(stok.sisaLiter || 0).toLocaleString('id-ID')} L`, 14, 52);
+                    doc.text(`Liter Terpakai: ${(stok.literTerpakai || 0).toLocaleString('id-ID')} L`, 14, 60);
+                    doc.text(`Total Biaya Suplai: ${formatRupiah(stok.totalBiayaSuplai || 0)}`, 14, 68);
+                    
+                    doc.setFontSize(14);
+                    doc.text('Produk Terlaris', 14, 82);
+                    doc.setFontSize(12);
+                    if (laporanProdukTerlarisEl.children.length === 0) {
+                        doc.text('Tidak ada data penjualan.', 14, 90);
+                    } else {
+                        let y = 90;
+                        Array.from(laporanProdukTerlarisEl.children).forEach(li => {
+                            doc.text(`- ${li.textContent}`, 14, y);
+                            y += 8;
+                        });
+                    }
+                    
+                    doc.setFontSize(14);
+                    doc.text('Pelanggan Terbanyak', 14, y + 10);
+                    doc.setFontSize(12);
+                    y += 18;
+                    if (laporanPelangganTerbanyakEl.children.length === 0) {
+                        doc.text('Tidak ada data transaksi pelanggan.', 14, y);
+                    } else {
+                        Array.from(laporanPelangganTerbanyakEl.children).forEach(li => {
+                            doc.text(`- ${li.textContent}`, 14, y);
+                            y += 8;
+                        });
+                    }
+                    
+                    doc.save('laporan_depot_air.pdf');
+                } catch (e) {
+                    console.error('Error export ke PDF:', e);
+                    alert('Terjadi kesalahan saat mengekspor ke PDF. Silakan coba lagi.');
+                }
+            });
+            
+            // Listen untuk perubahan storage untuk update data real-time
+            window.addEventListener('storage', (event) => {
+                if (Object.values(LS_KEYS).includes(event.key)) {
+                    console.log(`Detected change in ${event.key}, updating data...`);
+                    loadData();
+                    updateLaporan();
+                    updateChartPenjualanHarian();
+                    updateChartPenjualanBulanan();
+                }
+            });
+            
+            // Inisialisasi aplikasi
+            function init() {
+                try {
+                    loadData();
+                    updateLaporan();
+                    updateChartPenjualanHarian();
+                    updateChartPenjualanBulanan();
+                    
+                    // Set up refresh periodik untuk memastikan data selalu up-to-date
+                    setInterval(() => {
+                        loadData();
+                        updateLaporan();
+                        updateChartPenjualanHarian();
+                        updateChartPenjualanBulanan();
+                    }, 5000); // Refresh setiap 5 detik
+                } catch (e) {
+                    console.error('Error inisialisasi aplikasi:', e);
+                    // Daripada menampilkan alert, kita tampilkan pesan yang lebih user-friendly
+                    const errorMessage = document.createElement('div');
+                    errorMessage.className = 'fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded';
+                    errorMessage.innerHTML = `
+                        <div class="flex items-center">
+                            <i class="fas fa-exclamation-circle mr-2"></i>
+                            <span>Terjadi kesalahan saat memuat data. Silakan refresh halaman.</span>
+                        </div>
+                    `;
+                    document.body.appendChild(errorMessage);
+                    
+                    // Auto remove setelah 5 detik
+                    setTimeout(() => {
+                        errorMessage.remove();
+                    }, 5000);
+                }
+            }
+            
+            // Jalankan aplikasi
+            init();
+        })();
+    </script>
+</body>
+</html>

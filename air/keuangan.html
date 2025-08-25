@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keuangan - Depot Air Minum Isi Ulang</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        /* Mobile Sidebar Styles */
+        .mobile-sidebar {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .mobile-sidebar.active {
+            transform: translateX(0);
+        }
+        
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 40;
+        }
+        
+        .sidebar-overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-teal-700 text-white shadow-lg">
+            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-tint text-3xl"></i>
+                    <h1 id="namaUsahaHeader" class="text-2xl font-bold">Depot Air Minum Isi Ulang</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span id="currentDate" class="text-sm"></span>
+                    <button id="btnSidebarToggle" class="md:hidden">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Sidebar Overlay (Mobile) -->
+        <div id="sidebarOverlay" class="sidebar-overlay md:hidden"></div>
+        
+        <!-- Mobile Sidebar -->
+        <aside id="mobileSidebar" class="mobile-sidebar fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-50 md:hidden">
+            <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                <h2 class="text-xl font-bold text-teal-700">Menu Navigasi</h2>
+                <button id="closeSidebar" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <nav class="py-4">
+                <a href="kasir.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                    <i class="fas fa-cash-register"></i>
+                    <span>Kasir</span>
+                </a>
+                <a href="produk.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                    <i class="fas fa-box"></i>
+                    <span>Produk</span>
+                </a>
+                <a href="stok.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                    <i class="fas fa-water"></i>
+                    <span>Stok Air</span>
+                </a>
+                <a href="pelanggan.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                    <i class="fas fa-users"></i>
+                    <span>Pelanggan</span>
+                </a>
+                <a href="keuangan.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800 font-semibold bg-teal-100">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Keuangan</span>
+                </a>
+                <a href="laporan.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Laporan</span>
+                </a>
+                <a href="pengaturan.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                    <i class="fas fa-cog"></i>
+                    <span>Pengaturan</span>
+                </a>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <div class="flex flex-1">
+            <!-- Sidebar (Desktop) -->
+            <aside id="sidebar" class="hidden md:block w-64 bg-white shadow-md">
+                <nav class="py-4">
+                    <a href="kasir.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-cash-register"></i>
+                        <span>Kasir</span>
+                    </a>
+                    <a href="produk.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-box"></i>
+                        <span>Produk</span>
+                    </a>
+                    <a href="stok.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-water"></i>
+                        <span>Stok Air</span>
+                    </a>
+                    <a href="pelanggan.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-users"></i>
+                        <span>Pelanggan</span>
+                    </a>
+                    <a href="keuangan.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800 font-semibold bg-teal-100">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>Keuangan</span>
+                    </a>
+                    <a href="laporan.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Laporan</span>
+                    </a>
+                    <a href="pengaturan.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-cog"></i>
+                        <span>Pengaturan</span>
+                    </a>
+                </nav>
+            </aside>
+            
+            <!-- Main Content Area -->
+            <main class="flex-1 p-4 md:p-6">
+                <!-- Tab Content: Keuangan -->
+                <div id="keuangan" class="tab-content active">
+                    <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+                        <h2 class="text-2xl font-bold text-teal-800 mb-6">Manajemen Keuangan</h2>
+                        
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+                            <div class="bg-teal-50 rounded-xl p-5 shadow-sm">
+                                <div class="text-teal-800 font-semibold mb-2">Pemasukan Harian</div>
+                                <div id="keuPemasukanHarian" class="text-3xl font-bold text-teal-700">Rp 0</div>
+                                <div class="text-sm text-teal-600 mt-1">Hari ini</div>
+                            </div>
+                            <div class="bg-teal-50 rounded-xl p-5 shadow-sm">
+                                <div class="text-teal-800 font-semibold mb-2">Pemasukan Bulanan</div>
+                                <div id="keuPemasukanBulanan" class="text-3xl font-bold text-teal-700">Rp 0</div>
+                                <div class="text-sm text-teal-600 mt-1">Bulan ini</div>
+                            </div>
+                            <div class="bg-red-50 rounded-xl p-5 shadow-sm">
+                                <div class="text-red-800 font-semibold mb-2">Pengeluaran</div>
+                                <div id="keuPengeluaran" class="text-3xl font-bold text-red-700">Rp 0</div>
+                                <div class="text-sm text-red-600 mt-1">Total</div>
+                            </div>
+                            <div class="bg-green-50 rounded-xl p-5 shadow-sm">
+                                <div class="text-green-800 font-semibold mb-2">Laba Bersih</div>
+                                <div id="keuLabaBersih" class="text-3xl font-bold text-green-700">Rp 0</div>
+                                <div class="text-sm text-green-600 mt-1">Bulan ini</div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-50 rounded-xl p-6 mb-6">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">Tambah Pengeluaran</h3>
+                            <form id="formPengeluaran" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-gray-700 mb-2">Keterangan</label>
+                                    <input type="text" id="pengeluaranKeterangan" placeholder="Contoh: Listrik, Gaji, dll" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 mb-2">Nominal (Rp)</label>
+                                    <input type="number" id="pengeluaranNominal" min="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                                </div>
+                                <div class="flex items-end">
+                                    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                                        <i class="fas fa-plus mr-2"></i>Tambah Pengeluaran
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <div class="bg-gray-50 rounded-xl p-6">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">Riwayat Pengeluaran Terakhir</h3>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-100">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Keterangan</th>
+                                            <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Nominal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="riwayatPengeluaran" class="bg-white divide-y divide-gray-200">
+                                        <!-- Expense history will be populated by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+        
+        <!-- Mobile Bottom Navigation -->
+        <nav id="mobileBottomNav" class="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200">
+            <div class="flex justify-around">
+                <a href="kasir.html" class="flex-1 py-3 text-center text-gray-600">
+                    <i class="fas fa-cash-register text-xl"></i>
+                    <div class="text-xs mt-1">Kasir</div>
+                </a>
+                <a href="produk.html" class="flex-1 py-3 text-center text-gray-600">
+                    <i class="fas fa-box text-xl"></i>
+                    <div class="text-xs mt-1">Produk</div>
+                </a>
+                <a href="pelanggan.html" class="flex-1 py-3 text-center text-gray-600">
+                    <i class="fas fa-users text-xl"></i>
+                    <div class="text-xs mt-1">Pelanggan</div>
+                </a>
+                <a href="laporan.html" class="flex-1 py-3 text-center text-gray-600">
+                    <i class="fas fa-chart-line text-xl"></i>
+                    <div class="text-xs mt-1">Laporan</div>
+                </a>
+            </div>
+        </nav>
+    </div>
+    <script>
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize all variables and functions
+            (function() {
+                // Constants for localStorage keys
+                const LS_KEYS = {
+                    produk: 'depot_produk',
+                    transaksi: 'depot_transaksi',
+                    pengeluaran: 'depot_pengeluaran',
+                    pengaturan: 'depot_pengaturan'
+                };
+                
+                // Default data
+                const defaultProduk = [
+                    { id: 'p1', nama: 'Air isi ulang 19L', harga: 6000, hargaPokok: 3000, jenis: 'air_isi_ulang', liter: 19 },
+                    { id: 'p2', nama: 'Air isi ulang 15L', harga: 4000, hargaPokok: 2000, jenis: 'air_isi_ulang', liter: 15 },
+                    { id: 'p3', nama: 'Galon baru', harga: 50000, hargaPokok: 45000, jenis: 'galon_baru', liter: 0 },
+                ];
+                const defaultPengaturan = {
+                    namaUsaha: 'Depot Air Minum Isi Ulang',
+                    kapasitasToren: 7700,
+                    biayaSuplai: 300000
+                };
+                
+                // Data variables
+                let produk = [];
+                let transaksi = [];
+                let pengeluaran = [];
+                let pengaturan = {...defaultPengaturan};
+                
+                // DOM elements
+                const formPengeluaran = document.getElementById('formPengeluaran');
+                const pengeluaranKeteranganInput = document.getElementById('pengeluaranKeterangan');
+                const pengeluaranNominalInput = document.getElementById('pengeluaranNominal');
+                const keuPemasukanHarianEl = document.getElementById('keuPemasukanHarian');
+                const keuPemasukanBulananEl = document.getElementById('keuPemasukanBulanan');
+                const keuPengeluaranEl = document.getElementById('keuPengeluaran');
+                const keuLabaBersihEl = document.getElementById('keuLabaBersih');
+                const riwayatPengeluaranEl = document.getElementById('riwayatPengeluaran');
+                const namaUsahaHeader = document.getElementById('namaUsahaHeader');
+                
+                // Mobile sidebar elements
+                const btnSidebarToggle = document.getElementById('btnSidebarToggle');
+                const mobileSidebar = document.getElementById('mobileSidebar');
+                const closeSidebar = document.getElementById('closeSidebar');
+                const sidebarOverlay = document.getElementById('sidebarOverlay');
+                
+                // Set current date
+                const currentDateEl = document.getElementById('currentDate');
+                if (currentDateEl) {
+                    currentDateEl.textContent = new Date().toLocaleDateString('id-ID', { 
+                        weekday: 'long', 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    });
+                }
+                
+                // Mobile sidebar functionality
+                function openMobileSidebar() {
+                    if (mobileSidebar) mobileSidebar.classList.add('active');
+                    if (sidebarOverlay) sidebarOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden'; // Prevent scrolling when sidebar is open
+                }
+                
+                function closeMobileSidebar() {
+                    if (mobileSidebar) mobileSidebar.classList.remove('active');
+                    if (sidebarOverlay) sidebarOverlay.classList.remove('active');
+                    document.body.style.overflow = ''; // Restore scrolling
+                }
+                
+                // Event listeners for mobile sidebar
+                if (btnSidebarToggle) {
+                    btnSidebarToggle.addEventListener('click', openMobileSidebar);
+                }
+                
+                if (closeSidebar) {
+                    closeSidebar.addEventListener('click', closeMobileSidebar);
+                }
+                
+                if (sidebarOverlay) {
+                    sidebarOverlay.addEventListener('click', closeMobileSidebar);
+                }
+                
+                // Close sidebar when a link is clicked
+                if (mobileSidebar) {
+                    const sidebarLinks = mobileSidebar.querySelectorAll('.sidebar-btn');
+                    sidebarLinks.forEach(link => {
+                        link.addEventListener('click', () => {
+                            closeMobileSidebar();
+                        });
+                    });
+                }
+                
+                // Utility functions
+                function saveData() {
+                    try {
+                        localStorage.setItem(LS_KEYS.produk, JSON.stringify(produk));
+                        localStorage.setItem(LS_KEYS.transaksi, JSON.stringify(transaksi));
+                        localStorage.setItem(LS_KEYS.pengeluaran, JSON.stringify(pengeluaran));
+                        localStorage.setItem(LS_KEYS.pengaturan, JSON.stringify(pengaturan));
+                    } catch (e) {
+                        console.error('Error saving data to localStorage:', e);
+                    }
+                }
+                
+                function loadData() {
+                    try {
+                        const produkLS = localStorage.getItem(LS_KEYS.produk);
+                        const transaksiLS = localStorage.getItem(LS_KEYS.transaksi);
+                        const pengeluaranLS = localStorage.getItem(LS_KEYS.pengeluaran);
+                        const pengaturanLS = localStorage.getItem(LS_KEYS.pengaturan);
+                        
+                        // Load data with fallbacks to defaults
+                        produk = produkLS ? JSON.parse(produkLS) : [...defaultProduk];
+                        transaksi = transaksiLS ? JSON.parse(transaksiLS) : [];
+                        pengeluaran = pengeluaranLS ? JSON.parse(pengeluaranLS) : [];
+                        pengaturan = pengaturanLS ? JSON.parse(pengaturanLS) : {...defaultPengaturan};
+                        
+                        // Update header with business name
+                        if (namaUsahaHeader) {
+                            namaUsahaHeader.textContent = pengaturan.namaUsaha;
+                        }
+                    } catch (e) {
+                        console.error('Error loading data from localStorage:', e);
+                        // Initialize with defaults if there's an error
+                        produk = [...defaultProduk];
+                        transaksi = [];
+                        pengeluaran = [];
+                        pengaturan = {...defaultPengaturan};
+                    }
+                }
+                
+                function formatRupiah(num) {
+                    if (isNaN(num)) return 'Rp 0';
+                    return 'Rp ' + Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                }
+                
+                function formatDateTime(date) {
+                    try {
+                        const d = new Date(date);
+                        return d.toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
+                    } catch (e) {
+                        return date;
+                    }
+                }
+                
+                function generateId(prefix = 'id') {
+                    return prefix + '_' + Math.random().toString(36).substr(2, 9);
+                }
+                
+                // Update functions
+                function updateKeuanganRingkasan() {
+                    const now = new Date();
+                    const todayStr = now.toISOString().slice(0, 10);
+                    const monthStr = now.toISOString().slice(0, 7);
+                    let pemasukanHarian = 0;
+                    let pemasukanBulanan = 0;
+                    let totalHargaPokok = 0;
+                    
+                    if (transaksi) {
+                        transaksi.forEach(t => {
+                            const tDateStr = t.tanggal.slice(0, 10);
+                            const tMonthStr = t.tanggal.slice(0, 7);
+                            const produkTrans = produk.find(p => p.id === t.produkId);
+                            
+                            if (produkTrans && (t.status === 'cash' || t.status === 'lunas')) {
+                                const hargaPokok = produkTrans.hargaPokok || 0;
+                                
+                                if (tDateStr === todayStr) {
+                                    pemasukanHarian += produkTrans.harga * t.jumlah;
+                                }
+                                if (tMonthStr === monthStr) {
+                                    pemasukanBulanan += produkTrans.harga * t.jumlah;
+                                    totalHargaPokok += hargaPokok * t.jumlah;
+                                }
+                            }
+                        });
+                    }
+                    
+                    let totalPengeluaran = 0;
+                    if (pengeluaran) {
+                        pengeluaran.forEach(p => {
+                            totalPengeluaran += p.nominal;
+                        });
+                    }
+                    
+                    const labaKotor = pemasukanBulanan - totalHargaPokok;
+                    const labaBersih = labaKotor - totalPengeluaran;
+                    
+                    if (keuPemasukanHarianEl) {
+                        keuPemasukanHarianEl.textContent = formatRupiah(pemasukanHarian);
+                    }
+                    if (keuPemasukanBulananEl) {
+                        keuPemasukanBulananEl.textContent = formatRupiah(pemasukanBulanan);
+                    }
+                    if (keuPengeluaranEl) {
+                        keuPengeluaranEl.textContent = formatRupiah(totalPengeluaran);
+                    }
+                    if (keuLabaBersihEl) {
+                        keuLabaBersihEl.textContent = formatRupiah(labaBersih);
+                        
+                        // Update color based on profit/loss
+                        if (labaBersih >= 0) {
+                            keuLabaBersihEl.className = "text-3xl font-bold text-green-700";
+                            if (keuLabaBersihEl.parentElement) {
+                                keuLabaBersihEl.parentElement.className = "bg-green-50 rounded-xl p-5 shadow-sm";
+                            }
+                            if (keuLabaBersihEl.previousElementSibling) {
+                                keuLabaBersihEl.previousElementSibling.className = "text-green-800 font-semibold mb-2";
+                            }
+                        } else {
+                            keuLabaBersihEl.className = "text-3xl font-bold text-red-700";
+                            if (keuLabaBersihEl.parentElement) {
+                                keuLabaBersihEl.parentElement.className = "bg-red-50 rounded-xl p-5 shadow-sm";
+                            }
+                            if (keuLabaBersihEl.previousElementSibling) {
+                                keuLabaBersihEl.previousElementSibling.className = "text-red-800 font-semibold mb-2";
+                            }
+                        }
+                    }
+                }
+                
+                function updateRiwayatPengeluaran() {
+                    if (!riwayatPengeluaranEl) return;
+                    
+                    riwayatPengeluaranEl.innerHTML = '';
+                    const last10 = pengeluaran ? pengeluaran.slice(-10).reverse() : [];
+                    
+                    if (last10.length === 0) {
+                        const tr = document.createElement('tr');
+                        tr.className = "text-center text-gray-500";
+                        tr.innerHTML = `<td colspan="3" class="py-8 font-semibold">Belum ada data pengeluaran.</td>`;
+                        riwayatPengeluaranEl.appendChild(tr);
+                        return;
+                    }
+                    
+                    last10.forEach(p => {
+                        const tr = document.createElement('tr');
+                        tr.className = "hover:bg-gray-50 transition-colors";
+                        tr.innerHTML = `
+                            <td class="px-4 py-3 text-sm text-gray-900">${formatDateTime(p.tanggal)}</td>
+                            <td class="px-4 py-3 text-sm text-gray-700">${p.keterangan}</td>
+                            <td class="px-4 py-3 text-sm text-red-700 text-right font-medium">${formatRupiah(p.nominal)}</td>
+                        `;
+                        riwayatPengeluaranEl.appendChild(tr);
+                    });
+                }
+                
+                // Event listeners
+                if (formPengeluaran) {
+                    formPengeluaran.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        const keterangan = pengeluaranKeteranganInput ? pengeluaranKeteranganInput.value.trim() : '';
+                        const nominal = pengeluaranNominalInput ? parseInt(pengeluaranNominalInput.value) : 0;
+                        
+                        if (!keterangan || isNaN(nominal) || nominal <= 0) {
+                            alert('Mohon isi keterangan dan nominal pengeluaran dengan benar.');
+                            return;
+                        }
+                        
+                        pengeluaran.push({
+                            id: generateId('peng'),
+                            keterangan,
+                            nominal,
+                            tanggal: new Date().toISOString(),
+                        });
+                        
+                        saveData();
+                        updateKeuanganRingkasan();
+                        updateRiwayatPengeluaran();
+                        
+                        if (pengeluaranKeteranganInput) pengeluaranKeteranganInput.value = '';
+                        if (pengeluaranNominalInput) pengeluaranNominalInput.value = '';
+                        
+                        alert('Pengeluaran berhasil ditambahkan.');
+                    });
+                }
+                
+                // Initialize app
+                function init() {
+                    try {
+                        loadData();
+                        updateKeuanganRingkasan();
+                        updateRiwayatPengeluaran();
+                    } catch (e) {
+                        console.error('Error initializing app:', e);
+                        alert('Terjadi kesalahan saat memuat aplikasi. Silakan refresh halaman.');
+                    }
+                }
+                
+                // Start the app
+                init();
+            })();
+        });
+    </script>
+</body>
+</html>

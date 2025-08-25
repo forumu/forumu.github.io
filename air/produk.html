@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produk - Depot Air Minum Isi Ulang</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        /* Mobile Sidebar Styles */
+        .mobile-sidebar {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+            z-index: 40;
+        }
+        
+        .mobile-sidebar.active {
+            transform: translateX(0);
+        }
+        
+        .mobile-sidebar-overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+            z-index: 30;
+        }
+        
+        .mobile-sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Product card styles */
+        .product-card {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #0d9488, #14b8a6, #2dd4bf);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .profit-indicator {
+            height: 6px;
+            border-radius: 3px;
+            background: linear-gradient(90deg, #ef4444, #f97316, #eab308, #22c55e);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .profit-marker {
+            position: absolute;
+            top: -3px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: white;
+            border: 2px solid #0d9488;
+            transform: translateX(-50%);
+            transition: left 0.5s ease;
+        }
+        
+        /* FAB styles */
+        .fab {
+            transition: all 0.3s ease;
+        }
+        
+        .fab:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Form animation */
+        .form-container {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out, margin 0.5s ease-in-out;
+        }
+        
+        .form-container.active {
+            max-height: 500px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Responsive grid adjustments */
+        @media (max-width: 640px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+        
+        @media (min-width: 641px) and (max-width: 1024px) {
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.25rem;
+            }
+        }
+        
+        @media (min-width: 1025px) {
+            .product-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1.5rem;
+            }
+        }
+        
+        /* Empty state animation */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-teal-700 text-white shadow-lg">
+            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-tint text-3xl"></i>
+                    <h1 id="namaUsahaHeader" class="text-2xl font-bold">Depot Air Minum Isi Ulang</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span id="currentDate" class="text-sm"></span>
+                    <button id="btnSidebarToggle" class="md:hidden">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Mobile Sidebar Overlay -->
+        <div id="mobileSidebarOverlay" class="mobile-sidebar-overlay fixed inset-0 bg-black bg-opacity-50 md:hidden"></div>
+        
+        <!-- Mobile Sidebar -->
+        <aside id="mobileSidebar" class="mobile-sidebar fixed top-0 left-0 w-64 h-full bg-white shadow-lg md:hidden">
+            <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                <h2 class="text-xl font-bold text-teal-800">Menu</h2>
+                <button id="btnCloseSidebar" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <nav class="py-2">
+                <a href="kasir.html" class="mobile-menu-item w-full text-left px-6 py-4 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800 border-b border-gray-100">
+                    <i class="fas fa-cash-register text-lg"></i>
+                    <span>Kasir</span>
+                </a>
+                <a href="produk.html" class="mobile-menu-item w-full text-left px-6 py-4 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800 font-semibold bg-teal-100 border-b border-gray-100">
+                    <i class="fas fa-box text-lg"></i>
+                    <span>Produk</span>
+                </a>
+                <a href="stok.html" class="mobile-menu-item w-full text-left px-6 py-4 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800 border-b border-gray-100">
+                    <i class="fas fa-water text-lg"></i>
+                    <span>Stok Air</span>
+                </a>
+                <a href="pelanggan.html" class="mobile-menu-item w-full text-left px-6 py-4 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800 border-b border-gray-100">
+                    <i class="fas fa-users text-lg"></i>
+                    <span>Pelanggan</span>
+                </a>
+                <a href="keuangan.html" class="mobile-menu-item w-full text-left px-6 py-4 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800 border-b border-gray-100">
+                    <i class="fas fa-money-bill-wave text-lg"></i>
+                    <span>Keuangan</span>
+                </a>
+                <a href="laporan.html" class="mobile-menu-item w-full text-left px-6 py-4 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800 border-b border-gray-100">
+                    <i class="fas fa-chart-line text-lg"></i>
+                    <span>Laporan</span>
+                </a>
+                <a href="pengaturan.html" class="mobile-menu-item w-full text-left px-6 py-4 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                    <i class="fas fa-cog text-lg"></i>
+                    <span>Pengaturan</span>
+                </a>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <div class="flex flex-1">
+            <!-- Sidebar (Desktop) -->
+            <aside id="sidebar" class="hidden md:block w-64 bg-white shadow-md">
+                <nav class="py-4">
+                    <a href="kasir.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-cash-register"></i>
+                        <span>Kasir</span>
+                    </a>
+                    <a href="produk.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800 font-semibold bg-teal-100">
+                        <i class="fas fa-box"></i>
+                        <span>Produk</span>
+                    </a>
+                    <a href="stok.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-water"></i>
+                        <span>Stok Air</span>
+                    </a>
+                    <a href="pelanggan.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-users"></i>
+                        <span>Pelanggan</span>
+                    </a>
+                    <a href="keuangan.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>Keuangan</span>
+                    </a>
+                    <a href="laporan.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Laporan</span>
+                    </a>
+                    <a href="pengaturan.html" class="sidebar-btn w-full text-left px-6 py-3 flex items-center space-x-3 hover:bg-teal-50 transition-colors text-teal-800">
+                        <i class="fas fa-cog"></i>
+                        <span>Pengaturan</span>
+                    </a>
+                </nav>
+            </aside>
+            
+            <!-- Main Content Area -->
+            <main class="flex-1 p-4 md:p-6">
+                <!-- Tab Content: Produk -->
+                <div id="produk" class="tab-content active">
+                    <!-- Form Container (Hidden by default) -->
+                    <div id="formContainer" class="form-container bg-white rounded-xl shadow-md mb-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-bold text-teal-800">Tambah Produk Baru</h2>
+                            <button id="btnCloseForm" class="text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+                        <form id="formProduk" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div>
+                                <label class="block text-gray-700 mb-2">Nama Produk</label>
+                                <input type="text" id="produkNama" placeholder="Contoh: Air isi ulang 19L" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 mb-2">Harga Jual (Rp)</label>
+                                <input type="number" id="produkHarga" min="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 mb-2">Harga Pokok (Rp)</label>
+                                <input type="number" id="produkHargaPokok" min="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                            </div>
+                            <div class="flex items-end space-x-2">
+                                <button type="submit" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                                    <i class="fas fa-plus mr-2"></i>Tambah
+                                </button>
+                                <button type="button" id="btnCancelForm" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded-lg transition-colors">
+                                    Batal
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="mb-6 flex justify-between items-center">
+                        <h3 class="text-xl font-bold text-teal-800">Daftar Produk</h3>
+                        <div class="text-sm text-gray-500">
+                            <span id="productCount">0</span> produk
+                        </div>
+                    </div>
+                    <div id="produkList" class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Product cards will be populated by JS -->
+                    </div>
+                </div>
+            </main>
+        </div>
+        
+        <!-- Mobile Bottom Navigation -->
+        <nav id="mobileBottomNav" class="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200">
+            <div class="flex justify-around">
+                <a href="kasir.html" class="flex-1 py-3 text-center text-gray-600">
+                    <i class="fas fa-cash-register text-xl"></i>
+                    <div class="text-xs mt-1">Kasir</div>
+                </a>
+                <a href="produk.html" class="flex-1 py-3 text-center text-teal-800 font-semibold">
+                    <i class="fas fa-box text-xl"></i>
+                    <div class="text-xs mt-1">Produk</div>
+                </a>
+                <a href="pelanggan.html" class="flex-1 py-3 text-center text-gray-600">
+                    <i class="fas fa-users text-xl"></i>
+                    <div class="text-xs mt-1">Pelanggan</div>
+                </a>
+                <a href="laporan.html" class="flex-1 py-3 text-center text-gray-600">
+                    <i class="fas fa-chart-line text-xl"></i>
+                    <div class="text-xs mt-1">Laporan</div>
+                </a>
+            </div>
+        </nav>
+        
+        <!-- Floating Action Button -->
+        <button id="fabAddProduct" class="fab fixed bottom-20 right-4 md:bottom-8 md:right-8 bg-teal-600 hover:bg-teal-700 text-white rounded-full p-4 shadow-lg z-40">
+            <i class="fas fa-plus text-xl"></i>
+        </button>
+    </div>
+    
+    <!-- Modal Edit Harga -->
+    <div id="modalEditHarga" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md">
+            <h3 class="text-xl font-bold text-teal-800 mb-4">Edit Harga Produk</h3>
+            <form id="formEditHarga">
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Nama Produk</label>
+                    <input type="text" id="editProdukNama" readonly class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Harga Jual Baru (Rp)</label>
+                    <input type="number" id="editProdukHarga" min="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 mb-2">Harga Pokok Baru (Rp)</label>
+                    <input type="number" id="editProdukHargaPokok" min="0" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" id="btnCancelEditHarga" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition-colors">
+                        Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Constants for localStorage keys
+            const LS_KEYS = {
+                produk: 'depot_produk',
+                pengaturan: 'depot_pengaturan'
+            };
+            
+            // Default data
+            const defaultProduk = [
+                { id: 'p1', nama: 'Air isi ulang 19L', harga: 6000, hargaPokok: 2000, jenis: 'air_isi_ulang', liter: 19 },
+                { id: 'p2', nama: 'Air isi ulang 15L', harga: 5000, hargaPokok: 1000, jenis: 'air_isi_ulang', liter: 15 },
+				{ id: 'p3', nama: 'Air isi ulang 10L', harga: 4000, hargaPokok: 1000, jenis: 'air_isi_ulang', liter: 10 },
+                { id: 'p4', nama: 'Galon baru', harga: 35000, hargaPokok: 30000, jenis: 'galon_baru', liter: 0 },
+				{ id: 'p5', nama: 'AQUA', harga: 21000, hargaPokok: 18000, jenis: 'galon_baru', liter: 0 },
+				{ id: 'p6', nama: 'Lemineral', harga: 22000, hargaPokok: 20000, jenis: 'galon_baru', liter: 0 },
+				{ id: 'p7', nama: 'Gas LPG 3Kg', harga: 20000, hargaPokok: 18000, jenis: 'galon_baru', liter: 0 },
+            ];
+            const defaultPengaturan = {
+                namaUsaha: 'Depot Air Minum Isi Ulang',
+                kapasitasToren: 7700,
+                biayaSuplai: 300000
+            };
+            
+            // Data variables
+            let produk = [];
+            let pengaturan = {...defaultPengaturan};
+            let editProdukId = null;
+            
+            // DOM elements
+            const formProduk = document.getElementById('formProduk');
+            const produkNamaInput = document.getElementById('produkNama');
+            const produkHargaInput = document.getElementById('produkHarga');
+            const produkHargaPokokInput = document.getElementById('produkHargaPokok');
+            const produkListDiv = document.getElementById('produkList');
+            const productCountSpan = document.getElementById('productCount');
+            const namaUsahaHeader = document.getElementById('namaUsahaHeader');
+            
+            // Form container elements
+            const formContainer = document.getElementById('formContainer');
+            const fabAddProduct = document.getElementById('fabAddProduct');
+            const btnCloseForm = document.getElementById('btnCloseForm');
+            const btnCancelForm = document.getElementById('btnCancelForm');
+            
+            // Mobile sidebar elements
+            const btnSidebarToggle = document.getElementById('btnSidebarToggle');
+            const mobileSidebar = document.getElementById('mobileSidebar');
+            const mobileSidebarOverlay = document.getElementById('mobileSidebarOverlay');
+            const btnCloseSidebar = document.getElementById('btnCloseSidebar');
+            
+            // Modal Edit Harga elements
+            const modalEditHarga = document.getElementById('modalEditHarga');
+            const formEditHarga = document.getElementById('formEditHarga');
+            const editProdukNamaInput = document.getElementById('editProdukNama');
+            const editProdukHargaInput = document.getElementById('editProdukHarga');
+            const editProdukHargaPokokInput = document.getElementById('editProdukHargaPokok');
+            const btnCancelEditHarga = document.getElementById('btnCancelEditHarga');
+            
+            // Set current date
+            document.getElementById('currentDate').textContent = new Date().toLocaleDateString('id-ID', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            // Form toggle functions
+            function showForm() {
+                formContainer.classList.add('active');
+                fabAddProduct.style.display = 'none';
+                produkNamaInput.focus();
+            }
+            
+            function hideForm() {
+                formContainer.classList.remove('active');
+                fabAddProduct.style.display = 'flex';
+                
+                // Reset form
+                produkNamaInput.value = '';
+                produkHargaInput.value = '';
+                produkHargaPokokInput.value = '';
+            }
+            
+            // Event listeners for form toggle
+            if (fabAddProduct) {
+                fabAddProduct.addEventListener('click', showForm);
+            }
+            if (btnCloseForm) {
+                btnCloseForm.addEventListener('click', hideForm);
+            }
+            if (btnCancelForm) {
+                btnCancelForm.addEventListener('click', hideForm);
+            }
+            
+            // Mobile sidebar toggle functions
+            function openMobileSidebar() {
+                mobileSidebar.classList.add('active');
+                mobileSidebarOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling when sidebar is open
+            }
+            
+            function closeMobileSidebar() {
+                mobileSidebar.classList.remove('active');
+                mobileSidebarOverlay.classList.remove('active');
+                document.body.style.overflow = ''; // Restore scrolling
+            }
+            
+            // Event listeners for mobile sidebar
+            if (btnSidebarToggle) {
+                btnSidebarToggle.addEventListener('click', openMobileSidebar);
+            }
+            if (btnCloseSidebar) {
+                btnCloseSidebar.addEventListener('click', closeMobileSidebar);
+            }
+            if (mobileSidebarOverlay) {
+                mobileSidebarOverlay.addEventListener('click', closeMobileSidebar);
+            }
+            
+            // Close mobile sidebar when a menu item is clicked
+            document.querySelectorAll('.mobile-menu-item').forEach(item => {
+                item.addEventListener('click', closeMobileSidebar);
+            });
+            
+            // Utility functions
+            function saveData() {
+                try {
+                    localStorage.setItem(LS_KEYS.produk, JSON.stringify(produk));
+                    localStorage.setItem(LS_KEYS.pengaturan, JSON.stringify(pengaturan));
+                } catch (e) {
+                    console.error('Error saving data to localStorage:', e);
+                }
+            }
+            
+            function loadData() {
+                try {
+                    const produkLS = localStorage.getItem(LS_KEYS.produk);
+                    const pengaturanLS = localStorage.getItem(LS_KEYS.pengaturan);
+                    
+                    // Load data with fallbacks to defaults
+                    produk = produkLS ? JSON.parse(produkLS) : [...defaultProduk];
+                    pengaturan = pengaturanLS ? JSON.parse(pengaturanLS) : {...defaultPengaturan};
+                    
+                    // Update header with business name
+                    if (namaUsahaHeader) {
+                        namaUsahaHeader.textContent = pengaturan.namaUsaha;
+                    }
+                } catch (e) {
+                    console.error('Error loading data from localStorage:', e);
+                    // Initialize with defaults if there's an error
+                    produk = [...defaultProduk];
+                    pengaturan = {...defaultPengaturan};
+                }
+            }
+            
+            function formatRupiah(num) {
+                if (isNaN(num)) return 'Rp 0';
+                return 'Rp ' + Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            }
+            
+            function generateId(prefix = 'id') {
+                return prefix + '_' + Math.random().toString(36).substr(2, 9);
+            }
+            
+            // Get product icon based on type
+            function getProductIcon(jenis) {
+                switch(jenis) {
+                    case 'air_isi_ulang':
+                        return '<i class="fas fa-tint text-blue-500 text-xl"></i>';
+                    case 'galon_baru':
+                        return '<i class="fas fa-box text-green-500 text-xl"></i>';
+                    default:
+                        return '<i class="fas fa-cube text-purple-500 text-xl"></i>';
+                }
+            }
+            
+            // Get product color based on type
+            function getProductColor(jenis) {
+                switch(jenis) {
+                    case 'air_isi_ulang':
+                        return 'from-blue-500 to-cyan-400';
+                    case 'galon_baru':
+                        return 'from-green-500 to-emerald-400';
+                    default:
+                        return 'from-purple-500 to-indigo-400';
+                }
+            }
+            
+            // Update functions
+            function createProdukCard(p) {
+                const labaKotor = p.harga - p.hargaPokok;
+                const marginPercent = p.hargaPokok > 0 ? ((labaKotor / p.hargaPokok) * 100).toFixed(1) : 0;
+                
+                const card = document.createElement('div');
+                card.className = "product-card bg-white rounded-xl shadow-md overflow-hidden";
+                
+                // Card header with product icon and name
+                const cardHeader = document.createElement('div');
+                cardHeader.className = `bg-gradient-to-r ${getProductColor(p.jenis)} p-3 text-white`;
+                cardHeader.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center space-x-2">
+                            ${getProductIcon(p.jenis)}
+                            <h3 class="font-bold text-base">${p.nama}</h3>
+                        </div>
+                        <button data-id="${p.id}" class="btnEditHarga bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full p-1 transition-all" title="Edit Harga">
+                            <i class="fas fa-edit text-sm"></i>
+                        </button>
+                    </div>
+                `;
+                
+                // Card body with product details
+                const cardBody = document.createElement('div');
+                cardBody.className = "p-3";
+                
+                // Price info section
+                const priceInfo = document.createElement('div');
+                priceInfo.className = "grid grid-cols-2 gap-2 mb-4";
+                priceInfo.innerHTML = `
+                    <div class="bg-blue-50 rounded-lg p-2">
+                        <div class="text-xs text-blue-600 font-medium mb-1">Harga Jual</div>
+                        <div class="font-bold text-blue-800 text-sm">${formatRupiah(p.harga)}</div>
+                    </div>
+                    <div class="bg-green-50 rounded-lg p-2">
+                        <div class="text-xs text-green-600 font-medium mb-1">Harga Pokok</div>
+                        <div class="font-bold text-green-800 text-sm">${formatRupiah(p.hargaPokok)}</div>
+                    </div>
+                `;
+                
+                // Profit section
+                const profitSection = document.createElement('div');
+                profitSection.className = "mb-3";
+                profitSection.innerHTML = `
+                    <div class="flex justify-between items-center mb-1">
+                        <div class="text-xs font-medium text-gray-700">Keuntungan</div>
+                        <div class="font-bold ${labaKotor >= 0 ? 'text-green-600' : 'text-red-600'} text-sm">${formatRupiah(labaKotor)}</div>
+                    </div>
+                    <div class="relative">
+                        <div class="profit-indicator">
+                            <div class="profit-marker" style="left: ${Math.min(Math.max(marginPercent, 0), 100)}%"></div>
+                        </div>
+                        <div class="flex justify-between text-xs text-gray-500 mt-1">
+                            <span>0%</span>
+                            <span class="font-medium ${labaKotor >= 0 ? 'text-green-600' : 'text-red-600'}">${marginPercent}%</span>
+                            <span>100%+</span>
+                        </div>
+                    </div>
+                `;
+                
+                cardBody.appendChild(priceInfo);
+                cardBody.appendChild(profitSection);
+                
+                card.appendChild(cardHeader);
+                card.appendChild(cardBody);
+                
+                return card;
+            }
+            
+            function updateProdukList() {
+                if (!produkListDiv) return;
+                
+                produkListDiv.innerHTML = '';
+                
+                // Update product count
+                if (productCountSpan) {
+                    productCountSpan.textContent = produk.length;
+                }
+                
+                if (produk && produk.length > 0) {
+                    produk.forEach(p => {
+                        produkListDiv.appendChild(createProdukCard(p));
+                    });
+                    
+                    // Add event listeners to edit buttons
+                    document.querySelectorAll('.btnEditHarga').forEach(btn => {
+                        btn.onclick = function() {
+                            const id = this.getAttribute('data-id');
+                            openEditHargaModal(id);
+                        };
+                    });
+                } else {
+                    const emptyState = document.createElement('div');
+                    emptyState.className = "col-span-full flex flex-col items-center justify-center py-12 text-center";
+                    emptyState.innerHTML = `
+                        <div class="mb-4 float-animation">
+                            <i class="fas fa-box-open text-5xl text-gray-300"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-600 mb-2">Belum Ada Produk</h3>
+                        <p class="text-gray-500 max-w-md text-sm">Tekan tombol plus di kanan bawah untuk menambah produk baru</p>
+                    `;
+                    produkListDiv.appendChild(emptyState);
+                }
+            }
+            
+            // Modal functions
+            function openEditHargaModal(id) {
+                const p = produk.find(pr => pr.id === id);
+                if (!p) return;
+                
+                editProdukId = id;
+                if (editProdukNamaInput) {
+                    editProdukNamaInput.value = p.nama;
+                }
+                if (editProdukHargaInput) {
+                    editProdukHargaInput.value = p.harga;
+                }
+                if (editProdukHargaPokokInput) {
+                    editProdukHargaPokokInput.value = p.hargaPokok || 0;
+                }
+                if (modalEditHarga) {
+                    modalEditHarga.classList.remove('hidden');
+                    if (editProdukHargaInput) {
+                        editProdukHargaInput.focus();
+                    }
+                }
+            }
+            
+            function closeEditHargaModal() {
+                if (modalEditHarga) {
+                    modalEditHarga.classList.add('hidden');
+                }
+                if (editProdukNamaInput) {
+                    editProdukNamaInput.value = '';
+                }
+                if (editProdukHargaInput) {
+                    editProdukHargaInput.value = '';
+                }
+                if (editProdukHargaPokokInput) {
+                    editProdukHargaPokokInput.value = '';
+                }
+                editProdukId = null;
+            }
+            
+            // Event listeners
+            if (formProduk) {
+                formProduk.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const nama = produkNamaInput.value.trim();
+                    const harga = parseInt(produkHargaInput.value);
+                    const hargaPokok = parseInt(produkHargaPokokInput.value) || 0;
+                    
+                    if (!nama || isNaN(harga) || harga < 0) {
+                        alert('Mohon isi nama dan harga produk dengan benar.');
+                        return;
+                    }
+                    
+                    if (isNaN(hargaPokok) || hargaPokok < 0) {
+                        alert('Harga pokok harus berupa angka positif atau 0.');
+                        return;
+                    }
+                    
+                    const exists = produk.find(p => p.nama.toLowerCase() === nama.toLowerCase());
+                    if (exists) {
+                        alert('Produk dengan nama tersebut sudah ada.');
+                        return;
+                    }
+                    
+                    let jenis = 'lain';
+                    let liter = 0;
+                    const lowerNama = nama.toLowerCase();
+                    
+                    if (lowerNama.includes('air isi ulang')) {
+                        jenis = 'air_isi_ulang';
+                        const litMatch = nama.match(/(\d+)\s*l/i);
+                        if (litMatch) {
+                            liter = parseInt(litMatch[1]);
+                        }
+                    } else if (lowerNama.includes('galon')) {
+                        jenis = 'galon_baru';
+                        liter = 0;
+                    }
+                    
+                    produk.push({
+                        id: generateId('p'),
+                        nama,
+                        harga,
+                        hargaPokok,
+                        jenis,
+                        liter,
+                    });
+                    
+                    saveData();
+                    updateProdukList();
+                    hideForm();
+                    
+                    alert('Produk baru berhasil ditambahkan.');
+                });
+            }
+            
+            if (formEditHarga) {
+                formEditHarga.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    if (!editProdukId) return;
+                    
+                    const hargaBaru = parseInt(editProdukHargaInput.value);
+                    const hargaPokokBaru = parseInt(editProdukHargaPokokInput.value) || 0;
+                    
+                    if (isNaN(hargaBaru) || hargaBaru < 0) {
+                        alert('Harga jual harus berupa angka positif.');
+                        return;
+                    }
+                    
+                    if (isNaN(hargaPokokBaru) || hargaPokokBaru < 0) {
+                        alert('Harga pokok harus berupa angka positif atau 0.');
+                        return;
+                    }
+                    
+                    const p = produk.find(pr => pr.id === editProdukId);
+                    if (!p) return;
+                    
+                    p.harga = hargaBaru;
+                    p.hargaPokok = hargaPokokBaru;
+                    
+                    saveData();
+                    updateProdukList();
+                    
+                    closeEditHargaModal();
+                    alert('Harga produk berhasil diperbarui.');
+                });
+            }
+            
+            if (btnCancelEditHarga) {
+                btnCancelEditHarga.addEventListener('click', closeEditHargaModal);
+            }
+            
+            // Initialize app
+            function init() {
+                try {
+                    loadData();
+                    updateProdukList();
+                } catch (e) {
+                    console.error('Error initializing app:', e);
+                    alert('Terjadi kesalahan saat memuat aplikasi. Silakan refresh halaman.');
+                }
+            }
+            
+            // Start the app
+            init();
+        });
+    </script>
+</body>
+</html>
