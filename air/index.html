@@ -6,11 +6,12 @@
     <title>Kasir - Depot Air Minum Isi Ulang</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Library untuk mengubah HTML menjadi gambar -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         /* Style untuk tab content */
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        
         /* Style untuk sidebar mobile */
         .mobile-sidebar {
             position: fixed;
@@ -24,11 +25,9 @@
             transform: translateX(-100%);
             transition: transform 0.3s ease-in-out;
         }
-        
         .mobile-sidebar.active {
             transform: translateX(0);
         }
-        
         .mobile-sidebar-overlay {
             position: fixed;
             top: 0;
@@ -39,11 +38,9 @@
             z-index: 40;
             display: none;
         }
-        
         .mobile-sidebar-overlay.active {
             display: block;
         }
-        
         /* Style untuk tabel responsif */
         @media (max-width: 768px) {
             .mobile-table {
@@ -80,7 +77,6 @@
                 text-align: right;
             }
         }
-        
         @media (min-width: 769px) {
             .mobile-transaction-list {
                 display: none;
@@ -95,13 +91,11 @@
                 display: none;
             }
         }
-        
         @media (max-width: 768px) {
             #desktopPagination {
                 display: none;
             }
         }
-        
         /* Style untuk pagination */
         .pagination {
             display: flex;
@@ -110,47 +104,39 @@
             margin-top: 1rem;
             gap: 0.5rem;
         }
-        
         .pagination button {
             padding: 0.5rem 0.75rem;
             border-radius: 0.375rem;
             font-weight: 500;
             transition: all 0.2s ease;
         }
-        
         .pagination button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
-        
         .pagination-info {
             margin: 0 1rem;
             font-size: 0.875rem;
             color: #4b5563;
         }
-        
         /* Style untuk status badge yang bisa diklik */
         .clickable-status {
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        
         .clickable-status:hover {
             transform: scale(1.05);
         }
-        
         /* Style untuk icon bayar */
         .pay-icon {
             cursor: pointer;
             color: #10b981;
             transition: all 0.2s ease;
         }
-        
         .pay-icon:hover {
             color: #059669;
             transform: scale(1.1);
         }
-        
         /* Style untuk badge sisa hutang */
         .sisa-hutang-badge {
             font-size: 0.75rem;
@@ -160,14 +146,12 @@
             border-radius: 9999px;
             margin-left: 0.5rem;
         }
-        
         /* Style untuk tab filter */
         .filter-tabs {
             display: flex;
             border-bottom: 2px solid #e5e7eb;
             margin-bottom: 1rem;
         }
-        
         .filter-tab {
             padding: 0.75rem 1rem;
             font-weight: 500;
@@ -176,16 +160,13 @@
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        
         .filter-tab.active {
             color: #0d9488;
             border-bottom-color: #0d9488;
         }
-        
         .filter-tab:hover {
             color: #0d9488;
         }
-        
         /* Style untuk filter controls */
         .filter-controls {
             display: flex;
@@ -193,7 +174,6 @@
             gap: 1rem;
             margin-bottom: 1rem;
         }
-        
         .filter-search-container {
             position: relative;
             flex: 1;
@@ -203,13 +183,11 @@
             transition: all 0.3s ease;
             pointer-events: none;
         }
-        
         .filter-search-container.active {
             opacity: 1;
             transform: translateY(0);
             pointer-events: auto;
         }
-        
         .filter-date-container {
             position: relative;
             opacity: 0;
@@ -217,13 +195,11 @@
             transition: all 0.3s ease;
             pointer-events: none;
         }
-        
         .filter-date-container.active {
             opacity: 1;
             transform: translateY(0);
             pointer-events: auto;
         }
-        
         .filter-icon {
             width: 40px;
             height: 40px;
@@ -236,17 +212,14 @@
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        
         .filter-icon:hover {
             background-color: #e5e7eb;
             color: #374151;
         }
-        
         .filter-icon.active {
             background-color: #0d9488;
             color: white;
         }
-        
         .filter-clear {
             margin-left: auto;
             padding: 0.5rem 1rem;
@@ -258,16 +231,13 @@
             transition: all 0.2s ease;
             display: none;
         }
-        
         .filter-clear.active {
             display: block;
         }
-        
         .filter-clear:hover {
             background-color: #e5e7eb;
             color: #374151;
         }
-        
         /* Style untuk header dengan filter icons */
         .header-with-filters {
             display: flex;
@@ -275,7 +245,6 @@
             align-items: center;
             margin-bottom: 1rem;
         }
-        
         /* Style untuk search bar yang muncul di atas tab */
         .search-bar-above-tabs {
             width: 100%;
@@ -287,14 +256,12 @@
             height: 0;
             overflow: hidden;
         }
-        
         .search-bar-above-tabs.active {
             opacity: 1;
             transform: translateY(0);
             pointer-events: auto;
             height: auto;
         }
-        
         /* Style untuk date bar yang muncul di atas tab */
         .date-bar-above-tabs {
             width: 100%;
@@ -306,14 +273,12 @@
             height: 0;
             overflow: hidden;
         }
-        
         .date-bar-above-tabs.active {
             opacity: 1;
             transform: translateY(0);
             pointer-events: auto;
             height: auto;
         }
-        
         /* Style untuk date popup */
         .date-popup {
             position: absolute;
@@ -331,42 +296,35 @@
             pointer-events: none;
             width: 250px;
         }
-        
         .date-popup.active {
             opacity: 1;
             transform: translateY(0);
             pointer-events: auto;
         }
-        
         .date-popup-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 0.5rem;
         }
-        
         .date-popup-title {
             font-weight: 600;
             color: #374151;
         }
-        
         .date-popup-close {
             cursor: pointer;
             color: #6b7280;
             transition: color 0.2s ease;
         }
-        
         .date-popup-close:hover {
             color: #374151;
         }
-        
         /* Style untuk filter icon container */
         .filter-icons-container {
             position: relative;
             display: flex;
             gap: 0.5rem;
         }
-        
         /* Style untuk fixed header */
         .fixed-header {
             position: fixed;
@@ -377,27 +335,22 @@
             background: linear-gradient(to right, #134e4a, #000000);
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        
         /* Style untuk main content dengan padding top */
         .main-content-with-padding {
             padding-top: 80px; /* Sesuaikan dengan tinggi header */
         }
-        
         /* Style untuk mobile bottom nav dengan margin bottom */
         .mobile-bottom-nav-with-margin {
             margin-bottom: 60px; /* Sesuaikan dengan tinggi navigasi bottom mobile */
         }
-        
         @media (max-width: 768px) {
             .main-content-with-padding {
                 padding-top: 70px; /* Sesuaikan untuk mobile */
             }
-            
             .mobile-bottom-nav-with-margin {
                 margin-bottom: 60px; /* Sesuaikan dengan tinggi navigasi bottom mobile */
             }
         }
-        
         /* Style untuk tombol tambah transaksi */
         .add-transaction-btn {
             position: absolute;
@@ -416,28 +369,23 @@
             z-index: 10;
             transition: all 0.2s ease;
         }
-        
         .add-transaction-btn:hover {
             background-color: #0f766e;
             transform: translateX(-50%) scale(1.05);
         }
-        
         .add-transaction-btn i {
             font-size: 1.5rem;
         }
-        
         /* Style untuk form transaksi kasir */
         .kasir-form-container {
             transition: all 0.3s ease;
         }
-        
         /* Style untuk keranjang belanja */
         .cart-container {
             margin-top: 1.5rem;
             border-top: 1px solid #e5e7eb;
             padding-top: 1.5rem;
         }
-        
         .cart-item {
             display: flex;
             justify-content: space-between;
@@ -446,40 +394,32 @@
             border-bottom: 1px solid #f3f4f6;
             transition: background-color 0.2s ease;
         }
-        
         .cart-item:hover {
             background-color: #f9fafb;
         }
-        
         .cart-item-info {
             flex: 1;
         }
-        
         .cart-item-name {
             font-medium text-gray-800;
         }
-        
         .cart-item-details {
             font-size: 0.875rem;
             color: #6b7280;
         }
-        
         .cart-item-price {
             font-weight: 600;
             color: #0d9488;
             margin-right: 1rem;
         }
-        
         .cart-item-remove {
             color: #ef4444;
             cursor: pointer;
             transition: color 0.2s ease;
         }
-        
         .cart-item-remove:hover {
             color: #dc2626;
         }
-        
         .cart-summary {
             display: flex;
             justify-content: space-between;
@@ -488,24 +428,20 @@
             font-weight: 600;
             font-size: 1.125rem;
         }
-        
         .cart-total {
             color: #0d9488;
         }
-        
         .cart-empty {
             text-align: center;
             padding: 2rem;
             color: #6b7280;
             font-style: italic;
         }
-        
         .cart-actions {
             display: flex;
             gap: 0.75rem;
             margin-top: 1rem;
         }
-        
         .cart-clear {
             flex: 1;
             padding: 0.75rem;
@@ -517,12 +453,10 @@
             transition: all 0.2s ease;
             text-align: center;
         }
-        
         .cart-clear:hover {
             background-color: #e5e7eb;
             color: #374151;
         }
-        
         .cart-process {
             flex: 2;
             padding: 0.75rem;
@@ -534,16 +468,13 @@
             transition: all 0.2s ease;
             text-align: center;
         }
-        
         .cart-process:hover {
             background-color: #0f766e;
         }
-        
         .cart-process:disabled {
             background-color: #9ca3af;
             cursor: not-allowed;
         }
-        
         /* Style untuk nota */
         .nota-container {
             background-color: white;
@@ -553,31 +484,27 @@
             max-width: 400px;
             margin: 0 auto;
             font-family: 'Courier New', monospace;
+			
         }
-        
         .nota-header {
             text-align: center;
             border-bottom: 2px dashed #e5e7eb;
             padding-bottom: 1rem;
             margin-bottom: 1rem;
         }
-        
         .nota-company {
             font-size: 1.25rem;
             font-weight: bold;
             color: #134e4a;
             margin-bottom: 0.25rem;
         }
-        
         .nota-date {
             font-size: 0.875rem;
             color: #6b7280;
         }
-        
         .nota-items {
             margin-bottom: 1rem;
         }
-        
         .nota-item {
             display: flex;
             justify-content: space-between;
@@ -585,32 +512,26 @@
             padding-bottom: 0.5rem;
             border-bottom: 1px dashed #f3f4f6;
         }
-        
         .nota-item:last-child {
             border-bottom: none;
         }
-        
         .nota-item-name {
             flex: 1;
         }
-        
         .nota-item-details {
             font-size: 0.75rem;
             color: #6b7280;
         }
-        
         .nota-item-price {
             font-weight: bold;
             text-align: right;
             min-width: 80px;
         }
-        
         .nota-summary {
             border-top: 2px dashed #e5e7eb;
             padding-top: 1rem;
             margin-top: 1rem;
         }
-        
         .nota-total {
             display: flex;
             justify-content: space-between;
@@ -618,21 +539,18 @@
             font-size: 1.125rem;
             margin-bottom: 0.5rem;
         }
-        
         .nota-payment {
             display: flex;
             justify-content: space-between;
             font-size: 0.875rem;
             margin-bottom: 0.25rem;
         }
-        
         .nota-change {
             display: flex;
             justify-content: space-between;
             font-weight: bold;
             color: #059669;
         }
-        
         .nota-footer {
             text-align: center;
             margin-top: 1rem;
@@ -641,37 +559,64 @@
             font-style: italic;
             color: #6b7280;
         }
-        
         .nota-actions {
             display: flex;
             justify-content: center;
             gap: 1rem;
             margin-top: 1.5rem;
         }
-        
         .nota-btn {
             padding: 0.5rem 1rem;
             border-radius: 0.375rem;
             font-weight: 500;
             transition: all 0.2s ease;
         }
-        
         .nota-print {
             background-color: #3b82f6;
             color: white;
         }
-        
         .nota-print:hover {
             background-color: #2563eb;
         }
-        
         .nota-close {
             background-color: #6b7280;
             color: white;
         }
-        
         .nota-close:hover {
             background-color: #4b5563;
+        }
+        .nota-download {
+            background-color: #10b981;
+            color: white;
+        }
+        .nota-download:hover {
+            background-color: #059669;
+        }
+		img#notaImageElement {
+			position: absolute;
+			z-index: -1;
+			overflow: hidden;
+			max-width: 80%;
+		}
+        /* Style untuk preview gambar nota */
+        .nota-image-preview {
+            max-width: 100%;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+        /* Style untuk loading indicator */
+        .loading-indicator {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -691,7 +636,6 @@
             </div>
         </div>
     </header>
-    
     <!-- Sidebar untuk Mobile -->
     <div id="mobileSidebar" class="mobile-sidebar md:hidden">
         <div class="p-4">
@@ -718,10 +662,8 @@
             </nav>
         </div>
     </div>
-    
     <!-- Overlay untuk Sidebar Mobile -->
     <div id="mobileSidebarOverlay" class="mobile-sidebar-overlay md:hidden"></div>
-    
     <!-- Konten Utama -->
     <div class="flex flex-1 main-content-with-padding">
         <!-- Sidebar (Desktop) -->
@@ -757,7 +699,6 @@
                 </a>
             </nav>
         </aside>
-        
         <!-- Area Konten Utama -->
         <main class="flex-1 p-4 md:p-6 mobile-bottom-nav-with-margin">
             <!-- Konten Tab: Kasir -->
@@ -797,7 +738,6 @@
                             </button>
                         </div>
                     </form>
-                    
                     <!-- Keranjang Belanja -->
                     <div class="cart-container">
                         <h3 class="text-lg font-semibold text-gray-800 mb-3">Keranjang Belanja</h3>
@@ -818,7 +758,6 @@
                         </div>
                     </div>
                 </div>
-                
                 <div id="riwayatTransaksiContainer" class="bg-white rounded-xl shadow-md p-6">
                     <!-- Header dengan filter icons -->
                     <div class="header-with-filters">
@@ -835,7 +774,6 @@
                             </div>
                         </div>
                     </div>
-                    
                     <!-- Search Bar di atas tab -->
                     <div class="search-bar-above-tabs" id="searchBarAboveTabs">
                         <div class="relative">
@@ -843,7 +781,6 @@
                             <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
                         </div>
                     </div>
-                    
                     <!-- Date Bar di atas tab -->
                     <div class="date-bar-above-tabs" id="dateBarAboveTabs">
                         <div class="relative">
@@ -851,13 +788,11 @@
                             <i class="fas fa-calendar absolute left-3 top-3 text-gray-400"></i>
                         </div>
                     </div>
-                    
                     <!-- Filter Tabs -->
                     <div class="filter-tabs">
                         <div class="filter-tab active" data-status="semua">Semua</div>
                         <div class="filter-tab" data-status="hutang">Hutang</div>
                     </div>
-                    
                     <!-- Tampilan Tabel Desktop -->
                     <div class="overflow-x-auto hidden md:block">
                         <table class="min-w-full divide-y divide-gray-200">
@@ -878,7 +813,6 @@
                                 <!-- Item riwayat akan diisi oleh JavaScript -->
                             </tbody>
                         </table>
-                        
                         <!-- Pagination Desktop -->
                         <div id="desktopPagination" class="pagination">
                             <button id="prevPageDesktop" class="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50">
@@ -890,12 +824,10 @@
                             </button>
                         </div>
                     </div>
-                    
                     <!-- Tampilan Kartu Mobile -->
                     <div id="mobileTransactionList" class="mobile-transaction-list md:hidden">
                         <!-- Kartu transaksi mobile akan diisi oleh JavaScript -->
                     </div>
-                    
                     <!-- Pagination Mobile -->
                     <div id="mobilePagination" class="pagination mb-12 md:hidden">
                         <button id="prevPageMobile" class="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50">
@@ -910,7 +842,6 @@
             </div>
         </main>
     </div>
-    
     <!-- Navigasi Bawah Mobile -->
     <nav id="mobileBottomNav" class="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200">
         <div class="flex justify-around">
@@ -931,13 +862,11 @@
                 <div class="text-xs mt-1">Laporan</div>
             </a>
         </div>
-        
         <!-- Tombol Tambah Transaksi -->
         <button id="btnAddTransaction" class="add-transaction-btn mb-6 md:hidden">
             <i class="fas fa-plus"></i>
         </button>
     </nav>
-    
     <!-- Modal Pembayaran -->
     <div id="modalPembayaran" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md">
@@ -976,7 +905,6 @@
             </div>
         </div>
     </div>
-    
     <!-- Modal Nota -->
     <div id="modalNota" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
@@ -987,21 +915,29 @@
                 </button>
             </div>
             
+            <!-- Preview Gambar Nota -->
+            <div id="notaImagePreview" class="mb-4 text-center hidden">
+                <img id="notaImageElement" class="nota-image-preview mx-auto" alt="Nota Transaksi">
+            </div>
+            
+            <!-- Container untuk Nota yang akan dijadikan gambar -->
             <div id="notaContent" class="nota-container">
                 <!-- Konten nota akan diisi oleh JavaScript -->
             </div>
             
             <div class="nota-actions">
                 <button id="btnPrintNota" class="nota-btn nota-print">
-                    <i class="fas fa-print mr-2"></i> Cetak
+                    <i class="fas fa-print"></i> 
+                </button>
+                <button id="btnDownloadNota" class="nota-btn nota-download">
+                    <i class="fas fa-download"></i> 
                 </button>
                 <button id="btnCloseNota2" class="nota-btn nota-close">
-                    <i class="fas fa-times mr-2"></i> Tutup
+                    <i class="fas fa-times"></i> 
                 </button>
             </div>
         </div>
     </div>
-    
     <!-- Modal Detail Transaksi (Mobile) -->
     <div id="modalDetailTransaksi" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
@@ -1011,11 +947,9 @@
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-            
             <div id="detailTransaksiContent" class="space-y-4">
                 <!-- Konten detail akan diisi oleh JavaScript -->
             </div>
-            
             <div class="mt-6 flex justify-end">
                 <button id="btnCloseDetailTransaksi2" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition-colors">
                     Tutup
@@ -1023,7 +957,6 @@
             </div>
         </div>
     </div>
-    
     <!-- Modal Ubah Status Transaksi -->
     <div id="modalUbahStatus" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md">
@@ -1046,7 +979,6 @@
             </div>
         </div>
     </div>
-    
     <!-- Modal Pembayaran Hutang -->
     <div id="modalBayarHutang" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md">
@@ -1070,7 +1002,6 @@
             </div>
         </div>
     </div>
-    
     <script>
         (() => {
             // Kunci untuk localStorage
@@ -1081,7 +1012,6 @@
                 pelanggan: 'depot_pelanggan',
                 pengaturan: 'depot_pengaturan'
             };
-            
             // Data default
             const defaultProduk = [
                 { id: 'p1', nama: 'Air isi ulang 19L', harga: 6000, hargaPokok: 2000, jenis: 'air_isi_ulang', liter: 19 },
@@ -1092,17 +1022,14 @@
                 { id: 'p6', nama: 'Lemineral', harga: 22000, hargaPokok: 20000, jenis: 'galon_baru', liter: 0 },
                 { id: 'p7', nama: 'Gas LPG 3Kg', harga: 20000, hargaPokok: 18000, jenis: 'galon_baru', liter: 0 },
             ];
-            
             const defaultPengaturan = {
                 namaUsaha: 'Depot Air Minum Isi Ulang',
                 kapasitasToren: 7700,
                 biayaSuplai: 300000
             };
-            
             // Variabel global
             let TORREN_KAPASITAS = 7700;
             let HARGA_ISI_TANGKI = 300000;
-            
             // Variabel data
             let produk = [];
             let stok = {
@@ -1114,31 +1041,24 @@
             let transaksi = [];
             let pelanggan = [];
             let pengaturan = {...defaultPengaturan};
-            
             // Variabel keranjang
             let cart = [];
-            
             // Variabel state
             let currentTransaksi = null;
             let currentProduk = null;
-            
             // Variabel pagination
             const ITEMS_PER_PAGE = 10;
             let currentPage = 1;
             let totalPages = 1;
-            
             // Variabel untuk ubah status
             let transaksiIdToChange = null;
             let transaksiIdToPay = null;
-            
             // Variabel filter
             let activeStatusFilter = 'semua';
             let isSearchActive = false;
             let isDateActive = false;
-            
             // Variabel untuk nota
             let currentNotaData = null;
-            
             // Fungsi utilitas
             function saveData() {
                 try {
@@ -1152,11 +1072,9 @@
                     console.error('Error menyimpan data ke localStorage:', e);
                 }
             }
-            
             function loadData() {
                 try {
                     console.log('Memuat data dari localStorage...');
-                    
                     // Memuat data produk
                     const produkLS = localStorage.getItem(LS_KEYS.produk);
                     if (produkLS) {
@@ -1166,13 +1084,11 @@
                         produk = [...defaultProduk];
                         console.log('Menggunakan data produk default');
                     }
-                    
                     // Memuat data transaksi
                     const transaksiLS = localStorage.getItem(LS_KEYS.transaksi);
                     if (transaksiLS) {
                         transaksi = JSON.parse(transaksiLS);
                         console.log('Transaksi dimuat:', transaksi.length, 'item');
-                        
                         // Migrasi data untuk menambahkan field sisaHutang jika belum ada
                         transaksi = transaksi.map(t => {
                             if (t.status === 'hutang' && t.sisaHutang === undefined) {
@@ -1189,7 +1105,6 @@
                         transaksi = [];
                         console.log('Data transaksi tidak ditemukan, menggunakan array kosong');
                     }
-                    
                     // Memuat data pelanggan
                     const pelangganLS = localStorage.getItem(LS_KEYS.pelanggan);
                     if (pelangganLS) {
@@ -1199,7 +1114,6 @@
                         pelanggan = [];
                         console.log('Data pelanggan tidak ditemukan, menggunakan array kosong');
                     }
-                    
                     // Memuat data pengaturan
                     const pengaturanLS = localStorage.getItem(LS_KEYS.pengaturan);
                     if (pengaturanLS) {
@@ -1209,7 +1123,6 @@
                         pengaturan = {...defaultPengaturan};
                         console.log('Menggunakan data pengaturan default');
                     }
-                    
                     // Memuat data stok
                     const stokLS = localStorage.getItem(LS_KEYS.stok);
                     if (stokLS) {
@@ -1224,32 +1137,26 @@
                         };
                         console.log('Menggunakan data stok default');
                     }
-                    
                     // Update variabel global berdasarkan pengaturan
                     TORREN_KAPASITAS = pengaturan.kapasitasToren;
                     HARGA_ISI_TANGKI = pengaturan.biayaSuplai;
-                    
                     // Update header dengan nama usaha
                     const namaUsahaHeader = document.getElementById('namaUsahaHeader');
                     if (namaUsahaHeader) {
                         namaUsahaHeader.textContent = pengaturan.namaUsaha;
                     }
-                    
                     // Update judul sidebar mobile dengan nama usaha
                     const sidebarMobileTitle = document.getElementById('sidebarMobileTitle');
                     if (sidebarMobileTitle) {
                         sidebarMobileTitle.textContent = pengaturan.namaUsaha;
                     }
-                    
                     // Hitung total halaman untuk pagination
                     totalPages = Math.ceil(transaksi.length / ITEMS_PER_PAGE);
                     if (totalPages === 0) totalPages = 1;
-                    
                     console.log('Data berhasil dimuat');
                     return true;
                 } catch (e) {
                     console.error('Error memuat data dari localStorage:', e);
-                    
                     // Inisialisasi dengan default jika ada error
                     produk = [...defaultProduk];
                     stok = {
@@ -1262,16 +1169,13 @@
                     pelanggan = [];
                     pengaturan = {...defaultPengaturan};
                     totalPages = 1;
-                    
                     return false;
                 }
             }
-            
             function formatRupiah(num) {
                 if (isNaN(num)) return 'Rp 0';
                 return 'Rp ' + Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
             }
-            
             function formatDateTime(date) {
                 try {
                     const d = new Date(date);
@@ -1280,7 +1184,6 @@
                     return date;
                 }
             }
-            
             function formatDate(date) {
                 try {
                     const d = new Date(date);
@@ -1289,16 +1192,13 @@
                     return date;
                 }
             }
-            
             function generateId(prefix = 'id') {
                 return prefix + '_' + Math.random().toString(36).substr(2, 9);
             }
-            
             // Fungsi keranjang
             function addToCart(produkId, jumlah, namaPelanggan) {
                 const produkItem = produk.find(p => p.id === produkId);
                 if (!produkItem) return false;
-                
                 // Cek stok untuk produk air isi ulang
                 if (produkItem.jenis === 'air_isi_ulang') {
                     const totalLiter = produkItem.liter * jumlah;
@@ -1307,12 +1207,10 @@
                         return false;
                     }
                 }
-                
                 // Cek apakah produk sudah ada di keranjang
                 const existingItemIndex = cart.findIndex(item => 
                     item.produkId === produkId && item.namaPelanggan === namaPelanggan
                 );
-                
                 if (existingItemIndex !== -1) {
                     // Jika sudah ada, tambahkan jumlahnya
                     cart[existingItemIndex].jumlah += jumlah;
@@ -1330,27 +1228,22 @@
                         subtotal: produkItem.harga * jumlah
                     });
                 }
-                
                 updateCartDisplay();
                 return true;
             }
-            
             function removeFromCart(cartItemId) {
                 cart = cart.filter(item => item.id !== cartItemId);
                 updateCartDisplay();
             }
-            
             function clearCart() {
                 cart = [];
                 updateCartDisplay();
             }
-            
             function updateCartDisplay() {
                 const cartItemsContainer = document.getElementById('cartItems');
                 const cartSummary = document.querySelector('.cart-summary');
                 const cartActions = document.querySelector('.cart-actions');
                 const cartTotal = document.getElementById('cartTotal');
-                
                 if (cart.length === 0) {
                     cartItemsContainer.innerHTML = '<div class="cart-empty">Keranjang belanja kosong</div>';
                     cartSummary.classList.add('hidden');
@@ -1358,10 +1251,8 @@
                 } else {
                     cartItemsContainer.innerHTML = '';
                     let total = 0;
-                    
                     cart.forEach(item => {
                         total += item.subtotal;
-                        
                         const cartItem = document.createElement('div');
                         cartItem.className = 'cart-item';
                         cartItem.innerHTML = `
@@ -1374,7 +1265,6 @@
                                 <i class="fas fa-trash"></i>
                             </div>
                         `;
-                        
                         // Event listener untuk tombol hapus
                         const removeBtn = cartItem.querySelector('.cart-item-remove');
                         if (removeBtn) {
@@ -1382,16 +1272,13 @@
                                 removeFromCart(item.id);
                             });
                         }
-                        
                         cartItemsContainer.appendChild(cartItem);
                     });
-                    
                     cartTotal.textContent = formatRupiah(total);
                     cartSummary.classList.remove('hidden');
                     cartActions.classList.remove('hidden');
                 }
             }
-            
             // Fungsi untuk menampilkan nota
             function showNota(transaksiData, metodePembayaran, jumlahBayar = 0) {
                 currentNotaData = {
@@ -1399,7 +1286,6 @@
                     metodePembayaran,
                     jumlahBayar
                 };
-                
                 const notaContent = document.getElementById('notaContent');
                 if (!notaContent) return;
                 
@@ -1420,7 +1306,6 @@
                 transaksiData.forEach(item => {
                     const produkItem = produk.find(p => p.id === item.produkId);
                     const namaProduk = produkItem ? produkItem.nama : 'Produk tidak dikenal';
-                    
                     notaHTML += `
                         <div class="nota-item">
                             <div class="nota-item-name">
@@ -1468,7 +1353,7 @@
                     </div>
                     
                     <div class="nota-footer">
-                        Terima kasih atas kunjungan Anda!
+                        Terima kasih
                     </div>
                 `;
                 
@@ -1478,7 +1363,60 @@
                 const modalNota = document.getElementById('modalNota');
                 if (modalNota) {
                     modalNota.classList.remove('hidden');
+                    
+                    // Buat gambar dari elemen nota
+                    setTimeout(() => {
+                        generateNotaImage();
+                    }, 500);
                 }
+            }
+            
+            // Fungsi untuk menghasilkan gambar dari elemen nota
+            function generateNotaImage() {
+                const notaContent = document.getElementById('notaContent');
+                const notaImagePreview = document.getElementById('notaImagePreview');
+                const notaImageElement = document.getElementById('notaImageElement');
+                
+                if (!notaContent) return;
+                
+                // Sembunyikan preview gambar sementara
+                notaImagePreview.classList.add('hidden');
+                
+                // Tambahkan loading indicator ke tombol download
+                const btnDownloadNota = document.getElementById('btnDownloadNota');
+                const originalText = btnDownloadNota.innerHTML;
+                btnDownloadNota.innerHTML = '<div class="loading-indicator"></div> Memproses...';
+                btnDownloadNota.disabled = true;
+                
+                // Gunakan html2canvas untuk mengubah elemen HTML menjadi gambar
+                html2canvas(notaContent, {
+                    scale: 2, // Tingkatkan resolusi gambar
+                    backgroundColor: '#ffffff',
+                    logging: false
+                }).then(canvas => {
+                    // Konversi canvas menjadi URL data gambar
+                    const imageDataUrl = canvas.toDataURL('image/png');
+                    
+                    // Tampilkan gambar di preview
+                    notaImageElement.src = imageDataUrl;
+                    notaImagePreview.classList.remove('hidden');
+                    
+                    // Simpan URL gambar untuk download
+                    currentNotaData.imageDataUrl = imageDataUrl;
+                    
+                    // Kembalikan tombol download ke keadaan semula
+                    btnDownloadNota.innerHTML = originalText;
+                    btnDownloadNota.disabled = false;
+                }).catch(error => {
+                    console.error('Error generating nota image:', error);
+                    
+                    // Kembalikan tombol download ke keadaan semula
+                    btnDownloadNota.innerHTML = originalText;
+                    btnDownloadNota.disabled = false;
+                    
+                    // Tampilkan pesan error jika gagal membuat gambar
+                    alert('Gagal membuat gambar nota. Silakan coba lagi atau gunakan fitur cetak.');
+                });
             }
             
             // Fungsi update
@@ -1488,10 +1426,8 @@
                     console.error('Elemen kasirProdukSelect tidak ditemukan');
                     return;
                 }
-                
                 console.log('Memperbarui opsi produk...');
                 kasirProdukSelect.innerHTML = '';
-                
                 if (produk && produk.length > 0) {
                     produk.forEach(p => {
                         const option = document.createElement('option');
@@ -1509,17 +1445,14 @@
                     kasirProdukSelect.appendChild(option);
                 }
             }
-            
             function updatePelangganDatalist() {
                 const pelangganDatalist = document.getElementById('pelangganDatalist');
                 if (!pelangganDatalist) {
                     console.error('Elemen pelangganDatalist tidak ditemukan');
                     return;
                 }
-                
                 console.log('Memperbarui datalist pelanggan...');
                 pelangganDatalist.innerHTML = '';
-                
                 if (pelanggan && pelanggan.length > 0) {
                     pelanggan.forEach(p => {
                         const option = document.createElement('option');
@@ -1529,24 +1462,19 @@
                     console.log('Datalist pelanggan berhasil diperbarui dengan', pelanggan.length, 'item');
                 }
             }
-            
             function createRiwayatItem(t) {
                 try {
                     const produkTrans = produk.find(p => p.id === t.produkId);
                     if (!produkTrans) return null;
-                    
                     const hargaPokok = produkTrans.hargaPokok || 0;
                     const labaKotor = (produkTrans.harga * t.jumlah) - (hargaPokok * t.jumlah);
-                    
                     const tr = document.createElement('tr');
                     tr.className = "hover:bg-gray-50 transition-colors cursor-pointer";
                     tr.setAttribute('data-id', t.id);
-                    
                     let statusBadge = '';
                     let statusClass = '';
                     let actionCell = '';
                     let sisaHutangBadge = '';
-                    
                     if (t.status === 'lunas') {
                         statusBadge = 'Lunas';
                         statusClass = 'bg-green-100 text-green-800';
@@ -1554,12 +1482,10 @@
                     } else if (t.status === 'hutang') {
                         statusBadge = 'Hutang';
                         statusClass = 'bg-yellow-100 text-yellow-800';
-                        
                         // Tampilkan sisa hutang jika ada
                         if (t.sisaHutang > 0) {
                             sisaHutangBadge = `<span class="sisa-hutang-badge">${formatRupiah(t.sisaHutang)}</span>`;
                         }
-                        
                         actionCell = `
                             <td class="px-4 py-3 text-sm text-center">
                                 <i class="fas fa-money-bill-wave pay-icon text-lg" data-id="${t.id}" title="Bayar Hutang"></i>
@@ -1570,7 +1496,6 @@
                         statusClass = 'bg-blue-100 text-blue-800 clickable-status';
                         actionCell = '<td class="px-4 py-3 text-sm text-center">-</td>';
                     }
-                    
                     tr.innerHTML = `
                         <td class="px-4 py-3 text-sm text-gray-900">${formatDateTime(t.tanggal)}</td>
                         <td class="px-4 py-3 text-sm text-gray-700">${produkTrans.nama}</td>
@@ -1585,7 +1510,6 @@
                         </td>
                         ${actionCell}
                     `;
-                    
                     // Tambahkan event listener ke seluruh baris untuk menampilkan detail
                     tr.addEventListener('click', (e) => {
                         // Jika yang diklik adalah status badge dan statusnya "cash", maka ubah status
@@ -1600,7 +1524,6 @@
                             showDetailTransaksi(t.id);
                         }
                     });
-                    
                     // Tambahkan event listener khusus untuk status badge
                     const statusBadgeElement = tr.querySelector('.status-badge');
                     if (statusBadgeElement && t.status === 'cash') {
@@ -1609,7 +1532,6 @@
                             ubahStatusTransaksi(t.id);
                         });
                     }
-                    
                     // Tambahkan event listener khusus untuk pay icon
                     const payIconElement = tr.querySelector('.pay-icon');
                     if (payIconElement && t.status === 'hutang') {
@@ -1618,28 +1540,23 @@
                             bayarHutang(t.id);
                         });
                     }
-                    
                     return tr;
                 } catch (e) {
                     console.error('Error membuat item riwayat:', e);
                     return null;
                 }
             }
-            
             function createMobileTransactionCard(t) {
                 try {
                     const produkTrans = produk.find(p => p.id === t.produkId);
                     if (!produkTrans) return null;
-                    
                     const hargaPokok = produkTrans.hargaPokok || 0;
                     const labaKotor = (produkTrans.harga * t.jumlah) - (hargaPokok * t.jumlah);
-                    
                     let statusBadge = '';
                     let statusColor = '';
                     let statusClass = '';
                     let actionButton = '';
                     let sisaHutangInfo = '';
-                    
                     if (t.status === 'lunas') {
                         statusBadge = 'Lunas';
                         statusColor = 'bg-green-100 text-green-800';
@@ -1649,12 +1566,10 @@
                         statusBadge = 'Bayar';
                         statusColor = 'bg-red-500 text-white';
                         statusClass = 'btnBayarHutang';
-                        
                         // Tampilkan sisa hutang jika ada
                         if (t.sisaHutang > 0) {
                             sisaHutangInfo = ` (${formatRupiah(t.sisaHutang)})`;
                         }
-                        
                         actionButton = '';
                     } else {
                         statusBadge = 'Lunas';
@@ -1662,11 +1577,9 @@
                         statusClass = 'clickable-status';
                         actionButton = '';
                     }
-                    
                     const card = document.createElement('div');
                     card.className = 'mobile-transaction-card';
                     card.setAttribute('data-id', t.id);
-                    
                     card.innerHTML = `
                         <div class="mobile-transaction-header">
                             <div class="font-medium text-gray-900">${formatDate(t.tanggal)}${sisaHutangInfo}</div>
@@ -1684,7 +1597,6 @@
                         </div>
                         ${actionButton}
                     `;
-                    
                     // Tambahkan event listener ke tombol detail
                     const detailBtn = card.querySelector('.btnDetailTransaksi');
                     if (detailBtn) {
@@ -1693,7 +1605,6 @@
                             showDetailTransaksi(t.id);
                         });
                     }
-                    
                     // Tambahkan event listener khusus untuk status badge
                     const statusBadgeElement = card.querySelector('.status-badge');
                     if (statusBadgeElement) {
@@ -1709,56 +1620,43 @@
                             });
                         }
                     }
-                    
                     return card;
                 } catch (e) {
                     console.error('Error membuat kartu transaksi mobile:', e);
                     return null;
                 }
             }
-            
             function updatePaginationInfo() {
                 const desktopPagination = document.getElementById('desktopPagination');
                 const mobilePagination = document.getElementById('mobilePagination');
-                
                 const startItem = (currentPage - 1) * ITEMS_PER_PAGE + 1;
                 const endItem = Math.min(currentPage * ITEMS_PER_PAGE, transaksi.length);
-                
                 const infoText = `${startItem}-${endItem} dari ${transaksi.length} transaksi`;
-                
                 const paginationInfoDesktop = desktopPagination?.querySelector('.pagination-info');
                 const paginationInfoMobile = mobilePagination?.querySelector('.pagination-info');
-                
                 if (paginationInfoDesktop) {
                     paginationInfoDesktop.textContent = infoText;
                 }
-                
                 if (paginationInfoMobile) {
                     paginationInfoMobile.textContent = infoText;
                 }
-                
                 // Update status tombol
                 const prevPageDesktop = document.getElementById('prevPageDesktop');
                 const nextPageDesktop = document.getElementById('nextPageDesktop');
                 const prevPageMobile = document.getElementById('prevPageMobile');
                 const nextPageMobile = document.getElementById('nextPageMobile');
-                
                 if (prevPageDesktop) {
                     prevPageDesktop.disabled = currentPage === 1;
                 }
-                
                 if (nextPageDesktop) {
                     nextPageDesktop.disabled = currentPage === totalPages;
                 }
-                
                 if (prevPageMobile) {
                     prevPageMobile.disabled = currentPage === 1;
                 }
-                
                 if (nextPageMobile) {
                     nextPageMobile.disabled = currentPage === totalPages;
                 }
-                
                 // Tampilkan/sembunyikan pagination berdasarkan total item
                 if (transaksi.length > ITEMS_PER_PAGE) {
                     if (desktopPagination) {
@@ -1776,41 +1674,32 @@
                     }
                 }
             }
-            
             function updateKasirRiwayat() {
                 console.log('Memperbarui riwayat kasir...');
-                
                 // Update tabel desktop
                 const kasirRiwayatUl = document.getElementById('kasirRiwayat');
                 if (!kasirRiwayatUl) {
                     console.error('Elemen kasirRiwayatUl tidak ditemukan');
                     return;
                 }
-                
                 kasirRiwayatUl.innerHTML = '';
-                
                 // Dapatkan nilai filter
                 const searchNamaPelangganInput = document.getElementById('searchNamaPelanggan');
                 const filterTanggalInput = document.getElementById('filterTanggal');
-                
                 const searchNama = searchNamaPelangganInput ? searchNamaPelangganInput.value.toLowerCase().trim() : '';
                 const filterDate = filterTanggalInput ? filterTanggalInput.value : '';
-                
                 // Filter transaksi berdasarkan kriteria yang dipilih
                 let filteredTransactions = [...transaksi];
-                
                 // Filter berdasarkan status
                 if (activeStatusFilter !== 'semua') {
                     filteredTransactions = filteredTransactions.filter(t => t.status === activeStatusFilter);
                 }
-                
                 // Filter berdasarkan nama pelanggan
                 if (searchNama && isSearchActive) {
                     filteredTransactions = filteredTransactions.filter(t => 
                         t.namaPelanggan.toLowerCase().includes(searchNama)
                     );
                 }
-                
                 // Filter berdasarkan tanggal
                 if (filterDate && isDateActive) {
                     filteredTransactions = filteredTransactions.filter(t => {
@@ -1818,22 +1707,17 @@
                         return transactionDate === filterDate;
                     });
                 }
-                
                 // Urutkan transaksi berdasarkan tanggal (terbaru dulu)
                 const sortedTransactions = [...filteredTransactions].sort((a, b) => 
                     new Date(b.tanggal) - new Date(a.tanggal)
                 );
-                
                 // Hitung pagination
                 totalPages = Math.ceil(sortedTransactions.length / ITEMS_PER_PAGE);
                 if (totalPages === 0) totalPages = 1;
-                
                 const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
                 const endIndex = startIndex + ITEMS_PER_PAGE;
                 const pageTransactions = sortedTransactions.slice(startIndex, endIndex);
-                
                 console.log('Memproses', pageTransactions.length, 'transaksi untuk ditampilkan di halaman', currentPage);
-                
                 if(pageTransactions.length === 0){
                     console.log('Tidak ada transaksi untuk ditampilkan');
                     const tr = document.createElement('tr');
@@ -1849,14 +1733,12 @@
                     });
                     console.log('Menambahkan', pageTransactions.length, 'transaksi ke tabel desktop');
                 }
-                
                 // Update kartu mobile
                 const mobileTransactionList = document.getElementById('mobileTransactionList');
                 if (!mobileTransactionList) {
                     console.error('Elemen mobileTransactionList tidak ditemukan');
                     return;
                 }
-                
                 mobileTransactionList.innerHTML = '';
                 if(pageTransactions.length === 0){
                     const div = document.createElement('div');
@@ -1872,34 +1754,25 @@
                     });
                     console.log('Menambahkan', pageTransactions.length, 'transaksi ke kartu mobile');
                 }
-                
                 // Update pagination
                 updatePaginationInfo();
-                
                 console.log('Riwayat kasir berhasil diperbarui');
             }
-            
             function goToPage(page) {
                 if (page < 1 || page > totalPages) return;
-                
                 currentPage = page;
                 updateKasirRiwayat();
             }
-            
             function showDetailTransaksi(transaksiId) {
                 const t = transaksi.find(trx => trx.id === transaksiId);
                 if (!t) return;
-                
                 const produkTrans = produk.find(p => p.id === t.produkId);
                 if (!produkTrans) return;
-                
                 const hargaPokok = produkTrans.hargaPokok || 0;
                 const labaKotor = (produkTrans.harga * t.jumlah) - (hargaPokok * t.jumlah);
-                
                 let statusBadge = '';
                 let statusColor = '';
                 let sisaHutangInfo = '';
-                
                 if (t.status === 'lunas') {
                     statusBadge = 'Lunas';
                     statusColor = 'bg-green-100 text-green-800';
@@ -1918,7 +1791,6 @@
                     statusBadge = 'Cash';
                     statusColor = 'bg-blue-100 text-blue-800';
                 }
-                
                 const detailTransaksiContent = document.getElementById('detailTransaksiContent');
                 if (detailTransaksiContent) {
                     detailTransaksiContent.innerHTML = `
@@ -1985,54 +1857,44 @@
                         </div>
                     `;
                 }
-                
                 const modalDetailTransaksi = document.getElementById('modalDetailTransaksi');
                 if (modalDetailTransaksi) {
                     modalDetailTransaksi.classList.remove('hidden');
                 }
             }
-            
             // Fungsi untuk mengubah status transaksi
             function ubahStatusTransaksi(transaksiId) {
                 const t = transaksi.find(trx => trx.id === transaksiId);
                 if (!t) return;
-                
                 // Hanya transaksi dengan status "cash" yang bisa diubah
                 if (t.status !== 'cash') {
                     alert('Hanya transaksi dengan status Cash yang bisa diubah menjadi Hutang.');
                     return;
                 }
-                
                 // Simpan ID transaksi yang akan diubah
                 transaksiIdToChange = transaksiId;
-                
                 // Reset form
                 const ubahStatusJatuhTempoInput = document.getElementById('ubahStatusJatuhTempo');
                 if (ubahStatusJatuhTempoInput) {
                     ubahStatusJatuhTempoInput.value = '';
                 }
-                
                 // Tampilkan modal konfirmasi
                 const modalUbahStatus = document.getElementById('modalUbahStatus');
                 if (modalUbahStatus) {
                     modalUbahStatus.classList.remove('hidden');
                 }
             }
-            
             // Fungsi untuk membayar hutang
             function bayarHutang(transaksiId) {
                 const t = transaksi.find(trx => trx.id === transaksiId);
                 if (!t) return;
-                
                 // Hanya transaksi dengan status "hutang" yang bisa dibayar
                 if (t.status !== 'hutang') {
                     alert('Hanya transaksi dengan status Hutang yang bisa dibayar.');
                     return;
                 }
-                
                 // Simpan ID transaksi yang akan dibayar
                 transaksiIdToPay = transaksiId;
-                
                 // Set sisa hutang di modal (gunakan sisaHutang jika ada, jika tidak hitung dari produk)
                 let sisaHutang = t.sisaHutang || 0;
                 if (sisaHutang === 0) {
@@ -2041,25 +1903,20 @@
                         sisaHutang = produkTrans.harga * t.jumlah;
                     }
                 }
-                
                 // Set total hutang di modal
                 const totalHutangInput = document.getElementById('totalHutang');
                 if (totalHutangInput) {
                     totalHutangInput.value = formatRupiah(sisaHutang);
                 }
-                
                 // Reset form
                 const jumlahBayarHutangInput = document.getElementById('jumlahBayarHutang');
                 const sisaHutangInfoDiv = document.getElementById('sisaHutangInfo');
-                
                 if (jumlahBayarHutangInput) {
                     jumlahBayarHutangInput.value = '';
                 }
-                
                 if (sisaHutangInfoDiv) {
                     sisaHutangInfoDiv.classList.add('hidden');
                 }
-                
                 // Tampilkan modal pembayaran hutang
                 const modalBayarHutang = document.getElementById('modalBayarHutang');
                 if (modalBayarHutang) {
@@ -2069,19 +1926,16 @@
                     }
                 }
             }
-            
             // Fungsi untuk update tombol clear filter
             function updateClearFilterButton() {
                 const clearFilter = document.getElementById('clearFilter');
                 if (!clearFilter) return;
-                
                 if (activeStatusFilter !== 'semua' || isSearchActive || isDateActive) {
                     clearFilter.classList.add('active');
                 } else {
                     clearFilter.classList.remove('active');
                 }
             }
-            
             // Setup event listeners
             function setupEventListeners() {
                 // Toggle sidebar mobile
@@ -2089,33 +1943,28 @@
                 const mobileSidebar = document.getElementById('mobileSidebar');
                 const mobileSidebarOverlay = document.getElementById('mobileSidebarOverlay');
                 const btnCloseSidebar = document.getElementById('btnCloseSidebar');
-                
                 if (btnSidebarToggle && mobileSidebar && mobileSidebarOverlay) {
                     btnSidebarToggle.addEventListener('click', () => {
                         mobileSidebar.classList.add('active');
                         mobileSidebarOverlay.classList.add('active');
                     });
                 }
-                
                 if (btnCloseSidebar && mobileSidebar && mobileSidebarOverlay) {
                     btnCloseSidebar.addEventListener('click', () => {
                         mobileSidebar.classList.remove('active');
                         mobileSidebarOverlay.classList.remove('active');
                     });
                 }
-                
                 if (mobileSidebarOverlay && mobileSidebar) {
                     mobileSidebarOverlay.addEventListener('click', () => {
                         mobileSidebar.classList.remove('active');
                         mobileSidebarOverlay.classList.remove('active');
                     });
                 }
-                
                 // Event listener untuk tombol tambah transaksi di mobile
                 const btnAddTransaction = document.getElementById('btnAddTransaction');
                 const kasirFormContainer = document.getElementById('kasirFormContainer');
                 const riwayatTransaksiContainer = document.getElementById('riwayatTransaksiContainer');
-                
                 if (btnAddTransaction && kasirFormContainer && riwayatTransaksiContainer) {
                     btnAddTransaction.addEventListener('click', () => {
                         kasirFormContainer.classList.remove('hidden');
@@ -2127,7 +1976,6 @@
                         kasirFormContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     });
                 }
-                
                 // Event listener untuk tombol tutup form di mobile
                 const btnCloseForm = document.getElementById('btnCloseForm');
                 if (btnCloseForm && kasirFormContainer && riwayatTransaksiContainer) {
@@ -2139,7 +1987,6 @@
                         }
                     });
                 }
-                
                 // Event listener filter tabs
                 const filterTabs = document.querySelectorAll('.filter-tab');
                 filterTabs.forEach(tab => {
@@ -2147,25 +1994,20 @@
                         // Update active tab
                         filterTabs.forEach(t => t.classList.remove('active'));
                         tab.classList.add('active');
-                        
                         // Update filter status
                         activeStatusFilter = tab.getAttribute('data-status');
-                        
                         // Reset ke halaman pertama dan update tampilan
                         currentPage = 1;
                         updateKasirRiwayat();
                     });
                 });
-                
                 // Event listener search icon - menampilkan search bar di atas tab
                 const searchIcon = document.getElementById('searchIcon');
                 const searchBarAboveTabs = document.getElementById('searchBarAboveTabs');
                 const searchNamaPelangganInput = document.getElementById('searchNamaPelanggan');
-                
                 if (searchIcon && searchBarAboveTabs && searchNamaPelangganInput) {
                     searchIcon.addEventListener('click', () => {
                         isSearchActive = !isSearchActive;
-                        
                         if (isSearchActive) {
                             searchBarAboveTabs.classList.add('active');
                             searchIcon.classList.add('active');
@@ -2175,22 +2017,18 @@
                             searchIcon.classList.remove('active');
                             searchNamaPelangganInput.value = '';
                         }
-                        
                         updateClearFilterButton();
                         currentPage = 1;
                         updateKasirRiwayat();
                     });
                 }
-                
                 // Event listener date icon - menampilkan date bar di atas tab
                 const dateIcon = document.getElementById('dateIcon');
                 const dateBarAboveTabs = document.getElementById('dateBarAboveTabs');
                 const filterTanggalInput = document.getElementById('filterTanggal');
-                
                 if (dateIcon && dateBarAboveTabs && filterTanggalInput) {
                     dateIcon.addEventListener('click', () => {
                         isDateActive = !isDateActive;
-                        
                         if (isDateActive) {
                             dateBarAboveTabs.classList.add('active');
                             dateIcon.classList.add('active');
@@ -2200,12 +2038,10 @@
                             dateIcon.classList.remove('active');
                             filterTanggalInput.value = '';
                         }
-                        
                         updateClearFilterButton();
                         currentPage = 1;
                         updateKasirRiwayat();
                     });
-                    
                     // Otomatis submit saat tanggal berubah
                     filterTanggalInput.addEventListener('change', () => {
                         // Tidak perlu tombol OK, langsung terapkan filter
@@ -2214,7 +2050,6 @@
                         updateKasirRiwayat();
                     });
                 }
-                
                 // Event listener filter inputs
                 if (searchNamaPelangganInput) {
                     searchNamaPelangganInput.addEventListener('input', () => {
@@ -2222,14 +2057,12 @@
                         updateKasirRiwayat();
                     });
                 }
-                
                 if (filterTanggalInput) {
                     filterTanggalInput.addEventListener('change', () => {
                         currentPage = 1; // Reset ke halaman pertama saat filter berubah
                         updateKasirRiwayat();
                     });
                 }
-                
                 // Event listener clear filter
                 const clearFilter = document.getElementById('clearFilter');
                 if (clearFilter) {
@@ -2240,71 +2073,56 @@
                         if (filterTabs.length > 0) {
                             filterTabs[0].classList.add('active');
                         }
-                        
                         if (searchNamaPelangganInput) {
                             searchNamaPelangganInput.value = '';
                         }
-                        
                         if (filterTanggalInput) {
                             filterTanggalInput.value = '';
                         }
-                        
                         isSearchActive = false;
                         isDateActive = false;
-                        
                         if (searchBarAboveTabs) {
                             searchBarAboveTabs.classList.remove('active');
                         }
-                        
                         if (dateBarAboveTabs) {
                             dateBarAboveTabs.classList.remove('active');
                         }
-                        
                         if (searchIcon) {
                             searchIcon.classList.remove('active');
                         }
-                        
                         if (dateIcon) {
                             dateIcon.classList.remove('active');
                         }
-                        
                         updateClearFilterButton();
                         currentPage = 1; // Reset ke halaman pertama
                         updateKasirRiwayat();
                     });
                 }
-                
                 // Form kasir - tombol tambah ke keranjang
                 const btnAddToCart = document.getElementById('btnAddToCart');
                 if (btnAddToCart) {
                     btnAddToCart.addEventListener('click', (e) => {
                         e.preventDefault();
-                        
                         const kasirProdukSelect = document.getElementById('kasirProduk');
                         const kasirJumlahInput = document.getElementById('kasirJumlah');
                         const kasirNamaPelangganInput = document.getElementById('kasirNamaPelanggan');
-                        
                         const produkId = kasirProdukSelect ? kasirProdukSelect.value : '';
                         const jumlah = kasirJumlahInput ? parseInt(kasirJumlahInput.value) : 0;
                         let namaPelanggan = kasirNamaPelangganInput ? kasirNamaPelangganInput.value.trim() : '';
-                        
                         // Jika nama pelanggan kosong, otomatis isi dengan "Pelanggan Baru"
                         if (!namaPelanggan) {
                             namaPelanggan = "Pelanggan Baru";
                         }
-                        
                         if (!produkId || jumlah < 1) {
                             alert('Mohon isi semua data dengan benar.');
                             return;
                         }
-                        
                         // Tambahkan ke keranjang
                         if (addToCart(produkId, jumlah, namaPelanggan)) {
                             // Reset form
                             if (kasirJumlahInput) {
                                 kasirJumlahInput.value = '1';
                             }
-                            
                             // Fokus kembali ke input produk
                             if (kasirProdukSelect) {
                                 kasirProdukSelect.focus();
@@ -2312,18 +2130,15 @@
                         }
                     });
                 }
-                
                 // Form kasir - tombol keranjang (submit)
                 const formKasir = document.getElementById('formKasir');
                 if (formKasir) {
                     formKasir.addEventListener('submit', e => {
                         e.preventDefault();
-                        
                         if (cart.length === 0) {
                             alert('Keranjang belanja kosong. Silakan tambahkan produk terlebih dahulu.');
                             return;
                         }
-                        
                         // Buka modal pembayaran
                         const totalTagihanInput = document.getElementById('totalTagihan');
                         const pembayaranNamaPelangganInput = document.getElementById('pembayaranNamaPelanggan');
@@ -2333,39 +2148,30 @@
                         const jumlahBayarInput = document.getElementById('jumlahBayar');
                         const kembalianInfoDiv = document.getElementById('kembalianInfo');
                         const modalPembayaran = document.getElementById('modalPembayaran');
-                        
                         // Hitung total tagihan
                         const totalTagihan = cart.reduce((sum, item) => sum + item.subtotal, 0);
-                        
                         if (totalTagihanInput) {
                             totalTagihanInput.value = formatRupiah(totalTagihan);
                         }
-                        
                         // Ambil nama pelanggan dari item pertama di keranjang
                         if (pembayaranNamaPelangganInput && cart.length > 0) {
                             pembayaranNamaPelangganInput.value = cart[0].namaPelanggan;
                         }
-                        
                         if (metodePembayaranSelect) {
                             metodePembayaranSelect.value = 'cash';
                         }
-                        
                         if (pembayaranCashDiv) {
                             pembayaranCashDiv.classList.remove('hidden');
                         }
-                        
                         if (pembayaranHutangDiv) {
                             pembayaranHutangDiv.classList.add('hidden');
                         }
-                        
                         if (jumlahBayarInput) {
                             jumlahBayarInput.value = '';
                         }
-                        
                         if (kembalianInfoDiv) {
                             kembalianInfoDiv.classList.add('hidden');
                         }
-                        
                         if (modalPembayaran) {
                             modalPembayaran.classList.remove('hidden');
                             if (jumlahBayarInput) {
@@ -2374,7 +2180,6 @@
                         }
                     });
                 }
-                
                 // Tombol proses keranjang
                 const btnProcessCart = document.getElementById('btnProcessCart');
                 if (btnProcessCart) {
@@ -2383,7 +2188,6 @@
                             alert('Keranjang belanja kosong. Silakan tambahkan produk terlebih dahulu.');
                             return;
                         }
-                        
                         // Buka modal pembayaran
                         const totalTagihanInput = document.getElementById('totalTagihan');
                         const pembayaranNamaPelangganInput = document.getElementById('pembayaranNamaPelanggan');
@@ -2393,39 +2197,30 @@
                         const jumlahBayarInput = document.getElementById('jumlahBayar');
                         const kembalianInfoDiv = document.getElementById('kembalianInfo');
                         const modalPembayaran = document.getElementById('modalPembayaran');
-                        
                         // Hitung total tagihan
                         const totalTagihan = cart.reduce((sum, item) => sum + item.subtotal, 0);
-                        
                         if (totalTagihanInput) {
                             totalTagihanInput.value = formatRupiah(totalTagihan);
                         }
-                        
                         // Ambil nama pelanggan dari item pertama di keranjang
                         if (pembayaranNamaPelangganInput && cart.length > 0) {
                             pembayaranNamaPelangganInput.value = cart[0].namaPelanggan;
                         }
-                        
                         if (metodePembayaranSelect) {
                             metodePembayaranSelect.value = 'cash';
                         }
-                        
                         if (pembayaranCashDiv) {
                             pembayaranCashDiv.classList.remove('hidden');
                         }
-                        
                         if (pembayaranHutangDiv) {
                             pembayaranHutangDiv.classList.add('hidden');
                         }
-                        
                         if (jumlahBayarInput) {
                             jumlahBayarInput.value = '';
                         }
-                        
                         if (kembalianInfoDiv) {
                             kembalianInfoDiv.classList.add('hidden');
                         }
-                        
                         if (modalPembayaran) {
                             modalPembayaran.classList.remove('hidden');
                             if (jumlahBayarInput) {
@@ -2434,24 +2229,20 @@
                         }
                     });
                 }
-                
                 // Tombol kosongkan keranjang
                 const btnClearCart = document.getElementById('btnClearCart');
                 if (btnClearCart) {
                     btnClearCart.addEventListener('click', () => {
                         if (cart.length === 0) return;
-                        
                         if (confirm('Apakah Anda yakin ingin mengosongkan keranjang belanja?')) {
                             clearCart();
                         }
                     });
                 }
-                
                 // Metode pembayaran
                 const metodePembayaranSelect = document.getElementById('metodePembayaran');
                 const pembayaranCashDiv = document.getElementById('pembayaranCash');
                 const pembayaranHutangDiv = document.getElementById('pembayaranHutang');
-                
                 if (metodePembayaranSelect && pembayaranCashDiv && pembayaranHutangDiv) {
                     metodePembayaranSelect.addEventListener('change', () => {
                         if (metodePembayaranSelect.value === 'cash') {
@@ -2461,23 +2252,19 @@
                             pembayaranCashDiv.classList.add('hidden');
                             pembayaranHutangDiv.classList.remove('hidden');
                         }
-                        
                         const kembalianInfoDiv = document.getElementById('kembalianInfo');
                         if (kembalianInfoDiv) {
                             kembalianInfoDiv.classList.add('hidden');
                         }
                     });
                 }
-                
                 // Jumlah bayar input
                 const jumlahBayarInput = document.getElementById('jumlahBayar');
                 const kembalianInfoDiv = document.getElementById('kembalianInfo');
-                
                 if (jumlahBayarInput && kembalianInfoDiv) {
                     jumlahBayarInput.addEventListener('input', () => {
                         const totalTagihan = cart.reduce((sum, item) => sum + item.subtotal, 0);
                         const jumlahBayar = parseInt(jumlahBayarInput.value) || 0;
-                        
                         if (jumlahBayar >= totalTagihan) {
                             const kembalian = jumlahBayar - totalTagihan;
                             kembalianInfoDiv.textContent = `Kembalian: ${formatRupiah(kembalian)}`;
@@ -2487,7 +2274,6 @@
                         }
                     });
                 }
-                
                 // Tombol proses pembayaran
                 const btnProcessPembayaran = document.getElementById('btnProcessPembayaran');
                 if (btnProcessPembayaran) {
@@ -2496,26 +2282,21 @@
                             alert('Keranjang belanja kosong.');
                             return;
                         }
-                        
                         const metodePembayaranSelect = document.getElementById('metodePembayaran');
                         const metode = metodePembayaranSelect ? metodePembayaranSelect.value : 'cash';
-                        
                         if (metode === 'cash') {
                             const jumlahBayarInput = document.getElementById('jumlahBayar');
                             const jumlahBayar = jumlahBayarInput ? parseInt(jumlahBayarInput.value) || 0 : 0;
                             const totalTagihan = cart.reduce((sum, item) => sum + item.subtotal, 0);
-                            
                             if (jumlahBayar < totalTagihan) {
                                 alert('Jumlah bayar kurang dari total tagihan.');
                                 return;
                             }
                         }
-                        
                         // Proses setiap item di keranjang
                         const transactionDate = new Date().toISOString();
                         const jatuhTempo = document.getElementById('jatuhTempo');
                         const jatuhTempoValue = jatuhTempo && jatuhTempo.value ? jatuhTempo.value : null;
-                        
                         // Kelompokkan item berdasarkan nama pelanggan
                         const groupedItems = {};
                         cart.forEach(item => {
@@ -2524,14 +2305,11 @@
                             }
                             groupedItems[item.namaPelanggan].push(item);
                         });
-                        
                         // Simpan transaksi yang berhasil diproses untuk ditampilkan di nota
                         const processedTransactions = [];
-                        
                         // Proses setiap kelompok pelanggan
                         Object.keys(groupedItems).forEach(namaPelanggan => {
                             const items = groupedItems[namaPelanggan];
-                            
                             // Cari atau buat pelanggan
                             let pelangganObj = pelanggan.find(p => p.nama.toLowerCase() === namaPelanggan.toLowerCase());
                             if (!pelangganObj) {
@@ -2544,14 +2322,11 @@
                                 };
                                 pelanggan.push(pelangganObj);
                             }
-                            
                             // Buat transaksi untuk setiap item
                             items.forEach(item => {
                                 const produkItem = produk.find(p => p.id === item.produkId);
                                 if (!produkItem) return;
-                                
                                 const totalHarga = item.subtotal;
-                                
                                 const transaksiItem = {
                                     id: generateId('trx'),
                                     produkId: item.produkId,
@@ -2562,18 +2337,15 @@
                                     totalHarga,
                                     status: metode
                                 };
-                                
                                 if (metode === 'hutang') {
                                     transaksiItem.sisaHutang = totalHarga;
                                     if (jatuhTempoValue) {
                                         transaksiItem.jatuhTempo = jatuhTempoValue;
                                     }
                                 }
-                                
                                 // Tambahkan transaksi
                                 transaksi.push(transaksiItem);
                                 processedTransactions.push(transaksiItem);
-                                
                                 // Update stok untuk produk air isi ulang
                                 if (produkItem.jenis === 'air_isi_ulang') {
                                     const totalLiter = produkItem.liter * item.jumlah;
@@ -2582,44 +2354,34 @@
                                 }
                             });
                         });
-                        
                         // Hitung ulang total halaman
                         totalPages = Math.ceil(transaksi.length / ITEMS_PER_PAGE);
-                        
                         // Pergi ke halaman pertama untuk menampilkan transaksi baru
                         currentPage = 1;
-                        
                         // Simpan data
                         saveData();
                         updateKasirRiwayat();
                         updatePelangganDatalist();
-                        
                         // Kosongkan keranjang
                         clearCart();
-                        
                         // Reset form
                         const kasirJumlahInput = document.getElementById('kasirJumlah');
                         const kasirNamaPelangganInput = document.getElementById('kasirNamaPelanggan');
                         const kasirProdukSelect = document.getElementById('kasirProduk');
-                        
                         if (kasirJumlahInput) {
                             kasirJumlahInput.value = '1';
                         }
-                        
                         if (kasirNamaPelangganInput) {
                             kasirNamaPelangganInput.value = '';
                         }
-                        
                         if (kasirProdukSelect && produk.length > 0) {
                             kasirProdukSelect.value = produk[0].id;
                         }
-                        
                         // Tutup modal pembayaran
                         const modalPembayaran = document.getElementById('modalPembayaran');
                         if (modalPembayaran) {
                             modalPembayaran.classList.add('hidden');
                         }
-                        
                         // Sembunyikan form transaksi kasir dan tampilkan riwayat transaksi di mobile setelah transaksi berhasil
                         const kasirFormContainer = document.getElementById('kasirFormContainer');
                         const riwayatTransaksiContainer = document.getElementById('riwayatTransaksiContainer');
@@ -2627,16 +2389,13 @@
                             kasirFormContainer.classList.add('hidden');
                             riwayatTransaksiContainer.classList.remove('hidden');
                         }
-                        
                         // Tampilkan nota
                         const jumlahBayar = metode === 'cash' ? 
                             (jumlahBayarInput ? parseInt(jumlahBayarInput.value) || 0 : 0) : 0;
                         showNota(processedTransactions, metode, jumlahBayar);
-                        
                         alert('Transaksi berhasil disimpan.');
                     });
                 }
-                
                 // Cancel pembayaran
                 const btnCancelPembayaran = document.getElementById('btnCancelPembayaran');
                 if (btnCancelPembayaran) {
@@ -2647,107 +2406,104 @@
                         }
                     });
                 }
-                
                 // Event listener modal nota
                 const btnCloseNota = document.getElementById('btnCloseNota');
                 const btnCloseNota2 = document.getElementById('btnCloseNota2');
                 const btnPrintNota = document.getElementById('btnPrintNota');
+                const btnDownloadNota = document.getElementById('btnDownloadNota');
                 const modalNota = document.getElementById('modalNota');
-                
                 if (btnCloseNota && modalNota) {
                     btnCloseNota.addEventListener('click', () => {
                         modalNota.classList.add('hidden');
                     });
                 }
-                
                 if (btnCloseNota2 && modalNota) {
                     btnCloseNota2.addEventListener('click', () => {
                         modalNota.classList.add('hidden');
                     });
                 }
-                
                 if (btnPrintNota && modalNota) {
                     btnPrintNota.addEventListener('click', () => {
                         window.print();
                     });
                 }
-                
+                // Event listener untuk tombol download nota
+                if (btnDownloadNota && modalNota) {
+                    btnDownloadNota.addEventListener('click', () => {
+                        if (currentNotaData && currentNotaData.imageDataUrl) {
+                            // Buat link download
+                            const downloadLink = document.createElement('a');
+                            downloadLink.href = currentNotaData.imageDataUrl;
+                            downloadLink.download = `Nota_${pengaturan.namaUsaha.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.png`;
+                            
+                            // Trigger download
+                            document.body.appendChild(downloadLink);
+                            downloadLink.click();
+                            document.body.removeChild(downloadLink);
+                        } else {
+                            alert('Gambar nota belum siap. Silakan tunggu sebentar atau coba lagi.');
+                        }
+                    });
+                }
                 // Event listener modal detail transaksi
                 const btnCloseDetailTransaksi = document.getElementById('btnCloseDetailTransaksi');
                 const btnCloseDetailTransaksi2 = document.getElementById('btnCloseDetailTransaksi2');
                 const modalDetailTransaksi = document.getElementById('modalDetailTransaksi');
-                
                 if (btnCloseDetailTransaksi && modalDetailTransaksi) {
                     btnCloseDetailTransaksi.addEventListener('click', () => {
                         modalDetailTransaksi.classList.add('hidden');
                     });
                 }
-                
                 if (btnCloseDetailTransaksi2 && modalDetailTransaksi) {
                     btnCloseDetailTransaksi2.addEventListener('click', () => {
                         modalDetailTransaksi.classList.add('hidden');
                     });
                 }
-                
                 // Event listener modal ubah status
                 const btnBatalUbahStatus = document.getElementById('btnBatalUbahStatus');
                 const btnKonfirmasiUbahStatus = document.getElementById('btnKonfirmasiUbahStatus');
                 const modalUbahStatus = document.getElementById('modalUbahStatus');
                 const ubahStatusJatuhTempoInput = document.getElementById('ubahStatusJatuhTempo');
-                
                 if (btnBatalUbahStatus && modalUbahStatus) {
                     btnBatalUbahStatus.addEventListener('click', () => {
                         modalUbahStatus.classList.add('hidden');
                         transaksiIdToChange = null;
                     });
                 }
-                
                 if (btnKonfirmasiUbahStatus && modalUbahStatus) {
                     btnKonfirmasiUbahStatus.addEventListener('click', () => {
                         if (!transaksiIdToChange) return;
-                        
                         const t = transaksi.find(trx => trx.id === transaksiIdToChange);
                         if (!t) return;
-                        
                         // Ubah status transaksi
                         t.status = 'hutang';
-                        
                         // Tambahkan field sisaHutang dengan nilai total harga
                         const produkTrans = produk.find(p => p.id === t.produkId);
                         if (produkTrans) {
                             t.sisaHutang = produkTrans.harga * t.jumlah;
                         }
-                        
                         // Tambahkan jatuh tempo jika diisi
                         if (ubahStatusJatuhTempoInput && ubahStatusJatuhTempoInput.value) {
                             t.jatuhTempo = ubahStatusJatuhTempoInput.value;
                         }
-                        
                         // Simpan perubahan
                         saveData();
-                        
                         // Perbarui tampilan
                         updateKasirRiwayat();
-                        
                         // Tutup modal
                         modalUbahStatus.classList.add('hidden');
                         transaksiIdToChange = null;
-                        
                         alert('Status transaksi berhasil diubah menjadi Hutang.');
                     });
                 }
-                
                 // Event listener modal bayar hutang
                 const jumlahBayarHutangInput = document.getElementById('jumlahBayarHutang');
                 const sisaHutangInfoDiv = document.getElementById('sisaHutangInfo');
-                
                 if (jumlahBayarHutangInput && sisaHutangInfoDiv) {
                     jumlahBayarHutangInput.addEventListener('input', () => {
                         if (!transaksiIdToPay) return;
-                        
                         const t = transaksi.find(trx => trx.id === transaksiIdToPay);
                         if (!t) return;
-                        
                         // Gunakan sisaHutang jika ada, jika tidak hitung dari produk
                         let sisaHutang = t.sisaHutang || 0;
                         if (sisaHutang === 0) {
@@ -2756,9 +2512,7 @@
                                 sisaHutang = produkTrans.harga * t.jumlah;
                             }
                         }
-                        
                         const jumlahBayar = parseInt(jumlahBayarHutangInput.value) || 0;
-                        
                         if (jumlahBayar > 0) {
                             const sisaSetelahBayar = sisaHutang - jumlahBayar;
                             if (sisaSetelahBayar > 0) {
@@ -2772,25 +2526,20 @@
                         }
                     });
                 }
-                
                 const btnBatalBayarHutang = document.getElementById('btnBatalBayarHutang');
                 const btnKonfirmasiBayarHutang = document.getElementById('btnKonfirmasiBayarHutang');
                 const modalBayarHutang = document.getElementById('modalBayarHutang');
-                
                 if (btnBatalBayarHutang && modalBayarHutang) {
                     btnBatalBayarHutang.addEventListener('click', () => {
                         modalBayarHutang.classList.add('hidden');
                         transaksiIdToPay = null;
                     });
                 }
-                
                 if (btnKonfirmasiBayarHutang && modalBayarHutang) {
                     btnKonfirmasiBayarHutang.addEventListener('click', () => {
                         if (!transaksiIdToPay) return;
-                        
                         const t = transaksi.find(trx => trx.id === transaksiIdToPay);
                         if (!t) return;
-                        
                         // Gunakan sisaHutang jika ada, jika tidak hitung dari produk
                         let sisaHutang = t.sisaHutang || 0;
                         if (sisaHutang === 0) {
@@ -2799,14 +2548,11 @@
                                 sisaHutang = produkTrans.harga * t.jumlah;
                             }
                         }
-                        
                         const jumlahBayar = parseInt(jumlahBayarHutangInput.value) || 0;
-                        
                         if (jumlahBayar <= 0) {
                             alert('Jumlah bayar harus lebih dari 0.');
                             return;
                         }
-                        
                         if (jumlahBayar >= sisaHutang) {
                             // Jika pembayaran lunas, ubah status menjadi lunas
                             t.status = 'lunas';
@@ -2817,17 +2563,13 @@
                             t.sisaHutang = sisaHutang - jumlahBayar;
                             // Status tetap hutang
                         }
-                        
                         // Simpan perubahan
                         saveData();
-                        
                         // Perbarui tampilan
                         updateKasirRiwayat();
-                        
                         // Tutup modal
                         modalBayarHutang.classList.add('hidden');
                         transaksiIdToPay = null;
-                        
                         if (jumlahBayar >= sisaHutang) {
                             alert('Hutang telah lunas dibayar.');
                         } else {
@@ -2835,49 +2577,41 @@
                         }
                     });
                 }
-                
                 // Event listener pagination
                 const prevPageDesktop = document.getElementById('prevPageDesktop');
                 const nextPageDesktop = document.getElementById('nextPageDesktop');
                 const prevPageMobile = document.getElementById('prevPageMobile');
                 const nextPageMobile = document.getElementById('nextPageMobile');
-                
                 if (prevPageDesktop) {
                     prevPageDesktop.addEventListener('click', () => {
                         goToPage(currentPage - 1);
                     });
                 }
-                
                 if (nextPageDesktop) {
                     nextPageDesktop.addEventListener('click', () => {
                         goToPage(currentPage + 1);
                     });
                 }
-                
                 if (prevPageMobile) {
                     prevPageMobile.addEventListener('click', () => {
                         goToPage(currentPage - 1);
                     });
                 }
-                
                 if (nextPageMobile) {
                     nextPageMobile.addEventListener('click', () => {
                         goToPage(currentPage + 1);
                     });
                 }
             }
-            
             // Inisialisasi aplikasi
             function init() {
                 try {
                     console.log('Menginisialisasi aplikasi...');
-                    
                     // Muat data terlebih dahulu
                     const dataLoaded = loadData();
                     if (!dataLoaded) {
                         console.error('Gagal memuat data dengan benar, menggunakan default');
                     }
-                    
                     // Log state saat ini setelah memuat data
                     console.log('State saat ini setelah memuat data:', {
                         produk: produk.length,
@@ -2888,23 +2622,19 @@
                         totalPages: totalPages,
                         currentPage: currentPage
                     });
-                    
                     // Update elemen UI setelah data dimuat
                     updateKasirProdukOptions();
                     updatePelangganDatalist();
                     updateKasirRiwayat();
                     updateCartDisplay();
-                    
                     // Setup event listeners
                     setupEventListeners();
-                    
                     console.log('Aplikasi berhasil diinisialisasi');
                 } catch (e) {
                     console.error('Error menginisialisasi aplikasi:', e);
                     alert('Terjadi kesalahan saat memuat aplikasi. Silakan refresh halaman.');
                 }
             }
-            
             // Set tanggal saat ini
             document.addEventListener('DOMContentLoaded', () => {
                 const currentDateElement = document.getElementById('currentDate');
@@ -2916,11 +2646,9 @@
                         day: 'numeric' 
                     });
                 }
-                
                 // Inisialisasi aplikasi
                 init();
             });
-            
             // Inisialisasi cadangan jika DOMContentLoaded sudah diaktifkan
             if (document.readyState === 'complete' || document.readyState === 'interactive') {
                 console.log('DOM sudah dimuat, menginisialisasi sekarang');
@@ -2934,7 +2662,6 @@
                             day: 'numeric' 
                         });
                     }
-                    
                     // Inisialisasi aplikasi
                     init();
                 }, 1);
