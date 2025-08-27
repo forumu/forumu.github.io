@@ -137,6 +137,16 @@
             color: #059669;
             transform: scale(1.1);
         }
+        /* Style untuk icon cetak nota */
+        .print-icon {
+            cursor: pointer;
+            color: #3b82f6;
+            transition: all 0.2s ease;
+        }
+        .print-icon:hover {
+            color: #2563eb;
+            transform: scale(1.1);
+        }
         /* Style untuk badge sisa hutang */
         .sisa-hutang-badge {
             font-size: 0.75rem;
@@ -484,7 +494,6 @@
             max-width: 400px;
             margin: 0 auto;
             font-family: 'Courier New', monospace;
-			
         }
         .nota-header {
             text-align: center;
@@ -592,12 +601,12 @@
         .nota-download:hover {
             background-color: #059669;
         }
-		img#notaImageElement {
-			position: absolute;
-			z-index: -1;
-			overflow: hidden;
-			max-width: 80%;
-		}
+        img#notaImageElement {
+            position: absolute;
+            z-index: -1;
+            overflow: hidden;
+            max-width: 80%;
+        }
         /* Style untuk preview gambar nota */
         .nota-image-preview {
             max-width: 100%;
@@ -909,7 +918,7 @@
     <div id="modalNota" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold text-teal-800">Nota Transaksi</h3>
+                <h3 id="notaTitle" class="text-xl font-bold text-teal-800">Nota Transaksi</h3>
                 <button id="btnCloseNota" class="text-gray-500 hover:text-gray-700">
                     <i class="fas fa-times text-xl"></i>
                 </button>
@@ -1150,6 +1159,8 @@
                     if (sidebarMobileTitle) {
                         sidebarMobileTitle.textContent = pengaturan.namaUsaha;
                     }
+                    // Migrasi data transaksi jika diperlukan
+                    migrateTransactionData();
                     // Hitung total halaman untuk pagination
                     totalPages = Math.ceil(transaksi.length / ITEMS_PER_PAGE);
                     if (totalPages === 0) totalPages = 1;
@@ -1194,6 +1205,28 @@
             }
             function generateId(prefix = 'id') {
                 return prefix + '_' + Math.random().toString(36).substr(2, 9);
+            }
+            // Fungsi migrasi data transaksi
+            function migrateTransactionData() {
+                let hasChanges = false;
+                transaksi = transaksi.map(t => {
+                    if (t.totalHarga === undefined) {
+                        const produkTrans = produk.find(p => p.id === t.produkId);
+                        if (produkTrans) {
+                            hasChanges = true;
+                            return {
+                                ...t,
+                                totalHarga: produkTrans.harga * t.jumlah
+                            };
+                        }
+                    }
+                    return t;
+                });
+                
+                if (hasChanges) {
+                    saveData();
+                    console.log('Data transaksi telah dimigrasi');
+                }
             }
             // Fungsi keranjang
             function addToCart(produkId, jumlah, namaPelanggan) {
@@ -1279,8 +1312,48 @@
                     cartActions.classList.remove('hidden');
                 }
             }
+            // Fungsi untuk mencetak nota transaksi
+            function cetakNotaTransaksi(transaksiId) {
+                const t = transaksi.find(trx => trx.id === transaksiId);
+                if (!t) {
+                    alert('Transaksi tidak ditemukan.');
+                    return;
+                }
+                
+                const produkTrans = produk.find(p => p.id === t.produkId);
+                if (!produkTrans) {
+                    alert('Produk tidak ditemukan.');
+                    return;
+                }
+                
+                // Buat array transaksi dengan satu item
+                const transaksiData = [{
+                    id: t.id,
+                    produkId: t.produkId,
+                    jumlah: t.jumlah,
+                    totalHarga: t.totalHarga || (produkTrans.harga * t.jumlah),
+                    namaPelanggan: t.namaPelanggan
+                }];
+                
+                // Tentukan metode pembayaran
+                let metodePembayaran = t.status;
+                if (t.status === 'cash') {
+                    metodePembayaran = 'cash';
+                } else if (t.status === 'hutang' || t.status === 'lunas') {
+                    metodePembayaran = 'hutang';
+                }
+                
+                // Untuk transaksi cash, kita perlu menentukan jumlah bayar
+                let jumlahBayar = 0;
+                if (metodePembayaran === 'cash') {
+                    jumlahBayar = t.totalHarga || (produkTrans.harga * t.jumlah);
+                }
+                
+                // Tampilkan nota
+                showNota(transaksiData, metodePembayaran, jumlahBayar, true);
+            }
             // Fungsi untuk menampilkan nota
-            function showNota(transaksiData, metodePembayaran, jumlahBayar = 0) {
+            function showNota(transaksiData, metodePembayaran, jumlahBayar = 0, isCetakUlang = false) {
                 currentNotaData = {
                     transaksi: transaksiData,
                     metodePembayaran,
@@ -1361,8 +1434,12 @@
                 
                 // Tampilkan modal nota
                 const modalNota = document.getElementById('modalNota');
+                const notaTitle = document.getElementById('notaTitle');
                 if (modalNota) {
                     modalNota.classList.remove('hidden');
+                    if (notaTitle) {
+                        notaTitle.textContent = isCetakUlang ? 'Cetak Ulang Nota' : 'Nota Transaksi';
+                    }
                     
                     // Buat gambar dari elemen nota
                     setTimeout(() => {
@@ -1478,7 +1555,11 @@
                     if (t.status === 'lunas') {
                         statusBadge = 'Lunas';
                         statusClass = 'bg-green-100 text-green-800';
-                        actionCell = '<td class="px-4 py-3 text-sm text-center">-</td>';
+                        actionCell = `
+                            <td class="px-4 py-3 text-sm text-center">
+                                <i class="fas fa-print print-icon text-lg text-blue-600" data-id="${t.id}" title="Cetak Nota"></i>
+                            </td>
+                        `;
                     } else if (t.status === 'hutang') {
                         statusBadge = 'Hutang';
                         statusClass = 'bg-yellow-100 text-yellow-800';
@@ -1489,12 +1570,17 @@
                         actionCell = `
                             <td class="px-4 py-3 text-sm text-center">
                                 <i class="fas fa-money-bill-wave pay-icon text-lg" data-id="${t.id}" title="Bayar Hutang"></i>
+                                <i class="fas fa-print print-icon text-lg text-blue-600 ml-2" data-id="${t.id}" title="Cetak Nota"></i>
                             </td>
                         `;
                     } else {
                         statusBadge = 'Cash';
                         statusClass = 'bg-blue-100 text-blue-800 clickable-status';
-                        actionCell = '<td class="px-4 py-3 text-sm text-center">-</td>';
+                        actionCell = `
+                            <td class="px-4 py-3 text-sm text-center">
+                                <i class="fas fa-print print-icon text-lg text-blue-600" data-id="${t.id}" title="Cetak Nota"></i>
+                            </td>
+                        `;
                     }
                     tr.innerHTML = `
                         <td class="px-4 py-3 text-sm text-gray-900">${formatDateTime(t.tanggal)}</td>
@@ -1519,8 +1605,11 @@
                         } else if (e.target.classList.contains('pay-icon') && t.status === 'hutang') {
                             e.stopPropagation();
                             bayarHutang(t.id);
-                        } else if (!e.target.classList.contains('status-badge') && !e.target.classList.contains('pay-icon')) {
-                            // Jika yang diklik bukan status badge atau pay icon, tampilkan detail
+                        } else if (e.target.classList.contains('print-icon')) {
+                            e.stopPropagation();
+                            cetakNotaTransaksi(t.id);
+                        } else if (!e.target.classList.contains('status-badge') && !e.target.classList.contains('pay-icon') && !e.target.classList.contains('print-icon')) {
+                            // Jika yang diklik bukan status badge, pay icon, atau print icon, tampilkan detail
                             showDetailTransaksi(t.id);
                         }
                     });
@@ -1538,6 +1627,14 @@
                         payIconElement.addEventListener('click', (e) => {
                             e.stopPropagation();
                             bayarHutang(t.id);
+                        });
+                    }
+                    // Tambahkan event listener khusus untuk print icon
+                    const printIconElement = tr.querySelector('.print-icon');
+                    if (printIconElement) {
+                        printIconElement.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            cetakNotaTransaksi(t.id);
                         });
                     }
                     return tr;
@@ -1560,7 +1657,13 @@
                     if (t.status === 'lunas') {
                         statusBadge = 'Lunas';
                         statusColor = 'bg-green-100 text-green-800';
-                        actionButton = '';
+                        actionButton = `
+                            <div class="flex justify-end mt-2">
+                                <button class="btnCetakNota text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                    <i class="fas fa-print mr-1"></i> Nota
+                                </button>
+                            </div>
+                        `;
                     } else if (t.status === 'hutang') {
                         // Di mobile, ganti status badge dengan tombol bayar
                         statusBadge = 'Bayar';
@@ -1570,12 +1673,24 @@
                         if (t.sisaHutang > 0) {
                             sisaHutangInfo = ` (${formatRupiah(t.sisaHutang)})`;
                         }
-                        actionButton = '';
+                        actionButton = `
+                            <div class="flex justify-between mt-2">
+                                <button class="btnCetakNota text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                    <i class="fas fa-print mr-1"></i> Nota
+                                </button>
+                            </div>
+                        `;
                     } else {
                         statusBadge = 'Lunas';
                         statusColor = 'bg-teal-700 text-white';
                         statusClass = 'clickable-status';
-                        actionButton = '';
+                        actionButton = `
+                            <div class="flex justify-end mt-2">
+                                <button class="btnCetakNota text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                    <i class="fas fa-print mr-1"></i> Nota
+                                </button>
+                            </div>
+                        `;
                     }
                     const card = document.createElement('div');
                     card.className = 'mobile-transaction-card';
@@ -1603,6 +1718,14 @@
                         detailBtn.addEventListener('click', (e) => {
                             e.stopPropagation();
                             showDetailTransaksi(t.id);
+                        });
+                    }
+                    // Tambahkan event listener ke tombol cetak nota
+                    const cetakNotaBtn = card.querySelector('.btnCetakNota');
+                    if (cetakNotaBtn) {
+                        cetakNotaBtn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            cetakNotaTransaksi(t.id);
                         });
                     }
                     // Tambahkan event listener khusus untuk status badge
