@@ -16,12 +16,45 @@
         .sidebar-mobile.active {
             transform: translateX(0);
         }
+        .loading-spinner {
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 3px solid #3498db;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Custom styles for fixed header and gradient */
+        .header-gradient {
+            background: linear-gradient(135deg, #b71c1c 0%, #000000 100%);
+        }
+        .fixed-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+        }
+        /* Adjust main content to not be hidden by header */
+        .main-content-wrapper {
+            padding-top: 80px; /* Height of header */
+            padding-bottom: 70px; /* Height of mobile nav */
+        }
+        @media (min-width: 768px) {
+            .main-content-wrapper {
+                padding-bottom: 20px; /* Less padding needed on desktop */
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
     <div class="min-h-screen flex flex-col">
-        <!-- Header -->
-        <header class="bg-teal-700 text-white shadow-lg">
+        <!-- Fixed Header with Gradient -->
+        <header class="fixed-header header-gradient text-white shadow-lg">
             <div class="container mx-auto px-4 py-4 flex justify-between items-center">
                 <div class="flex items-center space-x-3">
                     <i class="fas fa-tint text-3xl"></i>
@@ -36,8 +69,8 @@
             </div>
         </header>
         
-        <!-- Main Content -->
-        <div class="flex flex-1">
+        <!-- Main Content with adjusted padding -->
+        <div class="flex flex-1 main-content-wrapper">
             <!-- Sidebar (Desktop) -->
             <aside id="sidebar" class="hidden md:block w-64 bg-white shadow-md">
                 <nav class="py-4">
@@ -122,11 +155,25 @@
                     <div class="bg-white rounded-xl shadow-md p-6">
                         <h2 class="text-2xl font-bold text-teal-800 mb-6">Pengaturan Sistem</h2>
                         
+                        <div id="loadingIndicator" class="hidden flex justify-center my-4">
+                            <div class="loading-spinner"></div>
+                        </div>
+                        
                         <form id="formPengaturan" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-gray-700 mb-2">Nama Usaha</label>
                                 <input type="text" id="pengaturanNamaUsaha" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
                                 <p class="text-sm text-gray-500 mt-1">Nama usaha yang akan ditampilkan di header aplikasi</p>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 mb-2">Alamat Usaha</label>
+                                <input type="text" id="pengaturanAlamatUsaha" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                                <p class="text-sm text-gray-500 mt-1">Alamat lengkap usaha Anda</p>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 mb-2">Kontak</label>
+                                <input type="text" id="pengaturanKontak" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                                <p class="text-sm text-gray-500 mt-1">Nomor telepon atau kontak usaha</p>
                             </div>
                             <div>
                                 <label class="block text-gray-700 mb-2">Kapasitas Toren (Liter)</label>
@@ -142,8 +189,11 @@
                                 <button type="submit" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
                                     <i class="fas fa-save mr-2"></i>Simpan Pengaturan
                                 </button>
-                                <button type="button" id="btnResetPengaturan" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
-                                    <i class="fas fa-undo mr-2"></i>Reset Pengaturan
+                                <button type="button" id="btnResetForm" class="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                                    <i class="fas fa-undo mr-2"></i>Reset Form
+                                </button>
+                                <button type="button" id="btnHapusData" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                                    <i class="fas fa-trash mr-2"></i>Hapus Data
                                 </button>
                             </div>
                         </form>
@@ -154,8 +204,8 @@
                         </div>
                         
                         <div class="mt-4 p-4 bg-red-50 rounded-lg border border-red-200">
-                            <h3 class="font-bold text-red-800 mb-2">Peringatan Reset</h3>
-                            <p class="text-red-700 text-sm">Tombol "Reset Pengaturan" akan menghapus semua data dan mengembalikan aplikasi ke keadaan awal seperti pertama kali digunakan. Tindakan ini tidak dapat dibatalkan.</p>
+                            <h3 class="font-bold text-red-800 mb-2">Peringatan Hapus Data</h3>
+                            <p class="text-red-700 text-sm">Tombol "Hapus Data" akan menghapus semua data pengaturan dari Google Sheet. Tindakan ini tidak dapat dibatalkan.</p>
                         </div>
                     </div>
                 </div>
@@ -186,49 +236,34 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Constants for localStorage keys
-            const LS_KEYS = {
-                produk: 'depot_produk',
-                stok: 'depot_stok',
-                transaksi: 'depot_transaksi',
-                pelanggan: 'depot_pelanggan',
-                pengeluaran: 'depot_pengeluaran',
-                pengaturan: 'depot_pengaturan',
-                pembayaranHutang: 'depot_pembayaran_hutang'
-            };
+            // Konfigurasi API
+            const API_URL = 'https://script.google.com/macros/s/AKfycby_6VvnaHFQ4hmJALaX5-Zk1bF-nHzyuGR_FfdDvtJfbu_YMWLsVycoCrtCT-DlyMAv/exec';
+            const SHEET_NAME = 'Pengaturan';
             
             // Default data
-            const defaultProduk = [
-                { id: 'p1', nama: 'Air isi ulang 19L', harga: 6000, hargaPokok: 2000, jenis: 'air_isi_ulang', liter: 19 },
-                { id: 'p2', nama: 'Air isi ulang 15L', harga: 5000, hargaPokok: 1000, jenis: 'air_isi_ulang', liter: 15 },
-                { id: 'p3', nama: 'Air isi ulang 10L', harga: 4000, hargaPokok: 1000, jenis: 'air_isi_ulang', liter: 10 },
-                { id: 'p4', nama: 'Galon baru', harga: 35000, hargaPokok: 30000, jenis: 'galon_baru', liter: 0 },
-                { id: 'p5', nama: 'AQUA', harga: 21000, hargaPokok: 18000, jenis: 'galon_baru', liter: 0 },
-                { id: 'p6', nama: 'Lemineral', harga: 22000, hargaPokok: 20000, jenis: 'galon_baru', liter: 0 },
-                { id: 'p7', nama: 'Gas LPG 3Kg', harga: 20000, hargaPokok: 18000, jenis: 'galon_baru', liter: 0 },
-            ];
             const defaultPengaturan = {
-                namaUsaha: 'Depot Air Minum Isi Ulang',
-                kapasitasToren: 7700,
-                biayaSuplai: 300000
+                "Nama Usaha": "Depot Air Minum Isi Ulang",
+                "Alamat Usaha": "",
+                "Kontak": "",
+                "Kapasitas Toren (Liter)": 7700,
+                "Biaya Suplai Air Tangki (Rp)": 300000
             };
             
             // Data variables
-            let produk = [];
-            let stok = {};
-            let transaksi = [];
-            let pelanggan = [];
-            let pengeluaran = [];
             let pengaturan = {...defaultPengaturan};
-            let pembayaranHutang = [];
+            let rowNumber = null; // Menyimpan nomor baris data di Google Sheet
             
             // DOM elements
             const formPengaturan = document.getElementById('formPengaturan');
             const pengaturanNamaUsaha = document.getElementById('pengaturanNamaUsaha');
+            const pengaturanAlamatUsaha = document.getElementById('pengaturanAlamatUsaha');
+            const pengaturanKontak = document.getElementById('pengaturanKontak');
             const pengaturanKapasitasToren = document.getElementById('pengaturanKapasitasToren');
             const pengaturanBiayaSuplai = document.getElementById('pengaturanBiayaSuplai');
-            const btnResetPengaturan = document.getElementById('btnResetPengaturan');
+            const btnResetForm = document.getElementById('btnResetForm');
+            const btnHapusData = document.getElementById('btnHapusData');
             const namaUsahaHeader = document.getElementById('namaUsahaHeader');
+            const loadingIndicator = document.getElementById('loadingIndicator');
             
             // Mobile sidebar elements
             const btnSidebarToggle = document.getElementById('btnSidebarToggle');
@@ -248,13 +283,13 @@
             function openSidebar() {
                 sidebarMobile.classList.add('active');
                 sidebarOverlay.classList.remove('hidden');
-                document.body.style.overflow = 'hidden'; // Prevent scrolling when sidebar is open
+                document.body.style.overflow = 'hidden';
             }
             
             function closeSidebar() {
                 sidebarMobile.classList.remove('active');
                 sidebarOverlay.classList.add('hidden');
-                document.body.style.overflow = ''; // Enable scrolling again
+                document.body.style.overflow = '';
             }
             
             // Event listeners for mobile sidebar
@@ -275,193 +310,195 @@
                 item.addEventListener('click', closeSidebar);
             });
             
-            // Utility functions
-            function saveData() {
-                try {
-                    localStorage.setItem(LS_KEYS.produk, JSON.stringify(produk));
-                    localStorage.setItem(LS_KEYS.stok, JSON.stringify(stok));
-                    localStorage.setItem(LS_KEYS.transaksi, JSON.stringify(transaksi));
-                    localStorage.setItem(LS_KEYS.pelanggan, JSON.stringify(pelanggan));
-                    localStorage.setItem(LS_KEYS.pengeluaran, JSON.stringify(pengeluaran));
-                    localStorage.setItem(LS_KEYS.pengaturan, JSON.stringify(pengaturan));
-                    localStorage.setItem(LS_KEYS.pembayaranHutang, JSON.stringify(pembayaranHutang));
-                } catch (e) {
-                    console.error('Error saving data to localStorage:', e);
-                }
+            // Show loading indicator
+            function showLoading() {
+                loadingIndicator.classList.remove('hidden');
             }
             
-            function loadData() {
-                try {
-                    const produkLS = localStorage.getItem(LS_KEYS.produk);
-                    const stokLS = localStorage.getItem(LS_KEYS.stok);
-                    const transaksiLS = localStorage.getItem(LS_KEYS.transaksi);
-                    const pelangganLS = localStorage.getItem(LS_KEYS.pelanggan);
-                    const pengeluaranLS = localStorage.getItem(LS_KEYS.pengeluaran);
-                    const pengaturanLS = localStorage.getItem(LS_KEYS.pengaturan);
-                    const pembayaranHutangLS = localStorage.getItem(LS_KEYS.pembayaranHutang);
-                    
-                    // Load data with fallbacks to defaults
-                    produk = produkLS ? JSON.parse(produkLS) : [...defaultProduk];
-                    transaksi = transaksiLS ? JSON.parse(transaksiLS) : [];
-                    pelanggan = pelangganLS ? JSON.parse(pelangganLS) : [];
-                    pengeluaran = pengeluaranLS ? JSON.parse(pengeluaranLS) : [];
-                    pengaturan = pengaturanLS ? JSON.parse(pengaturanLS) : {...defaultPengaturan};
-                    pembayaranHutang = pembayaranHutangLS ? JSON.parse(pembayaranHutangLS) : [];
-                    
-                    // Load stock if exists
-                    if (stokLS) {
-                        stok = JSON.parse(stokLS);
-                    }
-                    
-                    // Update header with business name
-                    if (namaUsahaHeader) {
-                        namaUsahaHeader.textContent = pengaturan.namaUsaha;
-                    }
-                    
-                    // Update settings form
-                    if (pengaturanNamaUsaha) {
-                        pengaturanNamaUsaha.value = pengaturan.namaUsaha;
-                    }
-                    if (pengaturanKapasitasToren) {
-                        pengaturanKapasitasToren.value = pengaturan.kapasitasToren;
-                    }
-                    if (pengaturanBiayaSuplai) {
-                        pengaturanBiayaSuplai.value = pengaturan.biayaSuplai;
-                    }
-                } catch (e) {
-                    console.error('Error loading data from localStorage:', e);
-                    // Initialize with defaults if there's an error
-                    produk = [...defaultProduk];
-                    stok = {};
-                    transaksi = [];
-                    pelanggan = [];
-                    pengeluaran = [];
-                    pengaturan = {...defaultPengaturan};
-                    pembayaranHutang = [];
-                    
-                    // Update UI
-                    if (namaUsahaHeader) {
-                        namaUsahaHeader.textContent = pengaturan.namaUsaha;
-                    }
-                    if (pengaturanNamaUsaha) {
-                        pengaturanNamaUsaha.value = pengaturan.namaUsaha;
-                    }
-                    if (pengaturanKapasitasToren) {
-                        pengaturanKapasitasToren.value = pengaturan.kapasitasToren;
-                    }
-                    if (pengaturanBiayaSuplai) {
-                        pengaturanBiayaSuplai.value = pengaturan.biayaSuplai;
-                    }
-                }
+            // Hide loading indicator
+            function hideLoading() {
+                loadingIndicator.classList.add('hidden');
             }
             
-            function resetAllData() {
-                if (confirm('Apakah Anda yakin ingin mereset semua data? Tindakan ini tidak dapat dibatalkan dan akan menghapus semua transaksi, pelanggan, dan pengaturan yang telah disimpan.')) {
-                    try {
-                        // Clear all localStorage
-                        Object.values(LS_KEYS).forEach(key => {
-                            localStorage.removeItem(key);
-                        });
+            // Show notification
+            function showNotification(message, isSuccess = true) {
+                const notification = document.createElement('div');
+                notification.className = `fixed top-20 right-4 px-6 py-3 rounded-lg shadow-lg text-white ${isSuccess ? 'bg-green-500' : 'bg-red-500'} z-50`;
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            }
+            
+            // Load data from Google Sheet
+            async function loadPengaturan() {
+                showLoading();
+                try {
+                    const response = await fetch(`${API_URL}?sheet=${SHEET_NAME}&action=get-data`);
+                    const result = await response.json();
+                    
+                    if (result.success && result.data && result.data.length > 0) {
+                        // Ambil data pertama (baris kedua di sheet)
+                        const data = result.data[0];
+                        rowNumber = 2; // Data pertama ada di baris ke-2
                         
-                        // Reset all variables to defaults
-                        produk = [...defaultProduk];
-                        stok = {};
-                        transaksi = [];
-                        pelanggan = [];
-                        pengeluaran = [];
-                        pengaturan = {...defaultPengaturan};
-                        pembayaranHutang = [];
+                        // Update form dengan data dari sheet
+                        pengaturanNamaUsaha.value = data["Nama Usaha"] || defaultPengaturan["Nama Usaha"];
+                        pengaturanAlamatUsaha.value = data["Alamat Usaha"] || defaultPengaturan["Alamat Usaha"];
+                        pengaturanKontak.value = data["Kontak"] || defaultPengaturan["Kontak"];
+                        pengaturanKapasitasToren.value = data["Kapasitas Toren (Liter)"] || defaultPengaturan["Kapasitas Toren (Liter)"];
+                        pengaturanBiayaSuplai.value = data["Biaya Suplai Air Tangki (Rp)"] || defaultPengaturan["Biaya Suplai Air Tangki (Rp)"];
                         
-                        // Update UI
+                        // Update header
                         if (namaUsahaHeader) {
-                            namaUsahaHeader.textContent = pengaturan.namaUsaha;
+                            namaUsahaHeader.textContent = data["Nama Usaha"] || defaultPengaturan["Nama Usaha"];
                         }
-                        if (pengaturanNamaUsaha) {
-                            pengaturanNamaUsaha.value = pengaturan.namaUsaha;
-                        }
-                        if (pengaturanKapasitasToren) {
-                            pengaturanKapasitasToren.value = pengaturan.kapasitasToren;
-                        }
-                        if (pengaturanBiayaSuplai) {
-                            pengaturanBiayaSuplai.value = pengaturan.biayaSuplai;
+                    } else {
+                        // Jika tidak ada data, gunakan default
+                        resetForm();
+                    }
+                } catch (error) {
+                    console.error('Error loading data:', error);
+                    showNotification('Gagal memuat data. Menggunakan pengaturan default.', false);
+                    resetForm();
+                } finally {
+                    hideLoading();
+                }
+            }
+            
+            // Save data to Google Sheet
+            async function savePengaturan(e) {
+                e.preventDefault();
+                
+                const namaUsaha = pengaturanNamaUsaha.value.trim();
+                const alamatUsaha = pengaturanAlamatUsaha.value.trim();
+                const kontak = pengaturanKontak.value.trim();
+                const kapasitasToren = parseInt(pengaturanKapasitasToren.value);
+                const biayaSuplai = parseInt(pengaturanBiayaSuplai.value);
+                
+                if (!namaUsaha || isNaN(kapasitasToren) || kapasitasToren <= 0 || isNaN(biayaSuplai) || biayaSuplai < 0) {
+                    showNotification('Mohon isi semua pengaturan dengan benar.', false);
+                    return;
+                }
+                
+                showLoading();
+                try {
+                    const params = new URLSearchParams();
+                    params.append('sheet', SHEET_NAME);
+                    params.append('Nama Usaha', namaUsaha);
+                    params.append('Alamat Usaha', alamatUsaha);
+                    params.append('Kontak', kontak);
+                    params.append('Kapasitas Toren (Liter)', kapasitasToren);
+                    params.append('Biaya Suplai Air Tangki (Rp)', biayaSuplai);
+                    
+                    let url;
+                    if (rowNumber) {
+                        // Update existing data
+                        params.append('action', 'update');
+                        params.append('row', rowNumber);
+                    } else {
+                        // Insert new data
+                        params.append('action', 'insert');
+                    }
+                    
+                    const response = await fetch(`${API_URL}?${params.toString()}`);
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        if (!rowNumber) {
+                            // Jika insert berhasil, set rowNumber ke 2
+                            rowNumber = 2;
                         }
                         
-                        alert('Semua data telah direset ke pengaturan awal. Aplikasi akan dimuat ulang.');
-                        location.reload();
-                    } catch (e) {
-                        console.error('Error resetting data:', e);
-                        alert('Terjadi kesalahan saat mereset data. Silakan coba lagi.');
+                        // Update header
+                        if (namaUsahaHeader) {
+                            namaUsahaHeader.textContent = namaUsaha;
+                        }
+                        
+                        showNotification('Pengaturan berhasil disimpan.');
+                    } else {
+                        showNotification(result.message || 'Gagal menyimpan pengaturan.', false);
+                    }
+                } catch (error) {
+                    console.error('Error saving data:', error);
+                    showNotification('Terjadi kesalahan saat menyimpan data.', false);
+                } finally {
+                    hideLoading();
+                }
+            }
+            
+            // Reset form to default values
+            function resetForm() {
+                pengaturanNamaUsaha.value = defaultPengaturan["Nama Usaha"];
+                pengaturanAlamatUsaha.value = defaultPengaturan["Alamat Usaha"];
+                pengaturanKontak.value = defaultPengaturan["Kontak"];
+                pengaturanKapasitasToren.value = defaultPengaturan["Kapasitas Toren (Liter)"];
+                pengaturanBiayaSuplai.value = defaultPengaturan["Biaya Suplai Air Tangki (Rp)"];
+                
+                // Update header
+                if (namaUsahaHeader) {
+                    namaUsahaHeader.textContent = defaultPengaturan["Nama Usaha"];
+                }
+                
+                showNotification('Form telah direset ke nilai default.');
+            }
+            
+            // Delete data from Google Sheet
+            async function deletePengaturan() {
+                if (!rowNumber) {
+                    showNotification('Tidak ada data yang dihapus.', false);
+                    return;
+                }
+                
+                if (confirm('Apakah Anda yakin ingin menghapus semua data pengaturan? Tindakan ini tidak dapat dibatalkan.')) {
+                    showLoading();
+                    try {
+                        const params = new URLSearchParams();
+                        params.append('sheet', SHEET_NAME);
+                        params.append('action', 'delete');
+                        params.append('row', rowNumber);
+                        
+                        const response = await fetch(`${API_URL}?${params.toString()}`);
+                        const result = await response.json();
+                        
+                        if (result.success) {
+                            rowNumber = null;
+                            resetForm();
+                            showNotification('Data pengaturan berhasil dihapus.');
+                        } else {
+                            showNotification(result.message || 'Gagal menghapus data.', false);
+                        }
+                    } catch (error) {
+                        console.error('Error deleting data:', error);
+                        showNotification('Terjadi kesalahan saat menghapus data.', false);
+                    } finally {
+                        hideLoading();
                     }
                 }
             }
             
             // Event listeners
             if (formPengaturan) {
-                formPengaturan.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    const namaUsaha = pengaturanNamaUsaha.value.trim();
-                    const kapasitasToren = parseInt(pengaturanKapasitasToren.value);
-                    const biayaSuplai = parseInt(pengaturanBiayaSuplai.value);
-                    
-                    if (!namaUsaha || isNaN(kapasitasToren) || kapasitasToren <= 0 || isNaN(biayaSuplai) || biayaSuplai < 0) {
-                        alert('Mohon isi semua pengaturan dengan benar.');
-                        return;
-                    }
-                    
-                    // Check if settings have changed
-                    const kapasitasChanged = kapasitasToren !== pengaturan.kapasitasToren;
-                    const biayaChanged = biayaSuplai !== pengaturan.biayaSuplai;
-                    
-                    if (kapasitasChanged || biayaChanged) {
-                        if (!confirm('Mengubah pengaturan ini akan mereset stok air sisa liter dan total biaya suplai. Data liter terpakai akan tetap disesuaikan dengan data transaksi. Apakah Anda yakin?')) {
-                            return;
-                        }
-                    }
-                    
-                    // Update settings
-                    pengaturan.namaUsaha = namaUsaha;
-                    pengaturan.kapasitasToren = kapasitasToren;
-                    pengaturan.biayaSuplai = biayaSuplai;
-                    
-                    // Update header
-                    if (namaUsahaHeader) {
-                        namaUsahaHeader.textContent = namaUsaha;
-                    }
-                    
-                    // Reset stock if settings changed
-                    if (kapasitasChanged || biayaChanged) {
-                        // Initialize stock with new capacity
-                        stok = {
-                            sisaLiter: kapasitasToren,
-                            literTerpakai: stok.literTerpakai || 0, // Keep used liters if exists
-                            totalBiayaSuplai: 0, // Reset cost
-                            kapasitasToren: kapasitasToren
-                        };
-                        
-                        // Recalculate total biaya suplai based on liter terpakai
-                        if (stok.literTerpakai > 0) {
-                            const ratio = stok.literTerpakai / kapasitasToren;
-                            stok.totalBiayaSuplai = Math.round(biayaSuplai * ratio);
-                        }
-                    }
-                    
-                    saveData();
-                    alert('Pengaturan berhasil disimpan.');
-                });
+                formPengaturan.addEventListener('submit', savePengaturan);
             }
             
-            if (btnResetPengaturan) {
-                btnResetPengaturan.addEventListener('click', resetAllData);
+            if (btnResetForm) {
+                btnResetForm.addEventListener('click', resetForm);
+            }
+            
+            if (btnHapusData) {
+                btnHapusData.addEventListener('click', deletePengaturan);
             }
             
             // Initialize app
             function init() {
                 try {
-                    loadData();
-                } catch (e) {
-                    console.error('Error initializing app:', e);
-                    alert('Terjadi kesalahan saat memuat aplikasi. Silakan refresh halaman.');
+                    loadPengaturan();
+                } catch (error) {
+                    console.error('Error initializing app:', error);
+                    showNotification('Terjadi kesalahan saat memuat aplikasi.', false);
                 }
             }
             
