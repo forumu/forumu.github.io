@@ -1,0 +1,2112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kasir Stok Air</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body { 
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8fafc;
+            color: #000000;
+        }
+        .content-container { 
+            padding-bottom: 70px; 
+            padding-top: 60px; 
+        }
+        .bottom-nav { 
+            height: 70px; 
+            background: linear-gradient(to top, #0f766e, #000000);
+        }
+        .top-nav { 
+            height: 60px; 
+            background: linear-gradient(to bottom, #0f766e, #000000);
+        }
+        .thermal-print {
+            font-family: 'Courier New', monospace;
+            width: 58mm;
+            font-size: 12px;
+            color: #000;
+        }
+        .card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .btn-primary {
+            background-color: #0f766e;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #0d645c;
+        }
+        .input-field {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #000000;
+        }
+        .input-field:focus {
+            border-color: #0f766e;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.3);
+        }
+        .nav-btn.active {
+            color: #0f766e;
+        }
+        .cart-item {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+        }
+        .payment-method.active {
+            background-color: #0f766e;
+            color: white;
+        }
+        .modal-content {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #0f766e, #000000);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .gradient-bg {
+            background: linear-gradient(to right, #0f766e, #000000);
+        }
+        .lunas-badge {
+            background-color: #10b981;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <div class="fixed top-0 left-0 right-0 text-white z-10 top-nav flex items-center justify-between px-4 shadow-md">
+        <div class="flex items-center space-x-2">
+            <div id="logo-container" class="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                <i class="fas fa-tint text-[#0f766e]"></i>
+            </div>
+            <div>
+                <h1 id="business-name" class="font-bold text-lg">Kasir Stok Air</h1>
+                <p id="business-address" class="text-xs opacity-80">Jl. Contoh No. 123</p>
+            </div>
+        </div>
+        <div class="flex space-x-3">
+            <button onclick="showPage('settings')" class="p-2 rounded-full hover:bg-[#0f766e] transition">
+                <i class="fas fa-cog"></i>
+            </button>
+            <button onclick="showPage('customers')" class="p-2 rounded-full hover:bg-[#0f766e] transition">
+                <i class="fas fa-users"></i>
+            </button>
+            <button onclick="showPage('expenses')" class="p-2 rounded-full hover:bg-[#0f766e] transition">
+                <i class="fas fa-money-bill-wave"></i>
+            </button>
+            <button onclick="showPage('reports')" class="p-2 rounded-full hover:bg-[#0f766e] transition">
+                <i class="fas fa-chart-bar"></i>
+            </button>
+            <button onclick="showPage('debts')" class="p-2 rounded-full hover:bg-[#0f766e] transition">
+                <i class="fas fa-file-invoice-dollar"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-container">
+        <!-- Home Page -->
+        <div id="home-page" class="page p-4">
+            <div class="card rounded-xl shadow-md p-5 mb-5">
+                <h2 class="text-xl font-bold mb-4">Dashboard</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-[#f0fdfa] rounded-lg p-4 border border-[#0f766e]">
+                        <p class="text-sm text-gray-600">Stok Air Tersisa</p>
+                        <p id="remaining-water" class="text-2xl font-bold text-[#0f766e]">--</p>
+                        <p class="text-xs text-gray-500">Liter</p>
+                    </div>
+                    <div class="bg-[#f0fdfa] rounded-lg p-4 border border-[#0f766e]">
+                        <p class="text-sm text-gray-600">Total Transaksi Hari Ini</p>
+                        <p id="today-transactions" class="text-2xl font-bold text-[#0f766e]">--</p>
+                        <p class="text-xs text-gray-500">Transaksi</p>
+                    </div>
+                    <div class="bg-[#f0fdfa] rounded-lg p-4 border border-[#0f766e]">
+                        <p class="text-sm text-gray-600">Total Hutang</p>
+                        <p id="total-debts" class="text-2xl font-bold text-[#0f766e]">--</p>
+                        <p class="text-xs text-gray-500">Rp</p>
+                    </div>
+                    <div class="bg-[#f0fdfa] rounded-lg p-4 border border-[#0f766e]">
+                        <p class="text-sm text-gray-600">Produk Tersedia</p>
+                        <p id="available-products" class="text-2xl font-bold text-[#0f766e]">--</p>
+                        <p class="text-xs text-gray-500">Jenis</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card rounded-xl shadow-md p-5">
+                <h3 class="font-semibold mb-3">Transaksi Terakhir</h3>
+                <div id="recent-transactions" class="space-y-3">
+                    <!-- Transaction items will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Page -->
+        <div id="products-page" class="page p-4 hidden">
+            <div class="card rounded-xl shadow-md p-5 mb-5">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold">Daftar Produk</h2>
+                    <button onclick="showAddProductModal()" class="btn-primary px-4 py-2 rounded-lg flex items-center">
+                        <i class="fas fa-plus mr-2"></i> Tambah
+                    </button>
+                </div>
+                <div id="products-list" class="space-y-3">
+                    <!-- Products will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Transaction Page -->
+        <div id="transaction-page" class="page p-4 hidden">
+            <div class="card rounded-xl shadow-md p-5">
+                <h2 class="text-xl font-bold mb-4">Transaksi Baru</h2>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Pelanggan</label>
+                    <div class="flex space-x-2">
+                        <select id="customer-select" class="flex-1 input-field rounded-lg px-3 py-2">
+                            <option value="">Pilih Pelanggan</option>
+                        </select>
+                        <button onclick="showAddCustomerModal()" class="bg-gray-200 px-3 py-2 rounded-lg">
+                            <i class="fas fa-user-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Produk</label>
+                    <div class="flex space-x-2">
+                        <select id="product-select" class="flex-1 input-field rounded-lg px-3 py-2">
+                            <option value="">Pilih Produk</option>
+                        </select>
+                        <input type="number" id="quantity" min="1" value="1" class="w-20 input-field rounded-lg px-3 py-2">
+                        <button onclick="addToCart()" class="btn-primary px-4 py-2 rounded-lg">
+                            <i class="fas fa-cart-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="font-semibold mb-2">Keranjang Belanja</h3>
+                    <div id="cart-items" class="space-y-2 mb-3 max-h-60 overflow-y-auto">
+                        <p class="text-center text-gray-500 py-4">Keranjang belanja kosong</p>
+                    </div>
+                    <div class="flex justify-between items-center pt-2 border-t border-gray-200">
+                        <span class="font-medium">Total:</span>
+                        <span class="text-xl font-bold text-[#0f766e]">Rp <span id="cart-total">0</span></span>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Metode Pembayaran</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button id="payment-cash" onclick="setPaymentMethod('cash')" class="payment-method active py-2 rounded-lg font-medium">Tunai</button>
+                        <button id="payment-debt" onclick="setPaymentMethod('debt')" class="payment-method bg-gray-200 py-2 rounded-lg font-medium">Hutang</button>
+                    </div>
+                </div>
+                
+                <button onclick="processTransaction()" class="w-full btn-primary py-3 rounded-lg font-medium flex items-center justify-center">
+                    <i class="fas fa-shopping-cart mr-2"></i> Proses Transaksi
+                </button>
+            </div>
+        </div>
+
+        <!-- History Page -->
+        <div id="history-page" class="page p-4 hidden">
+            <div class="card rounded-xl shadow-md p-5">
+                <h2 class="text-xl font-bold mb-4">Riwayat Transaksi</h2>
+                <div id="transactions-list" class="space-y-3">
+                    <!-- Transactions will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Water Stock Page -->
+        <div id="water-stock-page" class="page p-4 hidden">
+            <div class="card rounded-xl shadow-md p-5 mb-5">
+                <h2 class="text-xl font-bold mb-4">Stok Air</h2>
+                
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-[#f0fdfa] rounded-lg p-4 border border-[#0f766e]">
+                        <p class="text-sm text-gray-600">Sisa Stok</p>
+                        <p id="water-remaining" class="text-2xl font-bold text-[#0f766e]">--</p>
+                        <p class="text-xs text-gray-500">Liter</p>
+                    </div>
+                    <div class="bg-[#f0fdfa] rounded-lg p-4 border border-[#0f766e]">
+                        <p class="text-sm text-gray-600">Liter Terpakai</p>
+                        <p id="water-used" class="text-2xl font-bold text-[#0f766e]">--</p>
+                        <p class="text-xs text-gray-500">Liter</p>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Kapasitas Toren (Liter)</label>
+                    <input type="number" id="tank-capacity" class="w-full input-field rounded-lg px-3 py-2">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Biaya Suplai Air Tangki (Rp)</label>
+                    <input type="number" id="supply-cost" class="w-full input-field rounded-lg px-3 py-2">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Total Biaya Suplai (Rp)</label>
+                    <div class="text-xl font-bold text-red-600">Rp <span id="total-supply-cost">0</span></div>
+                </div>
+                
+                <button id="add-water-btn" onclick="showAddWaterModal()" class="w-full btn-primary py-3 rounded-lg font-medium flex items-center justify-center disabled:bg-gray-400 disabled:cursor-not-allowed">
+                    <i class="fas fa-plus-circle mr-2"></i> Tambah Stok Air
+                </button>
+            </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div id="settings-page" class="page p-4 hidden">
+            <div class="card rounded-xl shadow-md p-5">
+                <h2 class="text-xl font-bold mb-4">Pengaturan</h2>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Nama Usaha</label>
+                    <input type="text" id="business-name-input" class="w-full input-field rounded-lg px-3 py-2">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Alamat Usaha</label>
+                    <input type="text" id="business-address-input" class="w-full input-field rounded-lg px-3 py-2">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Kontak</label>
+                    <input type="text" id="business-contact-input" class="w-full input-field rounded-lg px-3 py-2">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Logo (URL)</label>
+                    <input type="text" id="business-logo-input" class="w-full input-field rounded-lg px-3 py-2">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Kapasitas Toren (Liter)</label>
+                    <input type="number" id="settings-tank-capacity" class="w-full input-field rounded-lg px-3 py-2">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Biaya Suplai Air Tangki (Rp)</label>
+                    <input type="number" id="settings-supply-cost" class="w-full input-field rounded-lg px-3 py-2">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">API Script</label>
+                    <input type="text" id="api-script-input" placeholder="AKfycby_6VvnaHFQ4hmJALaX5-Zk1bF-nHzyuGR_FfdDvtJfbu_YMWLsVycoCrtCT-DlyMAv" class="w-full input-field rounded-lg px-3 py-2">
+                </div>
+                
+                <button onclick="saveSettings()" class="w-full btn-primary py-3 rounded-lg font-medium">
+                    Simpan Pengaturan
+                </button>
+            </div>
+        </div>
+
+        <!-- Customers Page -->
+        <div id="customers-page" class="page p-4 hidden">
+            <div class="card rounded-xl shadow-md p-5 mb-5">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold">Daftar Pelanggan</h2>
+                    <button onclick="showAddCustomerModal()" class="btn-primary px-4 py-2 rounded-lg flex items-center">
+                        <i class="fas fa-plus mr-2"></i> Tambah
+                    </button>
+                </div>
+                <div id="customers-list" class="space-y-3">
+                    <!-- Customers will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Expenses Page -->
+        <div id="expenses-page" class="page p-4 hidden">
+            <div class="card rounded-xl shadow-md p-5 mb-5">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold">Pengeluaran</h2>
+                    <button onclick="showAddExpenseModal()" class="btn-primary px-4 py-2 rounded-lg flex items-center">
+                        <i class="fas fa-plus mr-2"></i> Tambah
+                    </button>
+                </div>
+                <div id="expenses-list" class="space-y-3">
+                    <!-- Expenses will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="card rounded-xl shadow-md p-5">
+                <h2 class="text-xl font-bold mb-4">Ringkasan Keuangan</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-green-50 rounded-lg p-4 border border-green-200">
+                        <p class="text-sm text-gray-600">Total Pemasukan</p>
+                        <p id="total-income" class="text-2xl font-bold text-green-600">--</p>
+                        <p class="text-xs text-gray-500">Rp</p>
+                    </div>
+                    <div class="bg-red-50 rounded-lg p-4 border border-red-200">
+                        <p class="text-sm text-gray-600">Total Pengeluaran</p>
+                        <p id="total-expenses" class="text-2xl font-bold text-red-600">--</p>
+                        <p class="text-xs text-gray-500">Rp</p>
+                    </div>
+                    <div class="bg-blue-50 rounded-lg p-4 border border-blue-200 col-span-2">
+                        <p class="text-sm text-gray-600">Net Income</p>
+                        <p id="net-income" class="text-2xl font-bold text-blue-600">--</p>
+                        <p class="text-xs text-gray-500">Rp</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports Page -->
+        <div id="reports-page" class="page p-4 hidden">
+            <div class="card rounded-xl shadow-md p-5">
+                <h2 class="text-xl font-bold mb-4">Laporan</h2>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Periode</label>
+                    <select id="report-period" class="w-full input-field rounded-lg px-3 py-2">
+                        <option value="today">Hari Ini</option>
+                        <option value="week">Minggu Ini</option>
+                        <option value="month">Bulan Ini</option>
+                        <option value="year">Tahun Ini</option>
+                    </select>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-[#f0fdfa] rounded-lg p-4 border border-[#0f766e]">
+                        <p class="text-sm text-gray-600">Total Transaksi</p>
+                        <p id="report-total-transactions" class="text-2xl font-bold text-[#0f766e]">--</p>
+                    </div>
+                    <div class="bg-[#f0fdfa] rounded-lg p-4 border border-[#0f766e]">
+                        <p class="text-sm text-gray-600">Total Pendapatan</p>
+                        <p id="report-total-income" class="text-2xl font-bold text-[#0f766e]">--</p>
+                    </div>
+                    <div class="bg-[#f0fdfa] rounded-lg p-4 border border-[#0f766e]">
+                        <p class="text-sm text-gray-600">Total Hutang</p>
+                        <p id="report-total-debts" class="text-2xl font-bold text-[#0f766e]">--</p>
+                    </div>
+                    <div class="bg-[#f0fdfa] rounded-lg p-4 border border-[#0f766e]">
+                        <p class="text-sm text-gray-600">Total Laba Kotor</p>
+                        <p id="report-total-profit" class="text-2xl font-bold text-[#0f766e]">--</p>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <h3 class="font-semibold mb-2">Produk Terlaris</h3>
+                    <div id="top-products" class="space-y-2">
+                        <!-- Top products will be loaded here -->
+                    </div>
+                </div>
+                
+                <button onclick="generateReport()" class="w-full btn-primary py-3 rounded-lg font-medium">
+                    Tampilkan Laporan
+                </button>
+            </div>
+        </div>
+
+        <!-- Debts Page -->
+        <div id="debts-page" class="page p-4 hidden">
+            <div class="card rounded-xl shadow-md p-5">
+                <h2 class="text-xl font-bold mb-4">Daftar Hutang</h2>
+                <div id="debts-list" class="space-y-3">
+                    <!-- Debts will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="fixed bottom-0 left-0 right-0 flex justify-around items-center bottom-nav z-10">
+        <button onclick="showPage('home')" class="nav-btn active flex flex-col items-center justify-center p-2 text-white">
+            <i class="fas fa-home text-xl mb-1"></i>
+            <span class="text-xs">Home</span>
+        </button>
+        <button onclick="showPage('products')" class="nav-btn flex flex-col items-center justify-center p-2 text-white">
+            <i class="fas fa-box text-xl mb-1"></i>
+            <span class="text-xs">Produk</span>
+        </button>
+        <button onclick="showPage('transaction')" class="nav-btn flex flex-col items-center justify-center p-2 text-white">
+            <i class="fas fa-shopping-cart text-xl mb-1"></i>
+            <span class="text-xs">Transaksi</span>
+        </button>
+        <button onclick="showPage('history')" class="nav-btn flex flex-col items-center justify-center p-2 text-white">
+            <i class="fas fa-history text-xl mb-1"></i>
+            <span class="text-xs">Riwayat</span>
+        </button>
+        <button onclick="showPage('water-stock')" class="nav-btn flex flex-col items-center justify-center p-2 text-white">
+            <i class="fas fa-tint text-xl mb-1"></i>
+            <span class="text-xs">Stok Air</span>
+        </button>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div id="add-product-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 hidden">
+        <div class="modal-content rounded-xl p-5 w-11/12 max-w-md">
+            <h3 class="text-lg font-bold mb-4">Tambah Produk</h3>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Nama Produk</label>
+                <input type="text" id="new-product-name" class="w-full input-field rounded-lg px-3 py-2">
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Harga Jual (Rp)</label>
+                <input type="number" id="new-product-price" class="w-full input-field rounded-lg px-3 py-2">
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Harga Pokok (Rp)</label>
+                <input type="number" id="new-product-cost" class="w-full input-field rounded-lg px-3 py-2">
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Jenis</label>
+                <select id="new-product-type" class="w-full input-field rounded-lg px-3 py-2">
+                    <option value="Galon">Galon</option>
+                    <option value="Botol">Botol</option>
+                    <option value="Lainnya">Lainnya</option>
+                </select>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Liter</label>
+                <input type="number" id="new-product-liter" step="0.1" class="w-full input-field rounded-lg px-3 py-2">
+            </div>
+            
+            <div class="flex space-x-3">
+                <button onclick="closeModal('add-product-modal')" class="flex-1 bg-gray-200 py-2 rounded-lg font-medium">Batal</button>
+                <button onclick="addProduct()" class="flex-1 btn-primary py-2 rounded-lg font-medium">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Product Modal -->
+    <div id="edit-product-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 hidden">
+        <div class="modal-content rounded-xl p-5 w-11/12 max-w-md">
+            <h3 class="text-lg font-bold mb-4">Edit Produk</h3>
+            
+            <input type="hidden" id="edit-product-id">
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Nama Produk</label>
+                <input type="text" id="edit-product-name" class="w-full input-field rounded-lg px-3 py-2">
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Harga Jual (Rp)</label>
+                <input type="number" id="edit-product-price" class="w-full input-field rounded-lg px-3 py-2">
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Harga Pokok (Rp)</label>
+                <input type="number" id="edit-product-cost" class="w-full input-field rounded-lg px-3 py-2">
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Jenis</label>
+                <select id="edit-product-type" class="w-full input-field rounded-lg px-3 py-2">
+                    <option value="Galon">Galon</option>
+                    <option value="Botol">Botol</option>
+                    <option value="Lainnya">Lainnya</option>
+                </select>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Liter</label>
+                <input type="number" id="edit-product-liter" step="0.1" class="w-full input-field rounded-lg px-3 py-2">
+            </div>
+            
+            <div class="flex space-x-3">
+                <button onclick="closeModal('edit-product-modal')" class="flex-1 bg-gray-200 py-2 rounded-lg font-medium">Batal</button>
+                <button onclick="updateProduct()" class="flex-1 btn-primary py-2 rounded-lg font-medium">Update</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Customer Modal -->
+    <div id="add-customer-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 hidden">
+        <div class="modal-content rounded-xl p-5 w-11/12 max-w-md">
+            <h3 class="text-lg font-bold mb-4">Tambah Pelanggan</h3>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Nama Pelanggan</label>
+                <input type="text" id="new-customer-name" class="w-full input-field rounded-lg px-3 py-2">
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Kontak</label>
+                <input type="text" id="new-customer-contact" class="w-full input-field rounded-lg px-3 py-2">
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Galon Titipan</label>
+                <input type="number" id="new-customer-deposit" min="0" value="0" class="w-full input-field rounded-lg px-3 py-2">
+            </div>
+            
+            <div class="flex space-x-3">
+                <button onclick="closeModal('add-customer-modal')" class="flex-1 bg-gray-200 py-2 rounded-lg font-medium">Batal</button>
+                <button onclick="addCustomer()" class="flex-1 btn-primary py-2 rounded-lg font-medium">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Customer Modal -->
+    <div id="edit-customer-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 hidden">
+        <div class="modal-content rounded-xl p-5 w-11/12 max-w-md">
+            <h3 class="text-lg font-bold mb-4">Edit Pelanggan</h3>
+            
+            <input type="hidden" id="edit-customer-id">
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Nama Pelanggan</label>
+                <input type="text" id="edit-customer-name" class="w-full input-field rounded-lg px-3 py-2">
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Kontak</label>
+                <input type="text" id="edit-customer-contact" class="w-full input-field rounded-lg px-3 py-2">
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Galon Titipan</label>
+                <input type="number" id="edit-customer-deposit" min="0" value="0" class="w-full input-field rounded-lg px-3 py-2">
+            </div>
+            
+            <div class="flex space-x-3">
+                <button onclick="closeModal('edit-customer-modal')" class="flex-1 bg-gray-200 py-2 rounded-lg font-medium">Batal</button>
+                <button onclick="updateCustomer()" class="flex-1 btn-primary py-2 rounded-lg font-medium">Update</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Water Modal -->
+    <div id="add-water-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 hidden">
+        <div class="modal-content rounded-xl p-5 w-11/12 max-w-md">
+            <h3 class="text-lg font-bold mb-4">Tambah Stok Air</h3>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Jumlah Air (Liter)</label>
+                <input type="number" id="water-amount" class="w-full input-field rounded-lg px-3 py-2">
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Biaya Suplai (Rp)</label>
+                <input type="number" id="water-cost" class="w-full input-field rounded-lg px-3 py-2">
+            </div>
+            
+            <div class="flex space-x-3">
+                <button onclick="closeModal('add-water-modal')" class="flex-1 bg-gray-200 py-2 rounded-lg font-medium">Batal</button>
+                <button onclick="addWaterStock()" class="flex-1 btn-primary py-2 rounded-lg font-medium">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Expense Modal -->
+    <div id="add-expense-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 hidden">
+        <div class="modal-content rounded-xl p-5 w-11/12 max-w-md">
+            <h3 class="text-lg font-bold mb-4">Tambah Pengeluaran</h3>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Jenis Pengeluaran</label>
+                <select id="expense-type" class="w-full input-field rounded-lg px-3 py-2">
+                    <option value="Stok Air">Stok Air</option>
+                    <option value="Operasional">Operasional</option>
+                    <option value="Lainnya">Lainnya</option>
+                </select>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Jumlah (Rp)</label>
+                <input type="number" id="expense-amount" class="w-full input-field rounded-lg px-3 py-2">
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Keterangan</label>
+                <input type="text" id="expense-description" class="w-full input-field rounded-lg px-3 py-2">
+            </div>
+            
+            <div class="flex space-x-3">
+                <button onclick="closeModal('add-expense-modal')" class="flex-1 bg-gray-200 py-2 rounded-lg font-medium">Batal</button>
+                <button onclick="addExpense()" class="flex-1 btn-primary py-2 rounded-lg font-medium">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction Receipt Modal -->
+    <div id="receipt-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 hidden">
+        <div class="modal-content rounded-xl p-5 w-11/12 max-w-md">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold">Nota Transaksi</h3>
+                <button onclick="closeModal('receipt-modal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div id="receipt-content" class="thermal-print bg-white p-4 border border-gray-200 rounded-lg">
+                <!-- Receipt content will be loaded here -->
+            </div>
+            
+            <div class="flex space-x-3 mt-4">
+                <button onclick="closeModal('receipt-modal')" class="flex-1 bg-gray-200 py-2 rounded-lg font-medium">Tutup</button>
+                <button onclick="printReceipt()" class="flex-1 btn-primary py-2 rounded-lg font-medium">
+                    <i class="fas fa-print mr-2"></i> Cetak
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Debt Modal -->
+    <div id="payment-debt-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 hidden">
+        <div class="modal-content rounded-xl p-5 w-11/12 max-w-md">
+            <h3 class="text-lg font-bold mb-4">Pembayaran Hutang</h3>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Pelanggan</label>
+                <input type="text" id="debt-customer-name" class="w-full input-field rounded-lg px-3 py-2 bg-gray-100" readonly>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Jumlah Hutang (Rp)</label>
+                <input type="number" id="debt-amount" class="w-full input-field rounded-lg px-3 py-2 bg-gray-100" readonly>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Jumlah Pembayaran (Rp)</label>
+                <input type="number" id="payment-amount" class="w-full input-field rounded-lg px-3 py-2">
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Sisa Hutang (Rp)</label>
+                <div class="text-xl font-bold text-red-600">Rp <span id="remaining-debt">0</span></div>
+            </div>
+            
+            <div class="flex space-x-3">
+                <button onclick="closeModal('payment-debt-modal')" class="flex-1 bg-gray-200 py-2 rounded-lg font-medium">Batal</button>
+                <button onclick="payDebt()" class="flex-1 btn-primary py-2 rounded-lg font-medium">Bayar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg hidden z-30">
+        <span id="toast-message"></span>
+    </div>
+
+    <script>
+        // API Configuration
+        let API_KEY = 'AKfycby_6VvnaHFQ4hmJALaX5-Zk1bF-nHzyuGR_FfdDvtJfbu_YMWLsVycoCrtCT-DlyMAv';
+        const API_URL = 'https://script.google.com/macros/s/{API}/exec';
+        
+        // Global Variables
+        let currentPaymentMethod = 'cash';
+        let currentDebtId = null;
+        let settings = {};
+        let products = [];
+        let customers = [];
+        let transactions = [];
+        let waterStock = {};
+        let expenses = [];
+        let cart = [];
+        
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSettings();
+            loadProducts();
+            loadCustomers();
+            loadWaterStock();
+            loadTransactions();
+            loadExpenses();
+            showPage('home');
+        });
+        
+        // Page Navigation
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.add('hidden');
+            });
+            
+            // Show selected page
+            document.getElementById(`${pageId}-page`).classList.remove('hidden');
+            
+            // Update navigation
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Find the clicked button and mark it as active
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach(btn => {
+                if (btn.onclick && btn.onclick.toString().includes(`showPage('${pageId}')`)) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Load page specific data
+            if (pageId === 'home') {
+                loadDashboard();
+            } else if (pageId === 'history') {
+                loadTransactions();
+            } else if (pageId === 'water-stock') {
+                loadWaterStock();
+            } else if (pageId === 'settings') {
+                loadSettingsForm();
+            } else if (pageId === 'customers') {
+                loadCustomers();
+            } else if (pageId === 'debts') {
+                loadDebts();
+            } else if (pageId === 'expenses') {
+                loadExpenses();
+                loadFinancialSummary();
+            } else if (pageId === 'transaction') {
+                // Reset cart when opening transaction page
+                cart = [];
+                updateCartDisplay();
+            }
+        }
+        
+        // API Functions
+        async function fetchData(sheet, action, params = {}) {
+            const url = API_URL.replace('{API}', API_KEY);
+            const fullUrl = new URL(url);
+            fullUrl.searchParams.append('sheet', sheet);
+            fullUrl.searchParams.append('action', action);
+            
+            Object.keys(params).forEach(key => {
+                fullUrl.searchParams.append(key, params[key]);
+            });
+            
+            try {
+                const response = await fetch(fullUrl);
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                showToast('Terjadi kesalahan saat mengambil data');
+                return { success: false, message: 'Network error' };
+            }
+        }
+        
+        // Load Settings
+        async function loadSettings() {
+            const response = await fetchData('Pengaturan', 'get-data');
+            if (response.success && response.data.length > 0) {
+                settings = response.data[0];
+                
+                // Update API key if available
+                if (settings['API']) {
+                    API_KEY = settings['API'];
+                }
+                
+                // Update UI with settings
+                document.getElementById('business-name').textContent = settings['Nama Usaha'] || 'Kasir Stok Air';
+                document.getElementById('business-address').textContent = settings['Alamat Usaha'] || 'Jl. Contoh No. 123';
+                
+                // Update logo if available
+                if (settings['Logo']) {
+                    document.getElementById('logo-container').innerHTML = `<img src="${settings['Logo']}" class="w-10 h-10 rounded-full object-cover">`;
+                }
+            }
+        }
+        
+        // Load Products
+        async function loadProducts() {
+            const response = await fetchData('Produk', 'get-data');
+            if (response.success) {
+                products = response.data;
+                
+                // Update product select in transaction page
+                const productSelect = document.getElementById('product-select');
+                productSelect.innerHTML = '<option value="">Pilih Produk</option>';
+                
+                products.forEach(product => {
+                    const option = document.createElement('option');
+                    option.value = product['ID Produk'];
+                    option.textContent = `${product['Nama Produk']} - Rp ${parseInt(product['Harga Jual (Rp)']).toLocaleString('id-ID')}`;
+                    productSelect.appendChild(option);
+                });
+                
+                // Update products list
+                updateProductsList();
+            }
+        }
+        
+        // Update Products List
+        function updateProductsList() {
+            const productsList = document.getElementById('products-list');
+            productsList.innerHTML = '';
+            
+            if (products.length === 0) {
+                productsList.innerHTML = '<p class="text-gray-500 text-center py-4">Belum ada produk</p>';
+                return;
+            }
+            
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'cart-item rounded-lg p-4';
+                productCard.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="font-semibold">${product['Nama Produk']}</h3>
+                            <p class="text-sm text-gray-600">${product['Jenis']} - ${product['Liter']}L</p>
+                            <p class="text-sm font-medium text-[#0f766e]">Rp ${parseInt(product['Harga Jual (Rp)']).toLocaleString('id-ID')}</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="editProduct('${product['ID Produk']}')" class="text-[#0f766e] hover:text-[#0d645c]">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteProduct('${product['ID Produk']}')" class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                productsList.appendChild(productCard);
+            });
+        }
+        
+        // Load Customers
+        async function loadCustomers() {
+            const response = await fetchData('Pelanggan', 'get-data');
+            if (response.success) {
+                customers = response.data;
+                
+                // Update customer select in transaction page
+                const customerSelect = document.getElementById('customer-select');
+                customerSelect.innerHTML = '<option value="">Pilih Pelanggan</option>';
+                
+                customers.forEach(customer => {
+                    const option = document.createElement('option');
+                    option.value = customer['ID Pelanggan'];
+                    option.textContent = customer['Nama'];
+                    customerSelect.appendChild(option);
+                });
+                
+                // Update customers list
+                updateCustomersList();
+            }
+        }
+        
+        // Update Customers List
+        function updateCustomersList() {
+            const customersList = document.getElementById('customers-list');
+            customersList.innerHTML = '';
+            
+            if (customers.length === 0) {
+                customersList.innerHTML = '<p class="text-gray-500 text-center py-4">Belum ada pelanggan</p>';
+                return;
+            }
+            
+            customers.forEach(customer => {
+                const customerCard = document.createElement('div');
+                customerCard.className = 'cart-item rounded-lg p-4';
+                customerCard.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="font-semibold">${customer['Nama']}</h3>
+                            <p class="text-sm text-gray-600">${customer['Kontak']}</p>
+                            <p class="text-sm text-gray-600">Galon Titipan: ${customer['Galon Titipan']}</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="editCustomer('${customer['ID Pelanggan']}')" class="text-[#0f766e] hover:text-[#0d645c]">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteCustomer('${customer['ID Pelanggan']}')" class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                customersList.appendChild(customerCard);
+            });
+        }
+        
+        // Load Water Stock
+        async function loadWaterStock() {
+            const response = await fetchData('Stok Air', 'get-data');
+            if (response.success && response.data.length > 0) {
+                waterStock = response.data[0];
+                
+                // Update UI
+                document.getElementById('remaining-water').textContent = waterStock['Sisa Liter'] || '0';
+                document.getElementById('water-remaining').textContent = waterStock['Sisa Liter'] || '0';
+                document.getElementById('water-used').textContent = waterStock['Liter Terpakai'] || '0';
+                document.getElementById('total-supply-cost').textContent = parseInt(waterStock['Total Biaya Suplai (Rp)'] || 0).toLocaleString('id-ID');
+                
+                // Update form fields
+                document.getElementById('tank-capacity').value = waterStock['Kapasitas Toren'] || '';
+                document.getElementById('supply-cost').value = settings['Biaya Suplai Air Tangki (Rp)'] || '';
+                
+                // Enable/disable add water button based on stock
+                const addWaterBtn = document.getElementById('add-water-btn');
+                if (parseInt(waterStock['Sisa Liter'] || 0) < 25) {
+                    addWaterBtn.disabled = false;
+                } else {
+                    addWaterBtn.disabled = true;
+                }
+            }
+        }
+        
+        // Load Transactions
+        async function loadTransactions() {
+            const response = await fetchData('Transaksi', 'get-data');
+            if (response.success) {
+                transactions = response.data;
+                
+                // Sort transactions by date (newest first)
+                transactions.sort((a, b) => new Date(b['Tanggal']) - new Date(a['Tanggal']));
+                
+                // Update transactions list
+                updateTransactionsList();
+                
+                // Update recent transactions on home page
+                updateRecentTransactions();
+            }
+        }
+        
+        // Update Transactions List
+        function updateTransactionsList() {
+            const transactionsList = document.getElementById('transactions-list');
+            transactionsList.innerHTML = '';
+            
+            if (transactions.length === 0) {
+                transactionsList.innerHTML = '<p class="text-gray-500 text-center py-4">Belum ada transaksi</p>';
+                return;
+            }
+            
+            transactions.slice(0, 10).forEach(transaction => {
+                const transactionCard = document.createElement('div');
+                transactionCard.className = 'cart-item rounded-lg p-4';
+                
+                const date = new Date(transaction['Tanggal']);
+                const formattedDate = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+                
+                transactionCard.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="font-semibold">${transaction['ID Transaksi']}</h3>
+                            <p class="text-sm text-gray-600">${formattedDate} - ${transaction['Nama Pelanggan']}</p>
+                            <p class="text-sm text-gray-600">${transaction['Produk']} (${transaction['Jumlah']})</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-medium text-[#0f766e]">Rp ${parseInt(transaction['Harga Jual (Rp)']).toLocaleString('id-ID')}</p>
+                            <p class="text-xs ${transaction['Status'] === 'Lunas' ? 'text-green-600' : 'text-yellow-600'}">${transaction['Status']}</p>
+                        </div>
+                    </div>
+                `;
+                transactionsList.appendChild(transactionCard);
+            });
+        }
+        
+        // Load Expenses
+        async function loadExpenses() {
+            const response = await fetchData('Pengeluaran', 'get-data');
+            if (response.success) {
+                expenses = response.data;
+                
+                // Sort expenses by date (newest first)
+                expenses.sort((a, b) => new Date(b['Tanggal']) - new Date(a['Tanggal']));
+                
+                // Update expenses list
+                updateExpensesList();
+            }
+        }
+        
+        // Update Expenses List
+        function updateExpensesList() {
+            const expensesList = document.getElementById('expenses-list');
+            expensesList.innerHTML = '';
+            
+            if (expenses.length === 0) {
+                expensesList.innerHTML = '<p class="text-gray-500 text-center py-4">Belum ada pengeluaran</p>';
+                return;
+            }
+            
+            expenses.slice(0, 10).forEach(expense => {
+                const expenseCard = document.createElement('div');
+                expenseCard.className = 'cart-item rounded-lg p-4';
+                
+                const date = new Date(expense['Tanggal']);
+                const formattedDate = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+                
+                expenseCard.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="font-semibold">${expense['Jenis']}</h3>
+                            <p class="text-sm text-gray-600">${formattedDate}</p>
+                            <p class="text-sm text-gray-600">${expense['Keterangan'] || '-'}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-medium text-red-600">Rp ${parseInt(expense['Jumlah']).toLocaleString('id-ID')}</p>
+                        </div>
+                    </div>
+                `;
+                expensesList.appendChild(expenseCard);
+            });
+        }
+        
+        // Load Financial Summary
+        function loadFinancialSummary() {
+            // Calculate total income from transactions
+            const totalIncome = transactions
+                .filter(t => t['Status'] === 'Lunas')
+                .reduce((sum, t) => sum + parseInt(t['Harga Jual (Rp)']), 0);
+            
+            // Calculate total expenses
+            const totalExpenses = expenses.reduce((sum, e) => sum + parseInt(e['Jumlah']), 0);
+            
+            // Calculate net income
+            const netIncome = totalIncome - totalExpenses;
+            
+            // Update UI
+            document.getElementById('total-income').textContent = totalIncome.toLocaleString('id-ID');
+            document.getElementById('total-expenses').textContent = totalExpenses.toLocaleString('id-ID');
+            document.getElementById('net-income').textContent = netIncome.toLocaleString('id-ID');
+            
+            // Set color based on net income
+            const netIncomeElement = document.getElementById('net-income');
+            if (netIncome >= 0) {
+                netIncomeElement.className = 'text-2xl font-bold text-green-600';
+            } else {
+                netIncomeElement.className = 'text-2xl font-bold text-red-600';
+            }
+        }
+        
+        // Update Recent Transactions
+        function updateRecentTransactions() {
+            const recentTransactions = document.getElementById('recent-transactions');
+            recentTransactions.innerHTML = '';
+            
+            if (transactions.length === 0) {
+                recentTransactions.innerHTML = '<p class="text-gray-500 text-center py-4">Belum ada transaksi</p>';
+                return;
+            }
+            
+            transactions.slice(0, 5).forEach(transaction => {
+                const transactionCard = document.createElement('div');
+                transactionCard.className = 'cart-item rounded-lg p-3';
+                
+                const date = new Date(transaction['Tanggal']);
+                const formattedDate = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+                
+                transactionCard.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="font-medium">${transaction['Nama Pelanggan']}</p>
+                            <p class="text-xs text-gray-600">${formattedDate} - ${transaction['Produk']}</p>
+                        </div>
+                        <p class="font-medium text-[#0f766e]">Rp ${parseInt(transaction['Harga Jual (Rp)']).toLocaleString('id-ID')}</p>
+                    </div>
+                `;
+                recentTransactions.appendChild(transactionCard);
+            });
+        }
+        
+        // Load Dashboard
+        function loadDashboard() {
+            // Update remaining water
+            document.getElementById('remaining-water').textContent = waterStock['Sisa Liter'] || '0';
+            
+            // Update today transactions
+            const today = new Date().toISOString().split('T')[0];
+            const todayTransactions = transactions.filter(t => t['Tanggal'].split('T')[0] === today);
+            document.getElementById('today-transactions').textContent = todayTransactions.length;
+            
+            // Update total debts
+            const totalDebts = transactions
+                .filter(t => t['Status'] === 'Hutang')
+                .reduce((sum, t) => sum + parseInt(t['Harga Jual (Rp)']), 0);
+            document.getElementById('total-debts').textContent = totalDebts.toLocaleString('id-ID');
+            
+            // Update available products
+            document.getElementById('available-products').textContent = products.length;
+            
+            // Update recent transactions
+            updateRecentTransactions();
+        }
+        
+        // Load Settings Form
+        function loadSettingsForm() {
+            document.getElementById('business-name-input').value = settings['Nama Usaha'] || '';
+            document.getElementById('business-address-input').value = settings['Alamat Usaha'] || '';
+            document.getElementById('business-contact-input').value = settings['Kontak'] || '';
+            document.getElementById('business-logo-input').value = settings['Logo'] || '';
+            document.getElementById('settings-tank-capacity').value = settings['Kapasitas Toren (Liter)'] || '';
+            document.getElementById('settings-supply-cost').value = settings['Biaya Suplai Air Tangki (Rp)'] || '';
+            document.getElementById('api-script-input').value = settings['API'] || '';
+        }
+        
+        // Load Debts
+        async function loadDebts() {
+            const response = await fetchData('Transaksi', 'get-data');
+            if (response.success) {
+                const allTransactions = response.data;
+                const debts = allTransactions.filter(t => t['Status'] === 'Hutang');
+                
+                const debtsList = document.getElementById('debts-list');
+                debtsList.innerHTML = '';
+                
+                if (debts.length === 0) {
+                    debtsList.innerHTML = '<p class="text-gray-500 text-center py-4">Tidak ada hutang</p>';
+                    return;
+                }
+                
+                debts.forEach(debt => {
+                    const debtCard = document.createElement('div');
+                    debtCard.className = 'cart-item rounded-lg p-4';
+                    
+                    const date = new Date(debt['Tanggal']);
+                    const formattedDate = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+                    
+                    debtCard.innerHTML = `
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-semibold">${debt['Nama Pelanggan']}</h3>
+                                <p class="text-sm text-gray-600">${formattedDate} - ${debt['ID Transaksi']}</p>
+                                <p class="text-sm text-gray-600">${debt['Produk']} (${debt['Jumlah']})</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-medium text-yellow-600">Rp ${parseInt(debt['Harga Jual (Rp)']).toLocaleString('id-ID')}</p>
+                                <button onclick="showPaymentDebtModal('${debt['ID Transaksi']}')" class="mt-2 btn-primary px-3 py-1 rounded text-sm">
+                                    Bayar
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    debtsList.appendChild(debtCard);
+                });
+            }
+        }
+        
+        // Set Payment Method
+        function setPaymentMethod(method) {
+            currentPaymentMethod = method;
+            
+            // Update UI
+            document.querySelectorAll('.payment-method').forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.add('bg-gray-200');
+            });
+            
+            if (method === 'cash') {
+                document.getElementById('payment-cash').classList.remove('bg-gray-200');
+                document.getElementById('payment-cash').classList.add('active');
+            } else {
+                document.getElementById('payment-debt').classList.remove('bg-gray-200');
+                document.getElementById('payment-debt').classList.add('active');
+            }
+        }
+        
+        // Add to Cart
+        function addToCart() {
+            const productId = document.getElementById('product-select').value;
+            const quantity = parseInt(document.getElementById('quantity').value) || 0;
+            
+            if (!productId) {
+                showToast('Pilih produk terlebih dahulu');
+                return;
+            }
+            
+            if (quantity <= 0) {
+                showToast('Jumlah harus lebih dari 0');
+                return;
+            }
+            
+            const product = products.find(p => p['ID Produk'] === productId);
+            if (!product) return;
+            
+            // Check if product already in cart
+            const existingItemIndex = cart.findIndex(item => item.id === productId);
+            
+            if (existingItemIndex !== -1) {
+                // Update quantity if already in cart
+                cart[existingItemIndex].quantity += quantity;
+            } else {
+                // Add new item to cart
+                cart.push({
+                    id: productId,
+                    name: product['Nama Produk'],
+                    price: parseInt(product['Harga Jual (Rp)']),
+                    cost: parseInt(product['Harga Pokok (Rp)']),
+                    liter: parseFloat(product['Liter']) || 0,
+                    quantity: quantity
+                });
+            }
+            
+            // Reset form
+            document.getElementById('product-select').value = '';
+            document.getElementById('quantity').value = '1';
+            
+            // Update cart display
+            updateCartDisplay();
+            
+            showToast('Produk ditambahkan ke keranjang');
+        }
+        
+        // Update Cart Display
+        function updateCartDisplay() {
+            const cartItems = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p class="text-center text-gray-500 py-4">Keranjang belanja kosong</p>';
+                cartTotal.textContent = '0';
+                return;
+            }
+            
+            cartItems.innerHTML = '';
+            let total = 0;
+            
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                
+                const cartItem = document.createElement('div');
+                cartItem.className = 'cart-item rounded-lg p-3';
+                cartItem.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="font-medium">${item.name}</p>
+                            <p class="text-sm text-gray-600">${item.quantity} x Rp ${item.price.toLocaleString('id-ID')}</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <p class="font-medium text-[#0f766e]">Rp ${itemTotal.toLocaleString('id-ID')}</p>
+                            <button onclick="removeFromCart(${index})" class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                cartItems.appendChild(cartItem);
+            });
+            
+            cartTotal.textContent = total.toLocaleString('id-ID');
+        }
+        
+        // Remove from Cart
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartDisplay();
+        }
+        
+        // Process Transaction
+        async function processTransaction() {
+            if (cart.length === 0) {
+                showToast('Keranjang belanja kosong');
+                return;
+            }
+            
+            const customerSelect = document.getElementById('customer-select').value;
+            
+            // Use "Pelanggan Baru" if no customer is selected
+            const customerName = customerSelect 
+                ? customers.find(c => c['ID Pelanggan'] === customerSelect)['Nama']
+                : 'Pelanggan Baru';
+            
+            // Calculate totals
+            let totalPrice = 0;
+            let totalCost = 0;
+            let totalProfit = 0;
+            let totalLiter = 0;
+            
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                const itemCost = item.cost * item.quantity;
+                const itemProfit = itemTotal - itemCost;
+                const itemLiter = item.liter * item.quantity;
+                
+                totalPrice += itemTotal;
+                totalCost += itemCost;
+                totalProfit += itemProfit;
+                totalLiter += itemLiter;
+            });
+            
+            // Generate transaction ID
+            const date = new Date();
+            const transactionId = `TRX-${date.getFullYear()}${(date.getMonth()+1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+            
+            // Prepare transaction data
+            const transactionData = {
+                'ID Transaksi': transactionId,
+                'Tanggal': date.toISOString(),
+                'Produk': cart.map(item => `${item.name} (${item.quantity})`).join(', '),
+                'Jumlah': cart.reduce((sum, item) => sum + item.quantity, 0),
+                'Harga Jual (Rp)': totalPrice,
+                'Harga Pokok (Rp)': totalCost,
+                'Laba Kotor (Rp)': totalProfit,
+                'Nama Pelanggan': customerName,
+                'Status': currentPaymentMethod === 'cash' ? 'Lunas' : 'Hutang'
+            };
+            
+            // Add transaction
+            const response = await fetchData('Transaksi', 'insert', transactionData);
+            
+            if (response.success) {
+                // Update water stock
+                const newRemaining = parseInt(waterStock['Sisa Liter'] || 0) - totalLiter;
+                const newUsed = parseInt(waterStock['Liter Terpakai'] || 0) + totalLiter;
+                
+                await fetchData('Stok Air', 'update', {
+                    row: 2,
+                    'Sisa Liter': newRemaining,
+                    'Liter Terpakai': newUsed
+                });
+                
+                // Reset form
+                document.getElementById('customer-select').value = '';
+                
+                // Clear cart
+                cart = [];
+                updateCartDisplay();
+                
+                // Show receipt
+                showReceipt(transactionData);
+                
+                // Refresh data
+                loadTransactions();
+                loadWaterStock();
+                
+                showToast('Transaksi berhasil');
+            } else {
+                showToast('Gagal menambah transaksi');
+            }
+        }
+        
+        // Show Receipt
+        function showReceipt(transactionData) {
+            const receiptContent = document.getElementById('receipt-content');
+            const date = new Date(transactionData['Tanggal']);
+            const formattedDate = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            const formattedTime = date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            
+            receiptContent.innerHTML = `
+                <div class="text-center mb-3">
+                    <h2 class="font-bold text-lg">${settings['Nama Usaha'] || 'Kasir Stok Air'}</h2>
+                    <p class="text-sm">${settings['Alamat Usaha'] || 'Jl. Contoh No. 123'}</p>
+                    <p class="text-sm">${settings['Kontak'] || '08123456789'}</p>
+                </div>
+                
+                <div class="border-t border-b border-dashed border-gray-300 py-2 my-2">
+                    <div class="flex justify-between mb-1">
+                        <span>ID Transaksi:</span>
+                        <span>${transactionData['ID Transaksi']}</span>
+                    </div>
+                    <div class="flex justify-between mb-1">
+                        <span>Tanggal:</span>
+                        <span>${formattedDate}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Waktu:</span>
+                        <span>${formattedTime}</span>
+                    </div>
+                </div>
+                
+                <div class="border-b border-dashed border-gray-300 py-2 my-2">
+                    <div class="flex justify-between mb-1">
+                        <span>Pelanggan:</span>
+                        <span>${transactionData['Nama Pelanggan']}</span>
+                    </div>
+                    <div class="flex justify-between mb-1">
+                        <span>Produk:</span>
+                        <span>${transactionData['Produk']}</span>
+                    </div>
+                    <div class="flex justify-between mb-1">
+                        <span>Jumlah:</span>
+                        <span>${transactionData['Jumlah']}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Status:</span>
+                        <span>${transactionData['Status']}</span>
+                    </div>
+                </div>
+                
+                <div class="border-b border-dashed border-gray-300 py-2 my-2">
+                    <div class="flex justify-between font-bold">
+                        <span>Total:</span>
+                        <span>Rp ${parseInt(transactionData['Harga Jual (Rp)']).toLocaleString('id-ID')}</span>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-3 text-sm">
+                    <p>Terima kasih atas pembelian Anda</p>
+                </div>
+            `;
+            
+            document.getElementById('receipt-modal').classList.remove('hidden');
+        }
+        
+        // Print Receipt
+        function printReceipt() {
+            const receiptContent = document.getElementById('receipt-content').innerHTML;
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Nota Transaksi</title>
+                    <style>
+                        body { font-family: 'Courier New', monospace; width: 58mm; font-size: 12px; margin: 0; padding: 5px; }
+                        .text-center { text-align: center; }
+                        .border-t { border-top: 1px dashed #000; }
+                        .border-b { border-bottom: 1px dashed #000; }
+                        .border-dashed { border-style: dashed; }
+                        .py-2 { padding-top: 8px; padding-bottom: 8px; }
+                        .my-2 { margin-top: 8px; margin-bottom: 8px; }
+                        .mb-1 { margin-bottom: 4px; }
+                        .font-bold { font-weight: bold; }
+                        .flex { display: flex; }
+                        .justify-between { justify-content: space-between; }
+                    </style>
+                </head>
+                <body>
+                    ${receiptContent}
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+        
+        // Show Add Product Modal
+        function showAddProductModal() {
+            document.getElementById('add-product-modal').classList.remove('hidden');
+        }
+        
+        // Add Product
+        async function addProduct() {
+            const name = document.getElementById('new-product-name').value;
+            const price = parseInt(document.getElementById('new-product-price').value) || 0;
+            const cost = parseInt(document.getElementById('new-product-cost').value) || 0;
+            const type = document.getElementById('new-product-type').value;
+            const liter = parseFloat(document.getElementById('new-product-liter').value) || 0;
+            
+            if (!name) {
+                showToast('Masukkan nama produk');
+                return;
+            }
+            
+            if (price <= 0) {
+                showToast('Harga jual harus lebih dari 0');
+                return;
+            }
+            
+            // Generate product ID
+            const productId = `PRD-${Date.now()}`;
+            
+            // Calculate profit and margin
+            const profit = price - cost;
+            const margin = price > 0 ? (profit / price * 100).toFixed(2) : 0;
+            
+            // Prepare product data
+            const productData = {
+                'ID Produk': productId,
+                'Nama Produk': name,
+                'Harga Jual (Rp)': price,
+                'Harga Pokok (Rp)': cost,
+                'Laba per Item (Rp)': profit,
+                'Margin (%)': margin,
+                'Jenis': type,
+                'Liter': liter
+            };
+            
+            // Add product
+            const response = await fetchData('Produk', 'insert', productData);
+            
+            if (response.success) {
+                // Reset form
+                document.getElementById('new-product-name').value = '';
+                document.getElementById('new-product-price').value = '';
+                document.getElementById('new-product-cost').value = '';
+                document.getElementById('new-product-liter').value = '';
+                
+                // Close modal
+                closeModal('add-product-modal');
+                
+                // Refresh data
+                loadProducts();
+                
+                showToast('Produk berhasil ditambahkan');
+            } else {
+                showToast('Gagal menambah produk');
+            }
+        }
+        
+        // Edit Product
+        function editProduct(productId) {
+            const product = products.find(p => p['ID Produk'] === productId);
+            if (!product) return;
+            
+            // Fill form with product data
+            document.getElementById('edit-product-id').value = product['ID Produk'];
+            document.getElementById('edit-product-name').value = product['Nama Produk'];
+            document.getElementById('edit-product-price').value = product['Harga Jual (Rp)'];
+            document.getElementById('edit-product-cost').value = product['Harga Pokok (Rp)'];
+            document.getElementById('edit-product-type').value = product['Jenis'];
+            document.getElementById('edit-product-liter').value = product['Liter'];
+            
+            // Show modal
+            document.getElementById('edit-product-modal').classList.remove('hidden');
+        }
+        
+        // Update Product
+        async function updateProduct() {
+            const productId = document.getElementById('edit-product-id').value;
+            const name = document.getElementById('edit-product-name').value;
+            const price = parseInt(document.getElementById('edit-product-price').value) || 0;
+            const cost = parseInt(document.getElementById('edit-product-cost').value) || 0;
+            const type = document.getElementById('edit-product-type').value;
+            const liter = parseFloat(document.getElementById('edit-product-liter').value) || 0;
+            
+            if (!name) {
+                showToast('Masukkan nama produk');
+                return;
+            }
+            
+            if (price <= 0) {
+                showToast('Harga jual harus lebih dari 0');
+                return;
+            }
+            
+            // Calculate profit and margin
+            const profit = price - cost;
+            const margin = price > 0 ? (profit / price * 100).toFixed(2) : 0;
+            
+            // Find product index
+            const productIndex = products.findIndex(p => p['ID Produk'] === productId);
+            if (productIndex === -1) return;
+            
+            // Prepare product data
+            const productData = {
+                row: productIndex + 2, // +2 because of header and 0-based index
+                'Nama Produk': name,
+                'Harga Jual (Rp)': price,
+                'Harga Pokok (Rp)': cost,
+                'Laba per Item (Rp)': profit,
+                'Margin (%)': margin,
+                'Jenis': type,
+                'Liter': liter
+            };
+            
+            // Update product
+            const response = await fetchData('Produk', 'update', productData);
+            
+            if (response.success) {
+                // Close modal
+                closeModal('edit-product-modal');
+                
+                // Refresh data
+                loadProducts();
+                
+                showToast('Produk berhasil diperbarui');
+            } else {
+                showToast('Gagal memperbarui produk');
+            }
+        }
+        
+        // Delete Product
+        async function deleteProduct(productId) {
+            if (!confirm('Apakah Anda yakin ingin menghapus produk ini?')) return;
+            
+            // Find product index
+            const productIndex = products.findIndex(p => p['ID Produk'] === productId);
+            if (productIndex === -1) return;
+            
+            // Delete product
+            const response = await fetchData('Produk', 'delete', {
+                row: productIndex + 2 // +2 because of header and 0-based index
+            });
+            
+            if (response.success) {
+                // Refresh data
+                loadProducts();
+                
+                showToast('Produk berhasil dihapus');
+            } else {
+                showToast('Gagal menghapus produk');
+            }
+        }
+        
+        // Show Add Customer Modal
+        function showAddCustomerModal() {
+            document.getElementById('add-customer-modal').classList.remove('hidden');
+        }
+        
+        // Add Customer
+        async function addCustomer() {
+            const name = document.getElementById('new-customer-name').value;
+            const contact = document.getElementById('new-customer-contact').value;
+            const deposit = parseInt(document.getElementById('new-customer-deposit').value) || 0;
+            
+            if (!name) {
+                showToast('Masukkan nama pelanggan');
+                return;
+            }
+            
+            // Generate customer ID
+            const customerId = `CUST-${Date.now()}`;
+            
+            // Prepare customer data
+            const customerData = {
+                'ID Pelanggan': customerId,
+                'Nama': name,
+                'Kontak': contact,
+                'Galon Titipan': deposit
+            };
+            
+            // Add customer
+            const response = await fetchData('Pelanggan', 'insert', customerData);
+            
+            if (response.success) {
+                // Reset form
+                document.getElementById('new-customer-name').value = '';
+                document.getElementById('new-customer-contact').value = '';
+                document.getElementById('new-customer-deposit').value = '0';
+                
+                // Close modal
+                closeModal('add-customer-modal');
+                
+                // Refresh data
+                loadCustomers();
+                
+                showToast('Pelanggan berhasil ditambahkan');
+            } else {
+                showToast('Gagal menambah pelanggan');
+            }
+        }
+        
+        // Edit Customer
+        function editCustomer(customerId) {
+            const customer = customers.find(c => c['ID Pelanggan'] === customerId);
+            if (!customer) return;
+            
+            // Fill form with customer data
+            document.getElementById('edit-customer-id').value = customer['ID Pelanggan'];
+            document.getElementById('edit-customer-name').value = customer['Nama'];
+            document.getElementById('edit-customer-contact').value = customer['Kontak'];
+            document.getElementById('edit-customer-deposit').value = customer['Galon Titipan'];
+            
+            // Show modal
+            document.getElementById('edit-customer-modal').classList.remove('hidden');
+        }
+        
+        // Update Customer
+        async function updateCustomer() {
+            const customerId = document.getElementById('edit-customer-id').value;
+            const name = document.getElementById('edit-customer-name').value;
+            const contact = document.getElementById('edit-customer-contact').value;
+            const deposit = parseInt(document.getElementById('edit-customer-deposit').value) || 0;
+            
+            if (!name) {
+                showToast('Masukkan nama pelanggan');
+                return;
+            }
+            
+            // Find customer index
+            const customerIndex = customers.findIndex(c => c['ID Pelanggan'] === customerId);
+            if (customerIndex === -1) return;
+            
+            // Prepare customer data
+            const customerData = {
+                row: customerIndex + 2, // +2 because of header and 0-based index
+                'Nama': name,
+                'Kontak': contact,
+                'Galon Titipan': deposit
+            };
+            
+            // Update customer
+            const response = await fetchData('Pelanggan', 'update', customerData);
+            
+            if (response.success) {
+                // Close modal
+                closeModal('edit-customer-modal');
+                
+                // Refresh data
+                loadCustomers();
+                
+                showToast('Pelanggan berhasil diperbarui');
+            } else {
+                showToast('Gagal memperbarui pelanggan');
+            }
+        }
+        
+        // Delete Customer
+        async function deleteCustomer(customerId) {
+            if (!confirm('Apakah Anda yakin ingin menghapus pelanggan ini?')) return;
+            
+            // Find customer index
+            const customerIndex = customers.findIndex(c => c['ID Pelanggan'] === customerId);
+            if (customerIndex === -1) return;
+            
+            // Delete customer
+            const response = await fetchData('Pelanggan', 'delete', {
+                row: customerIndex + 2 // +2 because of header and 0-based index
+            });
+            
+            if (response.success) {
+                // Refresh data
+                loadCustomers();
+                
+                showToast('Pelanggan berhasil dihapus');
+            } else {
+                showToast('Gagal menghapus pelanggan');
+            }
+        }
+        
+        // Show Add Water Modal
+        function showAddWaterModal() {
+            document.getElementById('add-water-modal').classList.remove('hidden');
+        }
+        
+        // Add Water Stock
+        async function addWaterStock() {
+            const amount = parseFloat(document.getElementById('water-amount').value) || 0;
+            const cost = parseInt(document.getElementById('water-cost').value) || 0;
+            
+            if (amount <= 0) {
+                showToast('Jumlah air harus lebih dari 0');
+                return;
+            }
+            
+            // Get current water stock
+            const currentRemaining = parseInt(waterStock['Sisa Liter'] || 0);
+            const currentTotalCost = parseInt(waterStock['Total Biaya Suplai (Rp)'] || 0);
+            
+            // Calculate new values
+            const newRemaining = currentRemaining + amount;
+            const newTotalCost = currentTotalCost + cost;
+            
+            // Update water stock
+            const response = await fetchData('Stok Air', 'update', {
+                row: 2,
+                'Sisa Liter': newRemaining,
+                'Liter Terpakai': 0,
+                'Total Biaya Suplai (Rp)': newTotalCost
+            });
+            
+            if (response.success) {
+                // Add expense
+                const date = new Date();
+                const expenseData = {
+                    'Tanggal': date.toISOString(),
+                    'Jenis': 'Stok Air',
+                    'Jumlah': cost,
+                    'Keterangan': `Penambahan stok air ${amount} liter`
+                };
+                
+                await fetchData('Pengeluaran', 'insert', expenseData);
+                
+                // Reset form
+                document.getElementById('water-amount').value = '';
+                document.getElementById('water-cost').value = '';
+                
+                // Close modal
+                closeModal('add-water-modal');
+                
+                // Refresh data
+                loadWaterStock();
+                loadExpenses();
+                
+                showToast('Stok air berhasil ditambahkan');
+            } else {
+                showToast('Gagal menambah stok air');
+            }
+        }
+        
+        // Show Add Expense Modal
+        function showAddExpenseModal() {
+            document.getElementById('add-expense-modal').classList.remove('hidden');
+        }
+        
+        // Add Expense
+        async function addExpense() {
+            const type = document.getElementById('expense-type').value;
+            const amount = parseInt(document.getElementById('expense-amount').value) || 0;
+            const description = document.getElementById('expense-description').value;
+            
+            if (amount <= 0) {
+                showToast('Jumlah harus lebih dari 0');
+                return;
+            }
+            
+            // Generate expense data
+            const date = new Date();
+            const expenseData = {
+                'Tanggal': date.toISOString(),
+                'Jenis': type,
+                'Jumlah': amount,
+                'Keterangan': description
+            };
+            
+            // Add expense
+            const response = await fetchData('Pengeluaran', 'insert', expenseData);
+            
+            if (response.success) {
+                // Reset form
+                document.getElementById('expense-type').value = 'Stok Air';
+                document.getElementById('expense-amount').value = '';
+                document.getElementById('expense-description').value = '';
+                
+                // Close modal
+                closeModal('add-expense-modal');
+                
+                // Refresh data
+                loadExpenses();
+                
+                showToast('Pengeluaran berhasil ditambahkan');
+            } else {
+                showToast('Gagal menambah pengeluaran');
+            }
+        }
+        
+        // Save Settings
+        async function saveSettings() {
+            const businessName = document.getElementById('business-name-input').value;
+            const businessAddress = document.getElementById('business-address-input').value;
+            const businessContact = document.getElementById('business-contact-input').value;
+            const businessLogo = document.getElementById('business-logo-input').value;
+            const tankCapacity = document.getElementById('settings-tank-capacity').value;
+            const supplyCost = document.getElementById('settings-supply-cost').value;
+            const apiKey = document.getElementById('api-script-input').value;
+            
+            // Prepare settings data
+            const settingsData = {
+                'Nama Usaha': businessName,
+                'Alamat Usaha': businessAddress,
+                'Kontak': businessContact,
+                'Logo': businessLogo,
+                'Kapasitas Toren (Liter)': tankCapacity,
+                'Biaya Suplai Air Tangki (Rp)': supplyCost,
+                'API': apiKey
+            };
+            
+            // Update API key if provided
+            if (apiKey) {
+                API_KEY = apiKey;
+            }
+            
+            // Update settings
+            const response = await fetchData('Pengaturan', 'update', {
+                row: 2,
+                ...settingsData
+            });
+            
+            if (response.success) {
+                // Update water stock capacity
+                await fetchData('Stok Air', 'update', {
+                    row: 2,
+                    'Kapasitas Toren': tankCapacity
+                });
+                
+                // Refresh data
+                loadSettings();
+                loadWaterStock();
+                
+                showToast('Pengaturan berhasil disimpan');
+            } else {
+                showToast('Gagal menyimpan pengaturan');
+            }
+        }
+        
+        // Show Payment Debt Modal
+        function showPaymentDebtModal(transactionId) {
+            const transaction = transactions.find(t => t['ID Transaksi'] === transactionId);
+            if (!transaction) return;
+            
+            currentDebtId = transactionId;
+            document.getElementById('debt-customer-name').value = transaction['Nama Pelanggan'];
+            document.getElementById('debt-amount').value = parseInt(transaction['Harga Jual (Rp)']);
+            document.getElementById('payment-amount').value = parseInt(transaction['Harga Jual (Rp)']);
+            
+            // Calculate remaining debt
+            updateRemainingDebt();
+            
+            document.getElementById('payment-debt-modal').classList.remove('hidden');
+        }
+        
+        // Update Remaining Debt
+        function updateRemainingDebt() {
+            const debtAmount = parseInt(document.getElementById('debt-amount').value) || 0;
+            const paymentAmount = parseInt(document.getElementById('payment-amount').value) || 0;
+            const remainingDebt = Math.max(0, debtAmount - paymentAmount);
+            
+            document.getElementById('remaining-debt').textContent = remainingDebt.toLocaleString('id-ID');
+        }
+        
+        // Listen for payment amount changes
+        document.getElementById('payment-amount').addEventListener('input', updateRemainingDebt);
+        
+        // Pay Debt
+        async function payDebt() {
+            if (!currentDebtId) return;
+            
+            const paymentAmount = parseInt(document.getElementById('payment-amount').value) || 0;
+            const debtAmount = parseInt(document.getElementById('debt-amount').value) || 0;
+            
+            if (paymentAmount <= 0) {
+                showToast('Jumlah pembayaran harus lebih dari 0');
+                return;
+            }
+            
+            if (paymentAmount > debtAmount) {
+                showToast('Jumlah pembayaran melebihi hutang');
+                return;
+            }
+            
+            // Find transaction
+            const transactionIndex = transactions.findIndex(t => t['ID Transaksi'] === currentDebtId);
+            if (transactionIndex === -1) return;
+            
+            // Update transaction status
+            const status = paymentAmount === debtAmount ? 'Lunas' : 'Hutang';
+            
+            const response = await fetchData('Transaksi', 'update', {
+                row: transactionIndex + 2, // +2 because of header and 0-based index
+                'Status': status
+            });
+            
+            if (response.success) {
+                // Create a new transaction for the payment if partial payment
+                if (paymentAmount < debtAmount) {
+                    const date = new Date();
+                    const paymentTransactionId = `PAY-${date.getFullYear()}${(date.getMonth()+1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+                    
+                    const paymentData = {
+                        'ID Transaksi': paymentTransactionId,
+                        'Tanggal': date.toISOString(),
+                        'Produk': 'Pembayaran Hutang',
+                        'Jumlah': 1,
+                        'Harga Jual (Rp)': paymentAmount,
+                        'Harga Pokok (Rp)': 0,
+                        'Laba Kotor (Rp)': paymentAmount,
+                        'Nama Pelanggan': document.getElementById('debt-customer-name').value,
+                        'Status': 'Lunas'
+                    };
+                    
+                    await fetchData('Transaksi', 'insert', paymentData);
+                }
+                
+                // Close modal
+                closeModal('payment-debt-modal');
+                
+                // Refresh data
+                loadTransactions();
+                loadDebts();
+                
+                showToast('Pembayaran berhasil');
+            } else {
+                showToast('Gagal memproses pembayaran');
+            }
+        }
+        
+        // Generate Report
+        async function generateReport() {
+            const period = document.getElementById('report-period').value;
+            let startDate, endDate;
+            
+            const today = new Date();
+            
+            switch (period) {
+                case 'today':
+                    startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+                    endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+                    break;
+                case 'week':
+                    const dayOfWeek = today.getDay();
+                    startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - dayOfWeek);
+                    endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - dayOfWeek + 7);
+                    break;
+                case 'month':
+                    startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                    endDate = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+                    break;
+                case 'year':
+                    startDate = new Date(today.getFullYear(), 0, 1);
+                    endDate = new Date(today.getFullYear() + 1, 0, 1);
+                    break;
+            }
+            
+            // Filter transactions by period
+            const filteredTransactions = transactions.filter(t => {
+                const transactionDate = new Date(t['Tanggal']);
+                return transactionDate >= startDate && transactionDate < endDate;
+            });
+            
+            // Calculate totals
+            const totalTransactions = filteredTransactions.length;
+            const totalIncome = filteredTransactions.reduce((sum, t) => sum + parseInt(t['Harga Jual (Rp)']), 0);
+            const totalDebts = filteredTransactions
+                .filter(t => t['Status'] === 'Hutang')
+                .reduce((sum, t) => sum + parseInt(t['Harga Jual (Rp)']), 0);
+            const totalProfit = filteredTransactions.reduce((sum, t) => sum + parseInt(t['Laba Kotor (Rp)']), 0);
+            
+            // Update UI
+            document.getElementById('report-total-transactions').textContent = totalTransactions;
+            document.getElementById('report-total-income').textContent = totalIncome.toLocaleString('id-ID');
+            document.getElementById('report-total-debts').textContent = totalDebts.toLocaleString('id-ID');
+            document.getElementById('report-total-profit').textContent = totalProfit.toLocaleString('id-ID');
+            
+            // Get top products
+            const productSales = {};
+            filteredTransactions.forEach(t => {
+                if (!productSales[t['Produk']]) {
+                    productSales[t['Produk']] = 0;
+                }
+                productSales[t['Produk']] += parseInt(t['Jumlah']);
+            });
+            
+            const topProducts = Object.entries(productSales)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+            
+            const topProductsContainer = document.getElementById('top-products');
+            topProductsContainer.innerHTML = '';
+            
+            if (topProducts.length === 0) {
+                topProductsContainer.innerHTML = '<p class="text-gray-500 text-center py-2">Tidak ada data</p>';
+            } else {
+                topProducts.forEach(([product, quantity]) => {
+                    const productItem = document.createElement('div');
+                    productItem.className = 'flex justify-between items-center py-1';
+                    productItem.innerHTML = `
+                        <span class="text-sm">${product}</span>
+                        <span class="text-sm font-medium">${quantity} item</span>
+                    `;
+                    topProductsContainer.appendChild(productItem);
+                });
+            }
+        }
+        
+        // Close Modal
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+        
+        // Show Toast Notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            
+            toastMessage.textContent = message;
+            toast.classList.remove('hidden');
+            
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
