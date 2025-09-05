@@ -19,11 +19,11 @@
         }
         .bottom-nav { 
             height: 70px; 
-            background: linear-gradient(to top, #0f766e, #000000);
+            background: linear-gradient(to top, #134e4a, #000000);
         }
         .top-nav { 
             height: 60px; 
-            background: linear-gradient(to bottom, #0f766e, #000000);
+            background: linear-gradient(to right, #134e4a, #000000);
         }
         .thermal-print {
             font-family: 'Courier New', monospace;
@@ -37,11 +37,11 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         .btn-primary {
-            background-color: #0f766e;
+            background: linear-gradient(to right, #134e4a, #000000);
             color: white;
         }
         .btn-primary:hover {
-            background-color: #0d645c;
+            background: linear-gradient(to right, #0f766e, #000000);
         }
         .input-field {
             background: #ffffff;
@@ -49,19 +49,19 @@
             color: #000000;
         }
         .input-field:focus {
-            border-color: #0f766e;
+            border-color: #134e4a;
             outline: none;
-            box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.3);
+            box-shadow: 0 0 0 2px rgba(19, 78, 74, 0.3);
         }
         .nav-btn.active {
-            color: #0f766e;
+            color: #134e4a;
         }
         .cart-item {
             background: #f1f5f9;
             border: 1px solid #e2e8f0;
         }
         .payment-method.active {
-            background-color: #0f766e;
+            background: linear-gradient(to right, #134e4a, #000000);
             color: white;
         }
         .modal-content {
@@ -69,21 +69,43 @@
             border: 1px solid #e2e8f0;
         }
         .gradient-text {
-            background: linear-gradient(to right, #0f766e, #000000);
+            background: linear-gradient(to right, #134e4a, #000000);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
         .gradient-bg {
-            background: linear-gradient(to right, #0f766e, #000000);
+            background: linear-gradient(to right, #134e4a, #000000);
         }
         .lunas-badge {
-            background-color: #10b981;
+            background: linear-gradient(to right, #10b981, #059669);
             color: white;
             padding: 2px 8px;
             border-radius: 12px;
             font-size: 12px;
             font-weight: 600;
+        }
+        .disabled-btn {
+            background: #9ca3af;
+            color: white;
+            cursor: not-allowed;
+        }
+        /* Different colors for dashboard cards */
+        .card-water {
+            background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+            border-left: 4px solid #0284c7;
+        }
+        .card-transactions {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            border-left: 4px solid #16a34a;
+        }
+        .card-debts {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-left: 4px solid #d97706;
+        }
+        .card-products {
+            background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+            border-left: 4px solid #7e22ce;
         }
     </style>
 </head>
@@ -92,7 +114,7 @@
     <div class="fixed top-0 left-0 right-0 text-white z-10 top-nav flex items-center justify-between px-4 shadow-md">
         <div class="flex items-center space-x-2">
             <div id="logo-container" class="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                <i class="fas fa-tint text-[#0f766e]"></i>
+                <i class="fas fa-tint text-[#134e4a]"></i>
             </div>
             <div>
                 <h1 id="business-name" class="font-bold text-lg">Kasir Stok Air</h1>
@@ -100,19 +122,19 @@
             </div>
         </div>
         <div class="flex space-x-3">
-            <button onclick="showPage('settings')" class="p-2 rounded-full hover:bg-[#0f766e] transition">
+            <button onclick="showPage('settings')" class="p-2 rounded-full hover:bg-[#134e4a] transition">
                 <i class="fas fa-cog"></i>
             </button>
-            <button onclick="showPage('customers')" class="p-2 rounded-full hover:bg-[#0f766e] transition">
+            <button onclick="showPage('customers')" class="p-2 rounded-full hover:bg-[#134e4a] transition">
                 <i class="fas fa-users"></i>
             </button>
-            <button onclick="showPage('expenses')" class="p-2 rounded-full hover:bg-[#0f766e] transition">
+            <button onclick="showPage('expenses')" class="p-2 rounded-full hover:bg-[#134e4a] transition">
                 <i class="fas fa-money-bill-wave"></i>
             </button>
-            <button onclick="showPage('reports')" class="p-2 rounded-full hover:bg-[#0f766e] transition">
+            <button onclick="showPage('reports')" class="p-2 rounded-full hover:bg-[#134e4a] transition">
                 <i class="fas fa-chart-bar"></i>
             </button>
-            <button onclick="showPage('debts')" class="p-2 rounded-full hover:bg-[#0f766e] transition">
+            <button onclick="showPage('debts')" class="p-2 rounded-full hover:bg-[#134e4a] transition">
                 <i class="fas fa-file-invoice-dollar"></i>
             </button>
         </div>
@@ -125,24 +147,24 @@
             <div class="card rounded-xl shadow-md p-5 mb-5">
                 <h2 class="text-xl font-bold mb-4">Dashboard</h2>
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-[#f0fdfa] rounded-lg p-4 border border-[#0f766e]">
+                    <div class="card-water rounded-lg p-4">
                         <p class="text-sm text-gray-600">Stok Air Tersisa</p>
-                        <p id="remaining-water" class="text-2xl font-bold text-[#0f766e]">--</p>
+                        <p id="remaining-water" class="text-2xl font-bold text-[#0284c7]">--</p>
                         <p class="text-xs text-gray-500">Liter</p>
                     </div>
-                    <div class="bg-[#f0fdfa] rounded-lg p-4 border border-[#0f766e]">
+                    <div class="card-transactions rounded-lg p-4">
                         <p class="text-sm text-gray-600">Total Transaksi Hari Ini</p>
-                        <p id="today-transactions" class="text-2xl font-bold text-[#0f766e]">--</p>
+                        <p id="today-transactions" class="text-2xl font-bold text-[#16a34a]">--</p>
                         <p class="text-xs text-gray-500">Transaksi</p>
                     </div>
-                    <div class="bg-[#f0fdfa] rounded-lg p-4 border border-[#0f766e]">
+                    <div class="card-debts rounded-lg p-4">
                         <p class="text-sm text-gray-600">Total Hutang</p>
-                        <p id="total-debts" class="text-2xl font-bold text-[#0f766e]">--</p>
+                        <p id="total-debts" class="text-2xl font-bold text-[#d97706]">--</p>
                         <p class="text-xs text-gray-500">Rp</p>
                     </div>
-                    <div class="bg-[#f0fdfa] rounded-lg p-4 border border-[#0f766e]">
+                    <div class="card-products rounded-lg p-4">
                         <p class="text-sm text-gray-600">Produk Tersedia</p>
-                        <p id="available-products" class="text-2xl font-bold text-[#0f766e]">--</p>
+                        <p id="available-products" class="text-2xl font-bold text-[#7e22ce]">--</p>
                         <p class="text-xs text-gray-500">Jenis</p>
                     </div>
                 </div>
@@ -208,7 +230,7 @@
                     </div>
                     <div class="flex justify-between items-center pt-2 border-t border-gray-200">
                         <span class="font-medium">Total:</span>
-                        <span class="text-xl font-bold text-[#0f766e]">Rp <span id="cart-total">0</span></span>
+                        <span class="text-xl font-bold text-[#134e4a]">Rp <span id="cart-total">0</span></span>
                     </div>
                 </div>
                 
@@ -242,14 +264,14 @@
                 <h2 class="text-xl font-bold mb-4">Stok Air</h2>
                 
                 <div class="grid grid-cols-2 gap-4 mb-6">
-                    <div class="bg-[#f0fdfa] rounded-lg p-4 border border-[#0f766e]">
+                    <div class="card-water rounded-lg p-4">
                         <p class="text-sm text-gray-600">Sisa Stok</p>
-                        <p id="water-remaining" class="text-2xl font-bold text-[#0f766e]">--</p>
+                        <p id="water-remaining" class="text-2xl font-bold text-[#0284c7]">--</p>
                         <p class="text-xs text-gray-500">Liter</p>
                     </div>
-                    <div class="bg-[#f0fdfa] rounded-lg p-4 border border-[#0f766e]">
+                    <div class="card-transactions rounded-lg p-4">
                         <p class="text-sm text-gray-600">Liter Terpakai</p>
-                        <p id="water-used" class="text-2xl font-bold text-[#0f766e]">--</p>
+                        <p id="water-used" class="text-2xl font-bold text-[#16a34a]">--</p>
                         <p class="text-xs text-gray-500">Liter</p>
                     </div>
                 </div>
@@ -315,9 +337,14 @@
                     <input type="text" id="api-script-input" placeholder="AKfycby_6VvnaHFQ4hmJALaX5-Zk1bF-nHzyuGR_FfdDvtJfbu_YMWLsVycoCrtCT-DlyMAv" class="w-full input-field rounded-lg px-3 py-2">
                 </div>
                 
-                <button onclick="saveSettings()" class="w-full btn-primary py-3 rounded-lg font-medium">
-                    Simpan Pengaturan
-                </button>
+                <div class="flex space-x-3">
+                    <button onclick="clearLocalStorage()" class="flex-1 bg-red-500 text-white py-3 rounded-lg font-medium">
+                        <i class="fas fa-sync-alt mr-2"></i> Refresh Data
+                    </button>
+                    <button onclick="saveSettings()" class="flex-1 btn-primary py-3 rounded-lg font-medium">
+                        Simpan Pengaturan
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -388,21 +415,21 @@
                 </div>
                 
                 <div class="grid grid-cols-2 gap-4 mb-6">
-                    <div class="bg-[#f0fdfa] rounded-lg p-4 border border-[#0f766e]">
+                    <div class="card-transactions rounded-lg p-4">
                         <p class="text-sm text-gray-600">Total Transaksi</p>
-                        <p id="report-total-transactions" class="text-2xl font-bold text-[#0f766e]">--</p>
+                        <p id="report-total-transactions" class="text-2xl font-bold text-[#16a34a]">--</p>
                     </div>
-                    <div class="bg-[#f0fdfa] rounded-lg p-4 border border-[#0f766e]">
+                    <div class="card-water rounded-lg p-4">
                         <p class="text-sm text-gray-600">Total Pendapatan</p>
-                        <p id="report-total-income" class="text-2xl font-bold text-[#0f766e]">--</p>
+                        <p id="report-total-income" class="text-2xl font-bold text-[#0284c7]">--</p>
                     </div>
-                    <div class="bg-[#f0fdfa] rounded-lg p-4 border border-[#0f766e]">
+                    <div class="card-debts rounded-lg p-4">
                         <p class="text-sm text-gray-600">Total Hutang</p>
-                        <p id="report-total-debts" class="text-2xl font-bold text-[#0f766e]">--</p>
+                        <p id="report-total-debts" class="text-2xl font-bold text-[#d97706]">--</p>
                     </div>
-                    <div class="bg-[#f0fdfa] rounded-lg p-4 border border-[#0f766e]">
+                    <div class="card-products rounded-lg p-4">
                         <p class="text-sm text-gray-600">Total Laba Kotor</p>
-                        <p id="report-total-profit" class="text-2xl font-bold text-[#0f766e]">--</p>
+                        <p id="report-total-profit" class="text-2xl font-bold text-[#7e22ce]">--</p>
                     </div>
                 </div>
                 
@@ -864,10 +891,10 @@
                         <div>
                             <h3 class="font-semibold">${product['Nama Produk']}</h3>
                             <p class="text-sm text-gray-600">${product['Jenis']} - ${product['Liter']}L</p>
-                            <p class="text-sm font-medium text-[#0f766e]">Rp ${parseInt(product['Harga Jual (Rp)']).toLocaleString('id-ID')}</p>
+                            <p class="text-sm font-medium text-[#134e4a]">Rp ${parseInt(product['Harga Jual (Rp)']).toLocaleString('id-ID')}</p>
                         </div>
                         <div class="flex space-x-2">
-                            <button onclick="editProduct('${product['ID Produk']}')" class="text-[#0f766e] hover:text-[#0d645c]">
+                            <button onclick="editProduct('${product['ID Produk']}')" class="text-[#134e4a] hover:text-[#0f766e]">
                                 <i class="fas fa-edit"></i>
                             </button>
                             <button onclick="deleteProduct('${product['ID Produk']}')" class="text-red-600 hover:text-red-800">
@@ -923,7 +950,7 @@
                             <p class="text-sm text-gray-600">Galon Titipan: ${customer['Galon Titipan']}</p>
                         </div>
                         <div class="flex space-x-2">
-                            <button onclick="editCustomer('${customer['ID Pelanggan']}')" class="text-[#0f766e] hover:text-[#0d645c]">
+                            <button onclick="editCustomer('${customer['ID Pelanggan']}')" class="text-[#134e4a] hover:text-[#0f766e]">
                                 <i class="fas fa-edit"></i>
                             </button>
                             <button onclick="deleteCustomer('${customer['ID Pelanggan']}')" class="text-red-600 hover:text-red-800">
@@ -1004,7 +1031,7 @@
                             <p class="text-sm text-gray-600">${transaction['Produk']} (${transaction['Jumlah']})</p>
                         </div>
                         <div class="text-right">
-                            <p class="font-medium text-[#0f766e]">Rp ${parseInt(transaction['Harga Jual (Rp)']).toLocaleString('id-ID')}</p>
+                            <p class="font-medium text-[#134e4a]">Rp ${parseInt(transaction['Harga Jual (Rp)']).toLocaleString('id-ID')}</p>
                             <p class="text-xs ${transaction['Status'] === 'Lunas' ? 'text-green-600' : 'text-yellow-600'}">${transaction['Status']}</p>
                         </div>
                     </div>
@@ -1110,7 +1137,7 @@
                             <p class="font-medium">${transaction['Nama Pelanggan']}</p>
                             <p class="text-xs text-gray-600">${formattedDate} - ${transaction['Produk']}</p>
                         </div>
-                        <p class="font-medium text-[#0f766e]">Rp ${parseInt(transaction['Harga Jual (Rp)']).toLocaleString('id-ID')}</p>
+                        <p class="font-medium text-[#134e4a]">Rp ${parseInt(transaction['Harga Jual (Rp)']).toLocaleString('id-ID')}</p>
                     </div>
                 `;
                 recentTransactions.appendChild(transactionCard);
@@ -1285,7 +1312,7 @@
                             <p class="text-sm text-gray-600">${item.quantity} x Rp ${item.price.toLocaleString('id-ID')}</p>
                         </div>
                         <div class="flex items-center space-x-2">
-                            <p class="font-medium text-[#0f766e]">Rp ${itemTotal.toLocaleString('id-ID')}</p>
+                            <p class="font-medium text-[#134e4a]">Rp ${itemTotal.toLocaleString('id-ID')}</p>
                             <button onclick="removeFromCart(${index})" class="text-red-600 hover:text-red-800">
                                 <i class="fas fa-trash"></i>
                             </button>
@@ -1869,6 +1896,14 @@
                 showToast('Pengeluaran berhasil ditambahkan');
             } else {
                 showToast('Gagal menambah pengeluaran');
+            }
+        }
+        
+        // Clear Local Storage
+        function clearLocalStorage() {
+            if (confirm('Apakah Anda yakin ingin menghapus semua data di local storage?')) {
+                localStorage.clear();
+                showToast('Data local storage berhasil dihapus');
             }
         }
         
