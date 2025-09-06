@@ -24,12 +24,14 @@
         .top-nav { 
             height: 60px; 
             background: linear-gradient(to right, #134e4a, #000000);
+            transition: background 0.3s ease;
         }
         .thermal-print {
             font-family: 'Courier New', monospace;
-            width: 58mm;
+            width: 80mm;
             font-size: 12px;
             color: #000;
+            line-height: 1.4;
         }
         .card {
             background: #ffffff;
@@ -107,12 +109,219 @@
             background: linear-gradient(135deg, #ede9fe, #ddd6fe);
             border-left: 4px solid #7e22ce;
         }
+        .product-grid-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+        .product-grid-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-color: #134e4a;
+        }
+        .cart-quantity-input {
+            width: 50px;
+            text-align: center;
+        }
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        /* Modern receipt styles */
+        .receipt-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #000;
+        }
+        .receipt-header {
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed #333;
+        }
+        .receipt-logo {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 10px;
+            background: #134e4a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+        .receipt-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #134e4a;
+        }
+        .receipt-subtitle {
+            font-size: 11px;
+            margin-bottom: 3px;
+            color: #555;
+        }
+        .receipt-info {
+            margin-bottom: 15px;
+        }
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        .receipt-label {
+            font-weight: bold;
+            color: #333;
+        }
+        .receipt-value {
+            color: #000;
+        }
+        .receipt-items {
+            margin-bottom: 15px;
+        }
+        .receipt-items-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            border-bottom: 1px solid #333;
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+        }
+        .receipt-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        .receipt-item-name {
+            flex: 1;
+            text-align: left;
+        }
+        .receipt-item-qty {
+            width: 30px;
+            text-align: center;
+        }
+        .receipt-item-price {
+            width: 70px;
+            text-align: right;
+        }
+        .receipt-item-total {
+            width: 80px;
+            text-align: right;
+            font-weight: bold;
+        }
+        .receipt-summary {
+            margin-bottom: 15px;
+            border-top: 1px dashed #333;
+            padding-top: 10px;
+        }
+        .receipt-summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        .receipt-total {
+            font-size: 14px;
+            font-weight: bold;
+            border-top: 1px solid #333;
+            padding-top: 5px;
+            margin-top: 5px;
+        }
+        .receipt-payment {
+            margin-bottom: 15px;
+        }
+        .receipt-footer {
+            text-align: center;
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 2px dashed #333;
+            font-size: 11px;
+            color: #555;
+        }
+        .receipt-thank {
+            font-weight: bold;
+            margin-top: 5px;
+            color: #134e4a;
+        }
+        /* Dropdown menu styles */
+        .dropdown-menu {
+            position: absolute;
+            top: 60px;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            z-index: 20;
+            display: none;
+        }
+        .dropdown-menu.show {
+            display: block;
+        }
+        .dropdown-item {
+            padding: 12px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .dropdown-item:hover {
+            background-color: #f8fafc;
+        }
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+        /* Header color themes */
+        .header-home {
+            background: linear-gradient(to right, #134e4a, #000000);
+        }
+        .header-products {
+            background: linear-gradient(to right, #7e22ce, #000000);
+        }
+        .header-transaction {
+            background: linear-gradient(to right, #dc2626, #000000);
+        }
+        .header-history {
+            background: linear-gradient(to right, #2563eb, #000000);
+        }
+        .header-water-stock {
+            background: linear-gradient(to right, #0891b2, #000000);
+        }
+        .header-settings {
+            background: linear-gradient(to right, #4b5563, #000000);
+        }
+        .header-customers {
+            background: linear-gradient(to right, #059669, #000000);
+        }
+        .header-expenses {
+            background: linear-gradient(to right, #d97706, #000000);
+        }
+        .header-reports {
+            background: linear-gradient(to right: #7c3aed, #000000);
+        }
+        .header-debts {
+            background: linear-gradient(to right, #ea580c, #000000);
+        }
     </style>
 </head>
 <body>
     <!-- Top Navigation -->
-    <div class="fixed top-0 left-0 right-0 text-white z-10 top-nav flex items-center justify-between px-4 shadow-md">
-        <div class="flex items-center space-x-2">
+    <div id="top-nav" class="fixed top-0 left-0 right-0 text-white z-10 top-nav flex items-center justify-between px-4 shadow-md header-home">
+        <div class="flex items-center space-x-3">
             <div id="logo-container" class="w-10 h-10 bg-white rounded-full flex items-center justify-center">
                 <i class="fas fa-tint text-[#134e4a]"></i>
             </div>
@@ -121,25 +330,30 @@
                 <p id="business-address" class="text-xs opacity-80">Jl. Contoh No. 123</p>
             </div>
         </div>
-        <div class="flex space-x-3">
-            <button onclick="showPage('settings')" class="p-2 rounded-full hover:bg-[#134e4a] transition">
-                <i class="fas fa-cog"></i>
-            </button>
-            <button onclick="showPage('customers')" class="p-2 rounded-full hover:bg-[#134e4a] transition">
-                <i class="fas fa-users"></i>
-            </button>
-            <button onclick="showPage('expenses')" class="p-2 rounded-full hover:bg-[#134e4a] transition">
-                <i class="fas fa-money-bill-wave"></i>
-            </button>
-            <button onclick="showPage('reports')" class="p-2 rounded-full hover:bg-[#134e4a] transition">
-                <i class="fas fa-chart-bar"></i>
-            </button>
-            <button onclick="showPage('debts')" class="p-2 rounded-full hover:bg-[#134e4a] transition">
-                <i class="fas fa-file-invoice-dollar"></i>
-            </button>
+        <button onclick="toggleDropdown()" class="p-2 rounded-full hover:bg-black hover:bg-opacity-20 transition">
+            <i class="fas fa-bars text-xl"></i>
+        </button>
+    </div>
+    
+    <!-- Dropdown Menu -->
+    <div id="dropdown-menu" class="dropdown-menu">
+        <div class="dropdown-item" onclick="showPage('settings')">
+            <i class="fas fa-cog mr-3"></i> Pengaturan
+        </div>
+        <div class="dropdown-item" onclick="showPage('customers')">
+            <i class="fas fa-users mr-3"></i> Pelanggan
+        </div>
+        <div class="dropdown-item" onclick="showPage('expenses')">
+            <i class="fas fa-money-bill-wave mr-3"></i> Pengeluaran
+        </div>
+        <div class="dropdown-item" onclick="showPage('reports')">
+            <i class="fas fa-chart-bar mr-3"></i> Laporan
+        </div>
+        <div class="dropdown-item" onclick="showPage('debts')">
+            <i class="fas fa-file-invoice-dollar mr-3"></i> Hutang
         </div>
     </div>
-
+    
     <!-- Main Content -->
     <div class="content-container">
         <!-- Home Page -->
@@ -177,7 +391,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Products Page -->
         <div id="products-page" class="page p-4 hidden">
             <div class="card rounded-xl shadow-md p-5 mb-5">
@@ -191,8 +404,31 @@
                     <!-- Products will be loaded here -->
                 </div>
             </div>
+            
+            <!-- Cart Summary and Checkout Button -->
+            <div class="card rounded-xl shadow-md p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-semibold">Keranjang Belanja</h3>
+                    <div class="relative">
+                        <i class="fas fa-shopping-cart text-xl"></i>
+                        <span id="cart-badge" class="cart-badge hidden">0</span>
+                    </div>
+                </div>
+                
+                <div id="cart-summary" class="space-y-2 mb-3 max-h-40 overflow-y-auto">
+                    <p class="text-center text-gray-500 py-2">Keranjang belanja kosong</p>
+                </div>
+                
+                <div class="flex justify-between items-center pt-2 border-t border-gray-200 mb-4">
+                    <span class="font-medium">Total:</span>
+                    <span class="text-xl font-bold text-[#134e4a]">Rp <span id="cart-total">0</span></span>
+                </div>
+                
+                <button onclick="goToCheckout()" class="w-full btn-primary py-3 rounded-lg font-medium flex items-center justify-center">
+                    <i class="fas fa-shopping-cart mr-2"></i> Checkout
+                </button>
+            </div>
         </div>
-
         <!-- Transaction Page -->
         <div id="transaction-page" class="page p-4 hidden">
             <div class="card rounded-xl shadow-md p-5">
@@ -210,19 +446,6 @@
                     </div>
                 </div>
                 
-                <div class="mb-4">
-                    <label class="block text-sm font-medium mb-1">Produk</label>
-                    <div class="flex space-x-2">
-                        <select id="product-select" class="flex-1 input-field rounded-lg px-3 py-2">
-                            <option value="">Pilih Produk</option>
-                        </select>
-                        <input type="number" id="quantity" min="1" value="1" class="w-20 input-field rounded-lg px-3 py-2">
-                        <button onclick="addToCart()" class="btn-primary px-4 py-2 rounded-lg">
-                            <i class="fas fa-cart-plus"></i>
-                        </button>
-                    </div>
-                </div>
-                
                 <div class="mb-6">
                     <h3 class="font-semibold mb-2">Keranjang Belanja</h3>
                     <div id="cart-items" class="space-y-2 mb-3 max-h-60 overflow-y-auto">
@@ -230,7 +453,7 @@
                     </div>
                     <div class="flex justify-between items-center pt-2 border-t border-gray-200">
                         <span class="font-medium">Total:</span>
-                        <span class="text-xl font-bold text-[#134e4a]">Rp <span id="cart-total">0</span></span>
+                        <span class="text-xl font-bold text-[#134e4a]">Rp <span id="cart-total-transaction">0</span></span>
                     </div>
                 </div>
                 
@@ -242,12 +465,16 @@
                     </div>
                 </div>
                 
+                <div id="cash-payment-section" class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Uang Bayar (Rp)</label>
+                    <input type="number" id="payment-amount" class="w-full input-field rounded-lg px-3 py-2" placeholder="Masukkan jumlah uang">
+                </div>
+                
                 <button onclick="processTransaction()" class="w-full btn-primary py-3 rounded-lg font-medium flex items-center justify-center">
                     <i class="fas fa-shopping-cart mr-2"></i> Proses Transaksi
                 </button>
             </div>
         </div>
-
         <!-- History Page -->
         <div id="history-page" class="page p-4 hidden">
             <div class="card rounded-xl shadow-md p-5">
@@ -257,7 +484,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Water Stock Page -->
         <div id="water-stock-page" class="page p-4 hidden">
             <div class="card rounded-xl shadow-md p-5 mb-5">
@@ -296,7 +522,6 @@
                 </button>
             </div>
         </div>
-
         <!-- Settings Page -->
         <div id="settings-page" class="page p-4 hidden">
             <div class="card rounded-xl shadow-md p-5">
@@ -347,7 +572,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Customers Page -->
         <div id="customers-page" class="page p-4 hidden">
             <div class="card rounded-xl shadow-md p-5 mb-5">
@@ -362,7 +586,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Expenses Page -->
         <div id="expenses-page" class="page p-4 hidden">
             <div class="card rounded-xl shadow-md p-5 mb-5">
@@ -398,7 +621,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Reports Page -->
         <div id="reports-page" class="page p-4 hidden">
             <div class="card rounded-xl shadow-md p-5">
@@ -445,7 +667,6 @@
                 </button>
             </div>
         </div>
-
         <!-- Debts Page -->
         <div id="debts-page" class="page p-4 hidden">
             <div class="card rounded-xl shadow-md p-5">
@@ -456,7 +677,6 @@
             </div>
         </div>
     </div>
-
     <!-- Bottom Navigation -->
     <div class="fixed bottom-0 left-0 right-0 flex justify-around items-center bottom-nav z-10">
         <button onclick="showPage('home')" class="nav-btn active flex flex-col items-center justify-center p-2 text-white">
@@ -467,10 +687,6 @@
             <i class="fas fa-box text-xl mb-1"></i>
             <span class="text-xs">Produk</span>
         </button>
-        <button onclick="showPage('transaction')" class="nav-btn flex flex-col items-center justify-center p-2 text-white">
-            <i class="fas fa-shopping-cart text-xl mb-1"></i>
-            <span class="text-xs">Transaksi</span>
-        </button>
         <button onclick="showPage('history')" class="nav-btn flex flex-col items-center justify-center p-2 text-white">
             <i class="fas fa-history text-xl mb-1"></i>
             <span class="text-xs">Riwayat</span>
@@ -480,7 +696,6 @@
             <span class="text-xs">Stok Air</span>
         </button>
     </div>
-
     <!-- Add Product Modal -->
     <div id="add-product-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 hidden">
         <div class="modal-content rounded-xl p-5 w-11/12 max-w-md">
@@ -521,7 +736,6 @@
             </div>
         </div>
     </div>
-
     <!-- Edit Product Modal -->
     <div id="edit-product-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 hidden">
         <div class="modal-content rounded-xl p-5 w-11/12 max-w-md">
@@ -564,7 +778,6 @@
             </div>
         </div>
     </div>
-
     <!-- Add Customer Modal -->
     <div id="add-customer-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 hidden">
         <div class="modal-content rounded-xl p-5 w-11/12 max-w-md">
@@ -591,7 +804,6 @@
             </div>
         </div>
     </div>
-
     <!-- Edit Customer Modal -->
     <div id="edit-customer-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 hidden">
         <div class="modal-content rounded-xl p-5 w-11/12 max-w-md">
@@ -620,7 +832,6 @@
             </div>
         </div>
     </div>
-
     <!-- Add Water Modal -->
     <div id="add-water-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 hidden">
         <div class="modal-content rounded-xl p-5 w-11/12 max-w-md">
@@ -642,7 +853,6 @@
             </div>
         </div>
     </div>
-
     <!-- Add Expense Modal -->
     <div id="add-expense-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 hidden">
         <div class="modal-content rounded-xl p-5 w-11/12 max-w-md">
@@ -673,7 +883,6 @@
             </div>
         </div>
     </div>
-
     <!-- Transaction Receipt Modal -->
     <div id="receipt-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 hidden">
         <div class="modal-content rounded-xl p-5 w-11/12 max-w-md">
@@ -684,7 +893,7 @@
                 </button>
             </div>
             
-            <div id="receipt-content" class="thermal-print bg-white p-4 border border-gray-200 rounded-lg">
+            <div id="receipt-content" class="receipt-container bg-white p-4 border border-gray-200 rounded-lg">
                 <!-- Receipt content will be loaded here -->
             </div>
             
@@ -696,7 +905,6 @@
             </div>
         </div>
     </div>
-
     <!-- Payment Debt Modal -->
     <div id="payment-debt-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 hidden">
         <div class="modal-content rounded-xl p-5 w-11/12 max-w-md">
@@ -728,12 +936,10 @@
             </div>
         </div>
     </div>
-
     <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg hidden z-30">
         <span id="toast-message"></span>
     </div>
-
     <script>
         // API Configuration
         let API_KEY = 'AKfycby_6VvnaHFQ4hmJALaX5-Zk1bF-nHzyuGR_FfdDvtJfbu_YMWLsVycoCrtCT-DlyMAv';
@@ -761,6 +967,22 @@
             showPage('home');
         });
         
+        // Toggle Dropdown Menu
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdown-menu');
+            dropdown.classList.toggle('show');
+        }
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('dropdown-menu');
+            const menuButton = event.target.closest('button[onclick="toggleDropdown()"]');
+            
+            if (!dropdown.contains(event.target) && !menuButton) {
+                dropdown.classList.remove('show');
+            }
+        });
+        
         // Page Navigation
         function showPage(pageId) {
             // Hide all pages
@@ -784,6 +1006,12 @@
                 }
             });
             
+            // Update header color based on page
+            updateHeaderColor(pageId);
+            
+            // Close dropdown menu
+            document.getElementById('dropdown-menu').classList.remove('show');
+            
             // Load page specific data
             if (pageId === 'home') {
                 loadDashboard();
@@ -800,10 +1028,53 @@
             } else if (pageId === 'expenses') {
                 loadExpenses();
                 loadFinancialSummary();
+            } else if (pageId === 'products') {
+                updateProductsList();
+                updateCartSummary();
             } else if (pageId === 'transaction') {
-                // Reset cart when opening transaction page
-                cart = [];
                 updateCartDisplay();
+            }
+        }
+        
+        // Update Header Color Based on Page
+        function updateHeaderColor(pageId) {
+            const topNav = document.getElementById('top-nav');
+            
+            // Remove all header color classes
+            topNav.className = topNav.className.replace(/header-\w+/g, '');
+            
+            // Add appropriate header color class
+            switch(pageId) {
+                case 'home':
+                    topNav.classList.add('header-home');
+                    break;
+                case 'products':
+                    topNav.classList.add('header-products');
+                    break;
+                case 'transaction':
+                    topNav.classList.add('header-transaction');
+                    break;
+                case 'history':
+                    topNav.classList.add('header-history');
+                    break;
+                case 'water-stock':
+                    topNav.classList.add('header-water-stock');
+                    break;
+                case 'settings':
+                    topNav.classList.add('header-settings');
+                    break;
+                case 'customers':
+                    topNav.classList.add('header-customers');
+                    break;
+                case 'expenses':
+                    topNav.classList.add('header-expenses');
+                    break;
+                case 'reports':
+                    topNav.classList.add('header-reports');
+                    break;
+                case 'debts':
+                    topNav.classList.add('header-debts');
+                    break;
             }
         }
         
@@ -894,6 +1165,9 @@
                             <p class="text-sm font-medium text-[#134e4a]">Rp ${parseInt(product['Harga Jual (Rp)']).toLocaleString('id-ID')}</p>
                         </div>
                         <div class="flex space-x-2">
+                            <button onclick="addProductToCartFromProducts('${product['ID Produk']}')" class="btn-primary px-3 py-1 rounded text-sm">
+                                <i class="fas fa-plus mr-1"></i> Tambah
+                            </button>
                             <button onclick="editProduct('${product['ID Produk']}')" class="text-[#134e4a] hover:text-[#0f766e]">
                                 <i class="fas fa-edit"></i>
                             </button>
@@ -905,6 +1179,50 @@
                 `;
                 productsList.appendChild(productCard);
             });
+        }
+        
+        // Update Cart Summary on Products Page
+        function updateCartSummary() {
+            const cartSummary = document.getElementById('cart-summary');
+            const cartTotal = document.getElementById('cart-total');
+            const cartBadge = document.getElementById('cart-badge');
+            
+            if (cart.length === 0) {
+                cartSummary.innerHTML = '<p class="text-center text-gray-500 py-2">Keranjang belanja kosong</p>';
+                cartTotal.textContent = '0';
+                cartBadge.classList.add('hidden');
+                return;
+            }
+            
+            cartSummary.innerHTML = '';
+            let total = 0;
+            let totalItems = 0;
+            
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                totalItems += item.quantity;
+                
+                const cartItem = document.createElement('div');
+                cartItem.className = 'flex justify-between items-center py-1';
+                cartItem.innerHTML = `
+                    <div>
+                        <p class="text-sm font-medium">${item.name}</p>
+                        <p class="text-xs text-gray-600">${item.quantity} x Rp ${item.price.toLocaleString('id-ID')}</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <p class="text-sm font-medium">Rp ${itemTotal.toLocaleString('id-ID')}</p>
+                        <button onclick="removeFromCart(${index})" class="text-red-600 hover:text-red-800">
+                            <i class="fas fa-times-circle"></i>
+                        </button>
+                    </div>
+                `;
+                cartSummary.appendChild(cartItem);
+            });
+            
+            cartTotal.textContent = total.toLocaleString('id-ID');
+            cartBadge.textContent = totalItems;
+            cartBadge.classList.remove('hidden');
         }
         
         // Load Customers
@@ -1149,9 +1467,14 @@
             // Update remaining water
             document.getElementById('remaining-water').textContent = waterStock['Sisa Liter'] || '0';
             
-            // Update today transactions
-            const today = new Date().toISOString().split('T')[0];
-            const todayTransactions = transactions.filter(t => t['Tanggal'].split('T')[0] === today);
+            // Update today transactions - FIXED
+            const today = new Date();
+            const todayDateString = today.toISOString().split('T')[0]; // Get date part only
+            const todayTransactions = transactions.filter(t => {
+                const transactionDate = new Date(t['Tanggal']);
+                const transactionDateString = transactionDate.toISOString().split('T')[0];
+                return transactionDateString === todayDateString;
+            });
             document.getElementById('today-transactions').textContent = todayTransactions.length;
             
             // Update total debts
@@ -1233,27 +1556,16 @@
             if (method === 'cash') {
                 document.getElementById('payment-cash').classList.remove('bg-gray-200');
                 document.getElementById('payment-cash').classList.add('active');
+                document.getElementById('cash-payment-section').style.display = 'block';
             } else {
                 document.getElementById('payment-debt').classList.remove('bg-gray-200');
                 document.getElementById('payment-debt').classList.add('active');
+                document.getElementById('cash-payment-section').style.display = 'none';
             }
         }
         
-        // Add to Cart
-        function addToCart() {
-            const productId = document.getElementById('product-select').value;
-            const quantity = parseInt(document.getElementById('quantity').value) || 0;
-            
-            if (!productId) {
-                showToast('Pilih produk terlebih dahulu');
-                return;
-            }
-            
-            if (quantity <= 0) {
-                showToast('Jumlah harus lebih dari 0');
-                return;
-            }
-            
+        // Add Product to Cart from Products Page
+        function addProductToCartFromProducts(productId) {
             const product = products.find(p => p['ID Produk'] === productId);
             if (!product) return;
             
@@ -1262,33 +1574,39 @@
             
             if (existingItemIndex !== -1) {
                 // Update quantity if already in cart
-                cart[existingItemIndex].quantity += quantity;
+                cart[existingItemIndex].quantity += 1;
             } else {
-                // Add new item to cart
+                // Add new item to cart with quantity 1
                 cart.push({
                     id: productId,
                     name: product['Nama Produk'],
                     price: parseInt(product['Harga Jual (Rp)']),
                     cost: parseInt(product['Harga Pokok (Rp)']),
                     liter: parseFloat(product['Liter']) || 0,
-                    quantity: quantity
+                    quantity: 1
                 });
             }
             
-            // Reset form
-            document.getElementById('product-select').value = '';
-            document.getElementById('quantity').value = '1';
-            
             // Update cart display
-            updateCartDisplay();
+            updateCartSummary();
             
-            showToast('Produk ditambahkan ke keranjang');
+            showToast(`${product['Nama Produk']} ditambahkan ke keranjang`);
+        }
+        
+        // Go to Checkout
+        function goToCheckout() {
+            if (cart.length === 0) {
+                showToast('Keranjang belanja kosong');
+                return;
+            }
+            
+            showPage('transaction');
         }
         
         // Update Cart Display
         function updateCartDisplay() {
             const cartItems = document.getElementById('cart-items');
-            const cartTotal = document.getElementById('cart-total');
+            const cartTotal = document.getElementById('cart-total-transaction');
             
             if (cart.length === 0) {
                 cartItems.innerHTML = '<p class="text-center text-gray-500 py-4">Keranjang belanja kosong</p>';
@@ -1307,9 +1625,17 @@
                 cartItem.className = 'cart-item rounded-lg p-3';
                 cartItem.innerHTML = `
                     <div class="flex justify-between items-center">
-                        <div>
+                        <div class="flex-1">
                             <p class="font-medium">${item.name}</p>
-                            <p class="text-sm text-gray-600">${item.quantity} x Rp ${item.price.toLocaleString('id-ID')}</p>
+                            <div class="flex items-center mt-1">
+                                <button onclick="decreaseQuantity(${index})" class="bg-gray-200 text-gray-700 w-6 h-6 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-minus text-xs"></i>
+                                </button>
+                                <input type="number" value="${item.quantity}" min="1" class="cart-quantity-input mx-2 input-field rounded px-2 py-1 text-sm" onchange="updateQuantity(${index}, this.value)">
+                                <button onclick="increaseQuantity(${index})" class="bg-gray-200 text-gray-700 w-6 h-6 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-plus text-xs"></i>
+                                </button>
+                            </div>
                         </div>
                         <div class="flex items-center space-x-2">
                             <p class="font-medium text-[#134e4a]">Rp ${itemTotal.toLocaleString('id-ID')}</p>
@@ -1325,10 +1651,34 @@
             cartTotal.textContent = total.toLocaleString('id-ID');
         }
         
+        // Update Quantity
+        function updateQuantity(index, value) {
+            const quantity = parseInt(value) || 1;
+            if (quantity < 1) return;
+            
+            cart[index].quantity = quantity;
+            updateCartDisplay();
+        }
+        
+        // Increase Quantity
+        function increaseQuantity(index) {
+            cart[index].quantity += 1;
+            updateCartDisplay();
+        }
+        
+        // Decrease Quantity
+        function decreaseQuantity(index) {
+            if (cart[index].quantity > 1) {
+                cart[index].quantity -= 1;
+                updateCartDisplay();
+            }
+        }
+        
         // Remove from Cart
         function removeFromCart(index) {
             cart.splice(index, 1);
             updateCartDisplay();
+            updateCartSummary();
         }
         
         // Process Transaction
@@ -1339,6 +1689,8 @@
             }
             
             const customerSelect = document.getElementById('customer-select').value;
+            const paymentAmountInput = document.getElementById('payment-amount');
+            const paymentAmount = parseInt(paymentAmountInput.value) || 0;
             
             // Use "Pelanggan Baru" if no customer is selected
             const customerName = customerSelect 
@@ -1362,6 +1714,12 @@
                 totalProfit += itemProfit;
                 totalLiter += itemLiter;
             });
+            
+            // Validate payment amount for cash payment
+            if (currentPaymentMethod === 'cash' && paymentAmount < totalPrice) {
+                showToast('Uang bayar kurang dari total belanja');
+                return;
+            }
             
             // Generate transaction ID
             const date = new Date();
@@ -1396,13 +1754,19 @@
                 
                 // Reset form
                 document.getElementById('customer-select').value = '';
+                paymentAmountInput.value = '';
                 
                 // Clear cart
+                const cartItems = [...cart]; // Create a copy of cart for receipt
                 cart = [];
                 updateCartDisplay();
+                updateCartSummary();
+                
+                // Calculate change
+                const change = currentPaymentMethod === 'cash' ? paymentAmount - totalPrice : 0;
                 
                 // Show receipt
-                showReceipt(transactionData);
+                showReceipt(transactionData, cartItems, paymentAmount, change);
                 
                 // Refresh data
                 loadTransactions();
@@ -1415,65 +1779,116 @@
         }
         
         // Show Receipt
-        function showReceipt(transactionData) {
+        function showReceipt(transactionData, cartItems, paymentAmount = 0, change = 0) {
             const receiptContent = document.getElementById('receipt-content');
             const date = new Date(transactionData['Tanggal']);
             const formattedDate = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
             const formattedTime = date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
             
-            receiptContent.innerHTML = `
-                <div class="text-center mb-3">
-                    <h2 class="font-bold text-lg">${settings['Nama Usaha'] || 'Kasir Stok Air'}</h2>
-                    <p class="text-sm">${settings['Alamat Usaha'] || 'Jl. Contoh No. 123'}</p>
-                    <p class="text-sm">${settings['Kontak'] || '08123456789'}</p>
+            // Calculate total
+            let totalAmount = 0;
+            cartItems.forEach(item => {
+                totalAmount += item.price * item.quantity;
+            });
+            
+            // Generate receipt content with modern style like Alfamart/Indomart
+            let receiptHTML = `
+                <div class="receipt-header">
+                    <div class="receipt-logo">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                    <div class="receipt-title">${settings['Nama Usaha'] || 'Kasir Stok Air'}</div>
+                    <div class="receipt-subtitle">${settings['Alamat Usaha'] || 'Jl. Contoh No. 123'}</div>
+                    <div class="receipt-subtitle">${settings['Kontak'] || '08123456789'}</div>
                 </div>
                 
-                <div class="border-t border-b border-dashed border-gray-300 py-2 my-2">
-                    <div class="flex justify-between mb-1">
-                        <span>ID Transaksi:</span>
-                        <span>${transactionData['ID Transaksi']}</span>
+                <div class="receipt-info">
+                    <div class="receipt-row">
+                        <span class="receipt-label">NOTA:</span>
+                        <span class="receipt-value">${transactionData['ID Transaksi']}</span>
                     </div>
-                    <div class="flex justify-between mb-1">
-                        <span>Tanggal:</span>
-                        <span>${formattedDate}</span>
+                    <div class="receipt-row">
+                        <span class="receipt-label">TGL:</span>
+                        <span class="receipt-value">${formattedDate}</span>
                     </div>
-                    <div class="flex justify-between">
-                        <span>Waktu:</span>
-                        <span>${formattedTime}</span>
+                    <div class="receipt-row">
+                        <span class="receipt-label">JAM:</span>
+                        <span class="receipt-value">${formattedTime}</span>
                     </div>
-                </div>
-                
-                <div class="border-b border-dashed border-gray-300 py-2 my-2">
-                    <div class="flex justify-between mb-1">
-                        <span>Pelanggan:</span>
-                        <span>${transactionData['Nama Pelanggan']}</span>
-                    </div>
-                    <div class="flex justify-between mb-1">
-                        <span>Produk:</span>
-                        <span>${transactionData['Produk']}</span>
-                    </div>
-                    <div class="flex justify-between mb-1">
-                        <span>Jumlah:</span>
-                        <span>${transactionData['Jumlah']}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span>Status:</span>
-                        <span>${transactionData['Status']}</span>
+                    <div class="receipt-row">
+                        <span class="receipt-label">KASIR:</span>
+                        <span class="receipt-value">ADMIN</span>
                     </div>
                 </div>
                 
-                <div class="border-b border-dashed border-gray-300 py-2 my-2">
-                    <div class="flex justify-between font-bold">
-                        <span>Total:</span>
-                        <span>Rp ${parseInt(transactionData['Harga Jual (Rp)']).toLocaleString('id-ID')}</span>
+                <div class="receipt-items">
+                    <div class="receipt-items-header">
+                        <span class="receipt-item-name">NAMA BARANG</span>
+                        <span class="receipt-item-qty">QTY</span>
+                        <span class="receipt-item-price">HARGA</span>
+                        <span class="receipt-item-total">TOTAL</span>
                     </div>
+            `;
+            
+            // Add products to receipt
+            let itemNumber = 1;
+            cartItems.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                receiptHTML += `
+                    <div class="receipt-item">
+                        <span class="receipt-item-name">${itemNumber}. ${item.name}</span>
+                        <span class="receipt-item-qty">${item.quantity}</span>
+                        <span class="receipt-item-price">${item.price.toLocaleString('id-ID')}</span>
+                        <span class="receipt-item-total">${itemTotal.toLocaleString('id-ID')}</span>
+                    </div>
+                `;
+                itemNumber++;
+            });
+            
+            receiptHTML += `
                 </div>
                 
-                <div class="text-center mt-3 text-sm">
-                    <p>Terima kasih atas pembelian Anda</p>
+                <div class="receipt-summary">
+                    <div class="receipt-summary-row">
+                        <span class="receipt-label">SUBTOTAL:</span>
+                        <span class="receipt-value">Rp ${totalAmount.toLocaleString('id-ID')}</span>
+                    </div>
+                    <div class="receipt-summary-row">
+                        <span class="receipt-label">DISKON:</span>
+                        <span class="receipt-value">Rp 0</span>
+                    </div>
+                    <div class="receipt-summary-row receipt-total">
+                        <span class="receipt-label">TOTAL BAYAR:</span>
+                        <span class="receipt-value">Rp ${totalAmount.toLocaleString('id-ID')}</span>
+                    </div>
                 </div>
             `;
             
+            // Add payment information if cash payment
+            if (currentPaymentMethod === 'cash' && paymentAmount > 0) {
+                receiptHTML += `
+                    <div class="receipt-payment">
+                        <div class="receipt-row">
+                            <span class="receipt-label">TUNAI:</span>
+                            <span class="receipt-value">Rp ${paymentAmount.toLocaleString('id-ID')}</span>
+                        </div>
+                        <div class="receipt-row">
+                            <span class="receipt-label">KEMBALI:</span>
+                            <span class="receipt-value">Rp ${change.toLocaleString('id-ID')}</span>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            receiptHTML += `
+                <div class="receipt-footer">
+                    <div>Terima kasih atas kunjungan Anda</div>
+                    <div class="receipt-thank">SELAMAT BERBELANJA KEMBALI</div>
+                    <div>Barang yang sudah dibeli tidak dapat dikembalikan</div>
+                </div>
+            `;
+            
+            receiptContent.innerHTML = receiptHTML;
             document.getElementById('receipt-modal').classList.remove('hidden');
         }
         
@@ -1486,21 +1901,134 @@
                 <head>
                     <title>Nota Transaksi</title>
                     <style>
-                        body { font-family: 'Courier New', monospace; width: 58mm; font-size: 12px; margin: 0; padding: 5px; }
-                        .text-center { text-align: center; }
-                        .border-t { border-top: 1px dashed #000; }
-                        .border-b { border-bottom: 1px dashed #000; }
-                        .border-dashed { border-style: dashed; }
-                        .py-2 { padding-top: 8px; padding-bottom: 8px; }
-                        .my-2 { margin-top: 8px; margin-bottom: 8px; }
-                        .mb-1 { margin-bottom: 4px; }
-                        .font-bold { font-weight: bold; }
-                        .flex { display: flex; }
-                        .justify-between { justify-content: space-between; }
+                        body { 
+                            font-family: 'Courier New', monospace; 
+                            width: 80mm; 
+                            font-size: 12px;
+                            margin: 0;
+                            padding: 10px;
+                            line-height: 1.4;
+                        }
+                        .receipt-container {
+                            width: 100%;
+                            margin: 0 auto;
+                        }
+                        .receipt-header {
+                            text-align: center;
+                            margin-bottom: 15px;
+                            padding-bottom: 10px;
+                            border-bottom: 2px dashed #333;
+                        }
+                        .receipt-logo {
+                            width: 60px;
+                            height: 60px;
+                            margin: 0 auto 10px;
+                            background: #134e4a;
+                            border-radius: 50%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: white;
+                            font-size: 24px;
+                        }
+                        .receipt-title {
+                            font-size: 18px;
+                            font-weight: bold;
+                            margin-bottom: 5px;
+                            color: #134e4a;
+                        }
+                        .receipt-subtitle {
+                            font-size: 11px;
+                            margin-bottom: 3px;
+                            color: #555;
+                        }
+                        .receipt-info {
+                            margin-bottom: 15px;
+                        }
+                        .receipt-row {
+                            display: flex;
+                            justify-content: space-between;
+                            margin-bottom: 5px;
+                        }
+                        .receipt-label {
+                            font-weight: bold;
+                            color: #333;
+                        }
+                        .receipt-value {
+                            color: #000;
+                        }
+                        .receipt-items {
+                            margin-bottom: 15px;
+                        }
+                        .receipt-items-header {
+                            display: flex;
+                            justify-content: space-between;
+                            font-weight: bold;
+                            border-bottom: 1px solid #333;
+                            padding-bottom: 5px;
+                            margin-bottom: 5px;
+                        }
+                        .receipt-item {
+                            display: flex;
+                            justify-content: space-between;
+                            margin-bottom: 5px;
+                        }
+                        .receipt-item-name {
+                            flex: 1;
+                            text-align: left;
+                        }
+                        .receipt-item-qty {
+                            width: 30px;
+                            text-align: center;
+                        }
+                        .receipt-item-price {
+                            width: 70px;
+                            text-align: right;
+                        }
+                        .receipt-item-total {
+                            width: 80px;
+                            text-align: right;
+                            font-weight: bold;
+                        }
+                        .receipt-summary {
+                            margin-bottom: 15px;
+                            border-top: 1px dashed #333;
+                            padding-top: 10px;
+                        }
+                        .receipt-summary-row {
+                            display: flex;
+                            justify-content: space-between;
+                            margin-bottom: 5px;
+                        }
+                        .receipt-total {
+                            font-size: 14px;
+                            font-weight: bold;
+                            border-top: 1px solid #333;
+                            padding-top: 5px;
+                            margin-top: 5px;
+                        }
+                        .receipt-payment {
+                            margin-bottom: 15px;
+                        }
+                        .receipt-footer {
+                            text-align: center;
+                            margin-top: 15px;
+                            padding-top: 10px;
+                            border-top: 2px dashed #333;
+                            font-size: 11px;
+                            color: #555;
+                        }
+                        .receipt-thank {
+                            font-weight: bold;
+                            margin-top: 5px;
+                            color: #134e4a;
+                        }
                     </style>
                 </head>
                 <body>
-                    ${receiptContent}
+                    <div class="receipt-container">
+                        ${receiptContent}
+                    </div>
                 </body>
                 </html>
             `);
