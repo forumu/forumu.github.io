@@ -41,14 +41,18 @@
         .btn-primary {
             background: linear-gradient(to right, #134e4a, #000000);
             color: white;
+            transition: all 0.3s ease;
         }
         .btn-primary:hover {
             background: linear-gradient(to right, #0f766e, #000000);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(19, 78, 74, 0.3);
         }
         .input-field {
             background: #ffffff;
             border: 1px solid #cbd5e1;
             color: #000000;
+            transition: all 0.2s ease;
         }
         .input-field:focus {
             border-color: #134e4a;
@@ -109,6 +113,10 @@
             background: linear-gradient(135deg, #ede9fe, #ddd6fe);
             border-left: 4px solid #7e22ce;
         }
+        .card-cash {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            border-left: 4px solid #3b82f6;
+        }
         .product-grid-item {
             background: #f8fafc;
             border: 1px solid #e2e8f0;
@@ -137,6 +145,7 @@
             justify-content: center;
             font-size: 12px;
             font-weight: bold;
+            animation: pulse 2s infinite;
         }
         /* Modern receipt styles */
         .receipt-container {
@@ -269,6 +278,7 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             z-index: 20;
             display: none;
+            animation: slideDown 0.3s ease;
         }
         .dropdown-menu.show {
             display: block;
@@ -314,11 +324,168 @@
             background: linear-gradient(to right: #7c3aed, #000000);
         }
         .header-debts {
-            background: linear-gradient(to right, #ea580c, #000000);
+            background: linear-gradient(to right: #ea580c, #000000);
+        }
+        
+        /* Loading Animation */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .loading-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #134e4a;
+            animation: spin 1s ease-in-out infinite;
+        }
+        .loading-text {
+            color: white;
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        /* Toast Notification Styles */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: linear-gradient(to right, #134e4a, #000000);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 80%;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        .toast-icon {
+            margin-right: 12px;
+            font-size: 20px;
+        }
+        .toast-message {
+            font-weight: 500;
+        }
+        .toast.success {
+            background: linear-gradient(to right, #10b981, #059669);
+        }
+        .toast.error {
+            background: linear-gradient(to right, #ef4444, #dc2626);
+        }
+        .toast.warning {
+            background: linear-gradient(to right, #f59e0b, #d97706);
+        }
+        
+        /* Animations */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        /* Button animation */
+        .btn-animate {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-animate:after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+        .btn-animate:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(100, 100);
+                opacity: 0;
+            }
+        }
+        
+        /* Card animation */
+        .card-animate {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* Page transition animation */
+        .page {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        /* Skeleton loading animation */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
     </style>
 </head>
 <body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="flex flex-col items-center">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Memuat data...</div>
+        </div>
+    </div>
+    
     <!-- Top Navigation -->
     <div id="top-nav" class="fixed top-0 left-0 right-0 text-white z-10 top-nav flex items-center justify-between px-4 shadow-md header-home">
         <div class="flex items-center space-x-3">
@@ -358,7 +525,7 @@
     <div class="content-container">
         <!-- Home Page -->
         <div id="home-page" class="page p-4">
-            <div class="card rounded-xl shadow-md p-5 mb-5">
+            <div class="card rounded-xl shadow-md p-5 mb-5 card-animate">
                 <h2 class="text-xl font-bold mb-4">Dashboard</h2>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="card-water rounded-lg p-4">
@@ -381,22 +548,29 @@
                         <p id="available-products" class="text-2xl font-bold text-[#7e22ce]">--</p>
                         <p class="text-xs text-gray-500">Jenis</p>
                     </div>
+                    <!-- Saldo Kas Card -->
+                    <div class="card-cash rounded-lg p-4 col-span-2">
+                        <p class="text-sm text-gray-600">Saldo Kas</p>
+                        <p id="cash-balance" class="text-2xl font-bold text-[#3b82f6]">--</p>
+                        <p class="text-xs text-gray-500">Rp</p>
+                    </div>
                 </div>
             </div>
             
-            <div class="card rounded-xl shadow-md p-5">
+            <div class="card rounded-xl shadow-md p-5 card-animate">
                 <h3 class="font-semibold mb-3">Transaksi Terakhir</h3>
                 <div id="recent-transactions" class="space-y-3">
                     <!-- Transaction items will be loaded here -->
                 </div>
             </div>
         </div>
+        
         <!-- Products Page -->
         <div id="products-page" class="page p-4 hidden">
-            <div class="card rounded-xl shadow-md p-5 mb-5">
+            <div class="card rounded-xl shadow-md p-5 mb-5 card-animate">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-bold">Daftar Produk</h2>
-                    <button onclick="showAddProductModal()" class="btn-primary px-4 py-2 rounded-lg flex items-center">
+                    <button onclick="showAddProductModal()" class="btn-primary px-4 py-2 rounded-lg flex items-center btn-animate">
                         <i class="fas fa-plus mr-2"></i> Tambah
                     </button>
                 </div>
@@ -406,7 +580,7 @@
             </div>
             
             <!-- Cart Summary and Checkout Button -->
-            <div class="card rounded-xl shadow-md p-5">
+            <div class="card rounded-xl shadow-md p-5 card-animate">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="font-semibold">Keranjang Belanja</h3>
                     <div class="relative">
@@ -424,14 +598,15 @@
                     <span class="text-xl font-bold text-[#134e4a]">Rp <span id="cart-total">0</span></span>
                 </div>
                 
-                <button onclick="goToCheckout()" class="w-full btn-primary py-3 rounded-lg font-medium flex items-center justify-center">
+                <button onclick="goToCheckout()" class="w-full btn-primary py-3 rounded-lg font-medium flex items-center justify-center btn-animate">
                     <i class="fas fa-shopping-cart mr-2"></i> Checkout
                 </button>
             </div>
         </div>
+        
         <!-- Transaction Page -->
         <div id="transaction-page" class="page p-4 hidden">
-            <div class="card rounded-xl shadow-md p-5">
+            <div class="card rounded-xl shadow-md p-5 card-animate">
                 <h2 class="text-xl font-bold mb-4">Transaksi Baru</h2>
                 
                 <div class="mb-4">
@@ -470,23 +645,25 @@
                     <input type="number" id="payment-amount" class="w-full input-field rounded-lg px-3 py-2" placeholder="Masukkan jumlah uang">
                 </div>
                 
-                <button onclick="processTransaction()" class="w-full btn-primary py-3 rounded-lg font-medium flex items-center justify-center">
+                <button onclick="processTransaction()" class="w-full btn-primary py-3 rounded-lg font-medium flex items-center justify-center btn-animate">
                     <i class="fas fa-shopping-cart mr-2"></i> Proses Transaksi
                 </button>
             </div>
         </div>
+        
         <!-- History Page -->
         <div id="history-page" class="page p-4 hidden">
-            <div class="card rounded-xl shadow-md p-5">
+            <div class="card rounded-xl shadow-md p-5 card-animate">
                 <h2 class="text-xl font-bold mb-4">Riwayat Transaksi</h2>
                 <div id="transactions-list" class="space-y-3">
                     <!-- Transactions will be loaded here -->
                 </div>
             </div>
         </div>
+        
         <!-- Water Stock Page -->
         <div id="water-stock-page" class="page p-4 hidden">
-            <div class="card rounded-xl shadow-md p-5 mb-5">
+            <div class="card rounded-xl shadow-md p-5 mb-5 card-animate">
                 <h2 class="text-xl font-bold mb-4">Stok Air</h2>
                 
                 <div class="grid grid-cols-2 gap-4 mb-6">
@@ -517,14 +694,15 @@
                     <div class="text-xl font-bold text-red-600">Rp <span id="total-supply-cost">0</span></div>
                 </div>
                 
-                <button id="add-water-btn" onclick="showAddWaterModal()" class="w-full btn-primary py-3 rounded-lg font-medium flex items-center justify-center disabled:bg-gray-400 disabled:cursor-not-allowed">
+                <button id="add-water-btn" onclick="showAddWaterModal()" class="w-full btn-primary py-3 rounded-lg font-medium flex items-center justify-center disabled:bg-gray-400 disabled:cursor-not-allowed btn-animate">
                     <i class="fas fa-plus-circle mr-2"></i> Tambah Stok Air
                 </button>
             </div>
         </div>
+        
         <!-- Settings Page -->
         <div id="settings-page" class="page p-4 hidden">
-            <div class="card rounded-xl shadow-md p-5">
+            <div class="card rounded-xl shadow-md p-5 card-animate">
                 <h2 class="text-xl font-bold mb-4">Pengaturan</h2>
                 
                 <div class="mb-4">
@@ -563,21 +741,22 @@
                 </div>
                 
                 <div class="flex space-x-3">
-                    <button onclick="clearLocalStorage()" class="flex-1 bg-red-500 text-white py-3 rounded-lg font-medium">
+                    <button onclick="clearLocalStorage()" class="flex-1 bg-red-500 text-white py-3 rounded-lg font-medium btn-animate">
                         <i class="fas fa-sync-alt mr-2"></i> Refresh Data
                     </button>
-                    <button onclick="saveSettings()" class="flex-1 btn-primary py-3 rounded-lg font-medium">
+                    <button onclick="saveSettings()" class="flex-1 btn-primary py-3 rounded-lg font-medium btn-animate">
                         Simpan Pengaturan
                     </button>
                 </div>
             </div>
         </div>
+        
         <!-- Customers Page -->
         <div id="customers-page" class="page p-4 hidden">
-            <div class="card rounded-xl shadow-md p-5 mb-5">
+            <div class="card rounded-xl shadow-md p-5 mb-5 card-animate">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-bold">Daftar Pelanggan</h2>
-                    <button onclick="showAddCustomerModal()" class="btn-primary px-4 py-2 rounded-lg flex items-center">
+                    <button onclick="showAddCustomerModal()" class="btn-primary px-4 py-2 rounded-lg flex items-center btn-animate">
                         <i class="fas fa-plus mr-2"></i> Tambah
                     </button>
                 </div>
@@ -586,12 +765,23 @@
                 </div>
             </div>
         </div>
+        
         <!-- Expenses Page -->
         <div id="expenses-page" class="page p-4 hidden">
-            <div class="card rounded-xl shadow-md p-5 mb-5">
+            <!-- Current Cash Balance Card -->
+            <div class="card rounded-xl shadow-md p-5 mb-5 card-animate">
+                <h2 class="text-xl font-bold mb-4">Saldo Kas Saat Ini</h2>
+                <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                    <p class="text-sm text-gray-600">Saldo Tersedia</p>
+                    <p id="current-cash-balance" class="text-3xl font-bold text-blue-600">--</p>
+                    <p class="text-xs text-gray-500">Rp</p>
+                </div>
+            </div>
+            
+            <div class="card rounded-xl shadow-md p-5 mb-5 card-animate">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-bold">Pengeluaran</h2>
-                    <button onclick="showAddExpenseModal()" class="btn-primary px-4 py-2 rounded-lg flex items-center">
+                    <button onclick="showAddExpenseModal()" class="btn-primary px-4 py-2 rounded-lg flex items-center btn-animate">
                         <i class="fas fa-plus mr-2"></i> Tambah
                     </button>
                 </div>
@@ -600,7 +790,7 @@
                 </div>
             </div>
             
-            <div class="card rounded-xl shadow-md p-5">
+            <div class="card rounded-xl shadow-md p-5 card-animate">
                 <h2 class="text-xl font-bold mb-4">Ringkasan Keuangan</h2>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="bg-green-50 rounded-lg p-4 border border-green-200">
@@ -621,9 +811,10 @@
                 </div>
             </div>
         </div>
+        
         <!-- Reports Page -->
         <div id="reports-page" class="page p-4 hidden">
-            <div class="card rounded-xl shadow-md p-5">
+            <div class="card rounded-xl shadow-md p-5 card-animate">
                 <h2 class="text-xl font-bold mb-4">Laporan</h2>
                 
                 <div class="mb-4">
@@ -662,14 +853,15 @@
                     </div>
                 </div>
                 
-                <button onclick="generateReport()" class="w-full btn-primary py-3 rounded-lg font-medium">
+                <button onclick="generateReport()" class="w-full btn-primary py-3 rounded-lg font-medium btn-animate">
                     Tampilkan Laporan
                 </button>
             </div>
         </div>
+        
         <!-- Debts Page -->
         <div id="debts-page" class="page p-4 hidden">
-            <div class="card rounded-xl shadow-md p-5">
+            <div class="card rounded-xl shadow-md p-5 card-animate">
                 <h2 class="text-xl font-bold mb-4">Daftar Hutang</h2>
                 <div id="debts-list" class="space-y-3">
                     <!-- Debts will be loaded here -->
@@ -677,6 +869,7 @@
             </div>
         </div>
     </div>
+    
     <!-- Bottom Navigation -->
     <div class="fixed bottom-0 left-0 right-0 flex justify-around items-center bottom-nav z-10">
         <button onclick="showPage('home')" class="nav-btn active flex flex-col items-center justify-center p-2 text-white">
@@ -696,6 +889,7 @@
             <span class="text-xs">Stok Air</span>
         </button>
     </div>
+    
     <!-- Add Product Modal -->
     <div id="add-product-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 hidden">
         <div class="modal-content rounded-xl p-5 w-11/12 max-w-md">
@@ -731,11 +925,12 @@
             </div>
             
             <div class="flex space-x-3">
-                <button onclick="closeModal('add-product-modal')" class="flex-1 bg-gray-200 py-2 rounded-lg font-medium">Batal</button>
-                <button onclick="addProduct()" class="flex-1 btn-primary py-2 rounded-lg font-medium">Simpan</button>
+                <button onclick="closeModal('add-product-modal')" class="flex-1 bg-gray-200 py-2 rounded-lg font-medium btn-animate">Batal</button>
+                <button onclick="addProduct()" class="flex-1 btn-primary py-2 rounded-lg font-medium btn-animate">Simpan</button>
             </div>
         </div>
     </div>
+    
     <!-- Edit Product Modal -->
     <div id="edit-product-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 hidden">
         <div class="modal-content rounded-xl p-5 w-11/12 max-w-md">
@@ -773,11 +968,12 @@
             </div>
             
             <div class="flex space-x-3">
-                <button onclick="closeModal('edit-product-modal')" class="flex-1 bg-gray-200 py-2 rounded-lg font-medium">Batal</button>
-                <button onclick="updateProduct()" class="flex-1 btn-primary py-2 rounded-lg font-medium">Update</button>
+                <button onclick="closeModal('edit-product-modal')" class="flex-1 bg-gray-200 py-2 rounded-lg font-medium btn-animate">Batal</button>
+                <button onclick="updateProduct()" class="flex-1 btn-primary py-2 rounded-lg font-medium btn-animate">Update</button>
             </div>
         </div>
     </div>
+    
     <!-- Add Customer Modal -->
     <div id="add-customer-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 hidden">
         <div class="modal-content rounded-xl p-5 w-11/12 max-w-md">
@@ -799,11 +995,12 @@
             </div>
             
             <div class="flex space-x-3">
-                <button onclick="closeModal('add-customer-modal')" class="flex-1 bg-gray-200 py-2 rounded-lg font-medium">Batal</button>
-                <button onclick="addCustomer()" class="flex-1 btn-primary py-2 rounded-lg font-medium">Simpan</button>
+                <button onclick="closeModal('add-customer-modal')" class="flex-1 bg-gray-200 py-2 rounded-lg font-medium btn-animate">Batal</button>
+                <button onclick="addCustomer()" class="flex-1 btn-primary py-2 rounded-lg font-medium btn-animate">Simpan</button>
             </div>
         </div>
     </div>
+    
     <!-- Edit Customer Modal -->
     <div id="edit-customer-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 hidden">
         <div class="modal-content rounded-xl p-5 w-11/12 max-w-md">
@@ -827,11 +1024,12 @@
             </div>
             
             <div class="flex space-x-3">
-                <button onclick="closeModal('edit-customer-modal')" class="flex-1 bg-gray-200 py-2 rounded-lg font-medium">Batal</button>
-                <button onclick="updateCustomer()" class="flex-1 btn-primary py-2 rounded-lg font-medium">Update</button>
+                <button onclick="closeModal('edit-customer-modal')" class="flex-1 bg-gray-200 py-2 rounded-lg font-medium btn-animate">Batal</button>
+                <button onclick="updateCustomer()" class="flex-1 btn-primary py-2 rounded-lg font-medium btn-animate">Update</button>
             </div>
         </div>
     </div>
+    
     <!-- Add Water Modal -->
     <div id="add-water-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 hidden">
         <div class="modal-content rounded-xl p-5 w-11/12 max-w-md">
@@ -848,11 +1046,12 @@
             </div>
             
             <div class="flex space-x-3">
-                <button onclick="closeModal('add-water-modal')" class="flex-1 bg-gray-200 py-2 rounded-lg font-medium">Batal</button>
-                <button onclick="addWaterStock()" class="flex-1 btn-primary py-2 rounded-lg font-medium">Simpan</button>
+                <button onclick="closeModal('add-water-modal')" class="flex-1 bg-gray-200 py-2 rounded-lg font-medium btn-animate">Batal</button>
+                <button onclick="addWaterStock()" class="flex-1 btn-primary py-2 rounded-lg font-medium btn-animate">Simpan</button>
             </div>
         </div>
     </div>
+    
     <!-- Add Expense Modal -->
     <div id="add-expense-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 hidden">
         <div class="modal-content rounded-xl p-5 w-11/12 max-w-md">
@@ -878,11 +1077,12 @@
             </div>
             
             <div class="flex space-x-3">
-                <button onclick="closeModal('add-expense-modal')" class="flex-1 bg-gray-200 py-2 rounded-lg font-medium">Batal</button>
-                <button onclick="addExpense()" class="flex-1 btn-primary py-2 rounded-lg font-medium">Simpan</button>
+                <button onclick="closeModal('add-expense-modal')" class="flex-1 bg-gray-200 py-2 rounded-lg font-medium btn-animate">Batal</button>
+                <button onclick="addExpense()" class="flex-1 btn-primary py-2 rounded-lg font-medium btn-animate">Simpan</button>
             </div>
         </div>
     </div>
+    
     <!-- Transaction Receipt Modal -->
     <div id="receipt-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 hidden">
         <div class="modal-content rounded-xl p-5 w-11/12 max-w-md">
@@ -898,13 +1098,14 @@
             </div>
             
             <div class="flex space-x-3 mt-4">
-                <button onclick="closeModal('receipt-modal')" class="flex-1 bg-gray-200 py-2 rounded-lg font-medium">Tutup</button>
-                <button onclick="printReceipt()" class="flex-1 btn-primary py-2 rounded-lg font-medium">
+                <button onclick="closeModal('receipt-modal')" class="flex-1 bg-gray-200 py-2 rounded-lg font-medium btn-animate">Tutup</button>
+                <button onclick="printReceipt()" class="flex-1 btn-primary py-2 rounded-lg font-medium btn-animate">
                     <i class="fas fa-print mr-2"></i> Cetak
                 </button>
             </div>
         </div>
     </div>
+    
     <!-- Payment Debt Modal -->
     <div id="payment-debt-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 hidden">
         <div class="modal-content rounded-xl p-5 w-11/12 max-w-md">
@@ -931,15 +1132,18 @@
             </div>
             
             <div class="flex space-x-3">
-                <button onclick="closeModal('payment-debt-modal')" class="flex-1 bg-gray-200 py-2 rounded-lg font-medium">Batal</button>
-                <button onclick="payDebt()" class="flex-1 btn-primary py-2 rounded-lg font-medium">Bayar</button>
+                <button onclick="closeModal('payment-debt-modal')" class="flex-1 bg-gray-200 py-2 rounded-lg font-medium btn-animate">Batal</button>
+                <button onclick="payDebt()" class="flex-1 btn-primary py-2 rounded-lg font-medium btn-animate">Bayar</button>
             </div>
         </div>
     </div>
+    
     <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg hidden z-30">
-        <span id="toast-message"></span>
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle toast-icon"></i>
+        <span id="toast-message" class="toast-message"></span>
     </div>
+    
     <script>
         // API Configuration
         let API_KEY = 'AKfycby_6VvnaHFQ4hmJALaX5-Zk1bF-nHzyuGR_FfdDvtJfbu_YMWLsVycoCrtCT-DlyMAv';
@@ -958,14 +1162,32 @@
         
         // Initialize App
         document.addEventListener('DOMContentLoaded', function() {
-            loadSettings();
-            loadProducts();
-            loadCustomers();
-            loadWaterStock();
-            loadTransactions();
-            loadExpenses();
-            showPage('home');
+            showLoading();
+            loadSettings()
+                .then(() => loadProducts())
+                .then(() => loadCustomers())
+                .then(() => loadWaterStock())
+                .then(() => loadTransactions())
+                .then(() => loadExpenses())
+                .then(() => {
+                    hideLoading();
+                    showPage('home');
+                })
+                .catch(error => {
+                    hideLoading();
+                    showToast('Gagal memuat data awal', 'error');
+                    console.error(error);
+                });
         });
+        
+        // Show/Hide Loading
+        function showLoading() {
+            document.getElementById('loading-overlay').classList.add('active');
+        }
+        
+        function hideLoading() {
+            document.getElementById('loading-overlay').classList.remove('active');
+        }
         
         // Toggle Dropdown Menu
         function toggleDropdown() {
@@ -1095,7 +1317,7 @@
                 return data;
             } catch (error) {
                 console.error('Error fetching data:', error);
-                showToast('Terjadi kesalahan saat mengambil data');
+                showToast('Terjadi kesalahan saat mengambil data', 'error');
                 return { success: false, message: 'Network error' };
             }
         }
@@ -1130,14 +1352,16 @@
                 
                 // Update product select in transaction page
                 const productSelect = document.getElementById('product-select');
-                productSelect.innerHTML = '<option value="">Pilih Produk</option>';
-                
-                products.forEach(product => {
-                    const option = document.createElement('option');
-                    option.value = product['ID Produk'];
-                    option.textContent = `${product['Nama Produk']} - Rp ${parseInt(product['Harga Jual (Rp)']).toLocaleString('id-ID')}`;
-                    productSelect.appendChild(option);
-                });
+                if (productSelect) {
+                    productSelect.innerHTML = '<option value="">Pilih Produk</option>';
+                    
+                    products.forEach(product => {
+                        const option = document.createElement('option');
+                        option.value = product['ID Produk'];
+                        option.textContent = `${product['Nama Produk']} - Rp ${parseInt(product['Harga Jual (Rp)']).toLocaleString('id-ID')}`;
+                        productSelect.appendChild(option);
+                    });
+                }
                 
                 // Update products list
                 updateProductsList();
@@ -1147,6 +1371,8 @@
         // Update Products List
         function updateProductsList() {
             const productsList = document.getElementById('products-list');
+            if (!productsList) return;
+            
             productsList.innerHTML = '';
             
             if (products.length === 0) {
@@ -1154,9 +1380,11 @@
                 return;
             }
             
-            products.forEach(product => {
+            products.forEach((product, index) => {
                 const productCard = document.createElement('div');
                 productCard.className = 'cart-item rounded-lg p-4';
+                productCard.style.animationDelay = `${index * 0.05}s`;
+                productCard.style.animation = 'slideUp 0.3s ease-out forwards';
                 productCard.innerHTML = `
                     <div class="flex justify-between items-start">
                         <div>
@@ -1165,7 +1393,7 @@
                             <p class="text-sm font-medium text-[#134e4a]">Rp ${parseInt(product['Harga Jual (Rp)']).toLocaleString('id-ID')}</p>
                         </div>
                         <div class="flex space-x-2">
-                            <button onclick="addProductToCartFromProducts('${product['ID Produk']}')" class="btn-primary px-3 py-1 rounded text-sm">
+                            <button onclick="addProductToCartFromProducts('${product['ID Produk']}')" class="btn-primary px-3 py-1 rounded text-sm btn-animate">
                                 <i class="fas fa-plus mr-1"></i> Tambah
                             </button>
                             <button onclick="editProduct('${product['ID Produk']}')" class="text-[#134e4a] hover:text-[#0f766e]">
@@ -1187,6 +1415,8 @@
             const cartTotal = document.getElementById('cart-total');
             const cartBadge = document.getElementById('cart-badge');
             
+            if (!cartSummary || !cartTotal || !cartBadge) return;
+            
             if (cart.length === 0) {
                 cartSummary.innerHTML = '<p class="text-center text-gray-500 py-2">Keranjang belanja kosong</p>';
                 cartTotal.textContent = '0';
@@ -1205,6 +1435,8 @@
                 
                 const cartItem = document.createElement('div');
                 cartItem.className = 'flex justify-between items-center py-1';
+                cartItem.style.animationDelay = `${index * 0.05}s`;
+                cartItem.style.animation = 'slideUp 0.3s ease-out forwards';
                 cartItem.innerHTML = `
                     <div>
                         <p class="text-sm font-medium">${item.name}</p>
@@ -1233,14 +1465,16 @@
                 
                 // Update customer select in transaction page
                 const customerSelect = document.getElementById('customer-select');
-                customerSelect.innerHTML = '<option value="">Pilih Pelanggan</option>';
-                
-                customers.forEach(customer => {
-                    const option = document.createElement('option');
-                    option.value = customer['ID Pelanggan'];
-                    option.textContent = customer['Nama'];
-                    customerSelect.appendChild(option);
-                });
+                if (customerSelect) {
+                    customerSelect.innerHTML = '<option value="">Pilih Pelanggan</option>';
+                    
+                    customers.forEach(customer => {
+                        const option = document.createElement('option');
+                        option.value = customer['ID Pelanggan'];
+                        option.textContent = customer['Nama'];
+                        customerSelect.appendChild(option);
+                    });
+                }
                 
                 // Update customers list
                 updateCustomersList();
@@ -1250,6 +1484,8 @@
         // Update Customers List
         function updateCustomersList() {
             const customersList = document.getElementById('customers-list');
+            if (!customersList) return;
+            
             customersList.innerHTML = '';
             
             if (customers.length === 0) {
@@ -1257,9 +1493,11 @@
                 return;
             }
             
-            customers.forEach(customer => {
+            customers.forEach((customer, index) => {
                 const customerCard = document.createElement('div');
                 customerCard.className = 'cart-item rounded-lg p-4';
+                customerCard.style.animationDelay = `${index * 0.05}s`;
+                customerCard.style.animation = 'slideUp 0.3s ease-out forwards';
                 customerCard.innerHTML = `
                     <div class="flex justify-between items-start">
                         <div>
@@ -1299,10 +1537,12 @@
                 
                 // Enable/disable add water button based on stock
                 const addWaterBtn = document.getElementById('add-water-btn');
-                if (parseInt(waterStock['Sisa Liter'] || 0) < 25) {
-                    addWaterBtn.disabled = false;
-                } else {
-                    addWaterBtn.disabled = true;
+                if (addWaterBtn) {
+                    if (parseInt(waterStock['Sisa Liter'] || 0) < 25) {
+                        addWaterBtn.disabled = false;
+                    } else {
+                        addWaterBtn.disabled = true;
+                    }
                 }
             }
         }
@@ -1327,6 +1567,8 @@
         // Update Transactions List
         function updateTransactionsList() {
             const transactionsList = document.getElementById('transactions-list');
+            if (!transactionsList) return;
+            
             transactionsList.innerHTML = '';
             
             if (transactions.length === 0) {
@@ -1334,9 +1576,11 @@
                 return;
             }
             
-            transactions.slice(0, 10).forEach(transaction => {
+            transactions.slice(0, 10).forEach((transaction, index) => {
                 const transactionCard = document.createElement('div');
                 transactionCard.className = 'cart-item rounded-lg p-4';
+                transactionCard.style.animationDelay = `${index * 0.05}s`;
+                transactionCard.style.animation = 'slideUp 0.3s ease-out forwards';
                 
                 const date = new Date(transaction['Tanggal']);
                 const formattedDate = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -1375,6 +1619,8 @@
         // Update Expenses List
         function updateExpensesList() {
             const expensesList = document.getElementById('expenses-list');
+            if (!expensesList) return;
+            
             expensesList.innerHTML = '';
             
             if (expenses.length === 0) {
@@ -1382,12 +1628,17 @@
                 return;
             }
             
-            expenses.slice(0, 10).forEach(expense => {
+            expenses.slice(0, 10).forEach((expense, index) => {
                 const expenseCard = document.createElement('div');
                 expenseCard.className = 'cart-item rounded-lg p-4';
+                expenseCard.style.animationDelay = `${index * 0.05}s`;
+                expenseCard.style.animation = 'slideUp 0.3s ease-out forwards';
                 
                 const date = new Date(expense['Tanggal']);
                 const formattedDate = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+                
+                // Ambil nilai saldo dengan aman
+                const saldo = parseInt(expense['Saldo'] || 0);
                 
                 expenseCard.innerHTML = `
                     <div class="flex justify-between items-start">
@@ -1397,7 +1648,10 @@
                             <p class="text-sm text-gray-600">${expense['Keterangan'] || '-'}</p>
                         </div>
                         <div class="text-right">
-                            <p class="font-medium text-red-600">Rp ${parseInt(expense['Jumlah']).toLocaleString('id-ID')}</p>
+                            <p class="font-medium text-red-600">Rp ${parseInt(expense['Jumlah'] || 0).toLocaleString('id-ID')}</p>
+                            <p class="text-sm ${saldo >= 0 ? 'text-green-600' : 'text-red-600'}">
+                                Saldo: Rp ${saldo.toLocaleString('id-ID')}
+                            </p>
                         </div>
                     </div>
                 `;
@@ -1407,15 +1661,15 @@
         
         // Load Financial Summary
         function loadFinancialSummary() {
-            // Calculate total income from transactions
+            // Calculate total income from transactions (hanya yang statusnya Lunas)
             const totalIncome = transactions
                 .filter(t => t['Status'] === 'Lunas')
-                .reduce((sum, t) => sum + parseInt(t['Harga Jual (Rp)']), 0);
+                .reduce((sum, t) => sum + parseInt(t['Harga Jual (Rp)'] || 0), 0);
             
             // Calculate total expenses
-            const totalExpenses = expenses.reduce((sum, e) => sum + parseInt(e['Jumlah']), 0);
+            const totalExpenses = expenses.reduce((sum, e) => sum + parseInt(e['Jumlah'] || 0), 0);
             
-            // Calculate net income
+            // Calculate net income (sisa saldo)
             const netIncome = totalIncome - totalExpenses;
             
             // Update UI
@@ -1425,16 +1679,50 @@
             
             // Set color based on net income
             const netIncomeElement = document.getElementById('net-income');
-            if (netIncome >= 0) {
-                netIncomeElement.className = 'text-2xl font-bold text-green-600';
-            } else {
-                netIncomeElement.className = 'text-2xl font-bold text-red-600';
+            if (netIncomeElement) {
+                if (netIncome >= 0) {
+                    netIncomeElement.className = 'text-2xl font-bold text-green-600';
+                } else {
+                    netIncomeElement.className = 'text-2xl font-bold text-red-600';
+                }
+            }
+            
+            // Update saldo kas di dashboard
+            updateCashBalance(netIncome);
+            
+            // Update saldo kas di halaman expenses
+            const currentCashBalanceElement = document.getElementById('current-cash-balance');
+            if (currentCashBalanceElement) {
+                currentCashBalanceElement.textContent = netIncome.toLocaleString('id-ID');
+                
+                if (netIncome >= 0) {
+                    currentCashBalanceElement.className = 'text-3xl font-bold text-green-600';
+                } else {
+                    currentCashBalanceElement.className = 'text-3xl font-bold text-red-600';
+                }
+            }
+        }
+        
+        // Fungsi untuk update saldo kas di dashboard
+        function updateCashBalance(balance) {
+            const cashBalanceElement = document.getElementById('cash-balance');
+            if (cashBalanceElement) {
+                cashBalanceElement.textContent = balance.toLocaleString('id-ID');
+                
+                // Set warna berdasarkan saldo
+                if (balance >= 0) {
+                    cashBalanceElement.className = 'text-2xl font-bold text-blue-600';
+                } else {
+                    cashBalanceElement.className = 'text-2xl font-bold text-red-600';
+                }
             }
         }
         
         // Update Recent Transactions
         function updateRecentTransactions() {
             const recentTransactions = document.getElementById('recent-transactions');
+            if (!recentTransactions) return;
+            
             recentTransactions.innerHTML = '';
             
             if (transactions.length === 0) {
@@ -1442,9 +1730,11 @@
                 return;
             }
             
-            transactions.slice(0, 5).forEach(transaction => {
+            transactions.slice(0, 5).forEach((transaction, index) => {
                 const transactionCard = document.createElement('div');
                 transactionCard.className = 'cart-item rounded-lg p-3';
+                transactionCard.style.animationDelay = `${index * 0.05}s`;
+                transactionCard.style.animation = 'slideUp 0.3s ease-out forwards';
                 
                 const date = new Date(transaction['Tanggal']);
                 const formattedDate = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
@@ -1467,7 +1757,7 @@
             // Update remaining water
             document.getElementById('remaining-water').textContent = waterStock['Sisa Liter'] || '0';
             
-            // Update today transactions - FIXED
+            // Update today transactions
             const today = new Date();
             const todayDateString = today.toISOString().split('T')[0]; // Get date part only
             const todayTransactions = transactions.filter(t => {
@@ -1485,6 +1775,16 @@
             
             // Update available products
             document.getElementById('available-products').textContent = products.length;
+            
+            // Update cash balance
+            const totalIncome = transactions
+                .filter(t => t['Status'] === 'Lunas')
+                .reduce((sum, t) => sum + parseInt(t['Harga Jual (Rp)'] || 0), 0);
+            
+            const totalExpenses = expenses.reduce((sum, e) => sum + parseInt(e['Jumlah'] || 0), 0);
+            const cashBalance = totalIncome - totalExpenses;
+            
+            updateCashBalance(cashBalance);
             
             // Update recent transactions
             updateRecentTransactions();
@@ -1509,6 +1809,8 @@
                 const debts = allTransactions.filter(t => t['Status'] === 'Hutang');
                 
                 const debtsList = document.getElementById('debts-list');
+                if (!debtsList) return;
+                
                 debtsList.innerHTML = '';
                 
                 if (debts.length === 0) {
@@ -1516,9 +1818,11 @@
                     return;
                 }
                 
-                debts.forEach(debt => {
+                debts.forEach((debt, index) => {
                     const debtCard = document.createElement('div');
                     debtCard.className = 'cart-item rounded-lg p-4';
+                    debtCard.style.animationDelay = `${index * 0.05}s`;
+                    debtCard.style.animation = 'slideUp 0.3s ease-out forwards';
                     
                     const date = new Date(debt['Tanggal']);
                     const formattedDate = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -1532,7 +1836,7 @@
                             </div>
                             <div class="text-right">
                                 <p class="font-medium text-yellow-600">Rp ${parseInt(debt['Harga Jual (Rp)']).toLocaleString('id-ID')}</p>
-                                <button onclick="showPaymentDebtModal('${debt['ID Transaksi']}')" class="mt-2 btn-primary px-3 py-1 rounded text-sm">
+                                <button onclick="showPaymentDebtModal('${debt['ID Transaksi']}')" class="mt-2 btn-primary px-3 py-1 rounded text-sm btn-animate">
                                     Bayar
                                 </button>
                             </div>
@@ -1590,13 +1894,13 @@
             // Update cart display
             updateCartSummary();
             
-            showToast(`${product['Nama Produk']} ditambahkan ke keranjang`);
+            showToast(`${product['Nama Produk']} ditambahkan ke keranjang`, 'success');
         }
         
         // Go to Checkout
         function goToCheckout() {
             if (cart.length === 0) {
-                showToast('Keranjang belanja kosong');
+                showToast('Keranjang belanja kosong', 'warning');
                 return;
             }
             
@@ -1607,6 +1911,8 @@
         function updateCartDisplay() {
             const cartItems = document.getElementById('cart-items');
             const cartTotal = document.getElementById('cart-total-transaction');
+            
+            if (!cartItems || !cartTotal) return;
             
             if (cart.length === 0) {
                 cartItems.innerHTML = '<p class="text-center text-gray-500 py-4">Keranjang belanja kosong</p>';
@@ -1623,6 +1929,8 @@
                 
                 const cartItem = document.createElement('div');
                 cartItem.className = 'cart-item rounded-lg p-3';
+                cartItem.style.animationDelay = `${index * 0.05}s`;
+                cartItem.style.animation = 'slideUp 0.3s ease-out forwards';
                 cartItem.innerHTML = `
                     <div class="flex justify-between items-center">
                         <div class="flex-1">
@@ -1676,15 +1984,17 @@
         
         // Remove from Cart
         function removeFromCart(index) {
+            const removedItem = cart[index];
             cart.splice(index, 1);
             updateCartDisplay();
             updateCartSummary();
+            showToast(`${removedItem.name} dihapus dari keranjang`, 'warning');
         }
         
         // Process Transaction
         async function processTransaction() {
             if (cart.length === 0) {
-                showToast('Keranjang belanja kosong');
+                showToast('Keranjang belanja kosong', 'warning');
                 return;
             }
             
@@ -1717,7 +2027,7 @@
             
             // Validate payment amount for cash payment
             if (currentPaymentMethod === 'cash' && paymentAmount < totalPrice) {
-                showToast('Uang bayar kurang dari total belanja');
+                showToast('Uang bayar kurang dari total belanja', 'error');
                 return;
             }
             
@@ -1738,43 +2048,56 @@
                 'Status': currentPaymentMethod === 'cash' ? 'Lunas' : 'Hutang'
             };
             
-            // Add transaction
-            const response = await fetchData('Transaksi', 'insert', transactionData);
+            // Show loading
+            showLoading();
             
-            if (response.success) {
-                // Update water stock
-                const newRemaining = parseInt(waterStock['Sisa Liter'] || 0) - totalLiter;
-                const newUsed = parseInt(waterStock['Liter Terpakai'] || 0) + totalLiter;
+            try {
+                // Add transaction
+                const response = await fetchData('Transaksi', 'insert', transactionData);
                 
-                await fetchData('Stok Air', 'update', {
-                    row: 2,
-                    'Sisa Liter': newRemaining,
-                    'Liter Terpakai': newUsed
-                });
-                
-                // Reset form
-                document.getElementById('customer-select').value = '';
-                paymentAmountInput.value = '';
-                
-                // Clear cart
-                const cartItems = [...cart]; // Create a copy of cart for receipt
-                cart = [];
-                updateCartDisplay();
-                updateCartSummary();
-                
-                // Calculate change
-                const change = currentPaymentMethod === 'cash' ? paymentAmount - totalPrice : 0;
-                
-                // Show receipt
-                showReceipt(transactionData, cartItems, paymentAmount, change);
-                
-                // Refresh data
-                loadTransactions();
-                loadWaterStock();
-                
-                showToast('Transaksi berhasil');
-            } else {
-                showToast('Gagal menambah transaksi');
+                if (response.success) {
+                    // Update water stock
+                    const newRemaining = parseInt(waterStock['Sisa Liter'] || 0) - totalLiter;
+                    const newUsed = parseInt(waterStock['Liter Terpakai'] || 0) + totalLiter;
+                    
+                    await fetchData('Stok Air', 'update', {
+                        row: 2,
+                        'Sisa Liter': newRemaining,
+                        'Liter Terpakai': newUsed
+                    });
+                    
+                    // Reset form
+                    document.getElementById('customer-select').value = '';
+                    paymentAmountInput.value = '';
+                    
+                    // Clear cart
+                    const cartItems = [...cart]; // Create a copy of cart for receipt
+                    cart = [];
+                    updateCartDisplay();
+                    updateCartSummary();
+                    
+                    // Calculate change
+                    const change = currentPaymentMethod === 'cash' ? paymentAmount - totalPrice : 0;
+                    
+                    // Show receipt
+                    showReceipt(transactionData, cartItems, paymentAmount, change);
+                    
+                    // Refresh data
+                    await Promise.all([
+                        loadTransactions(),
+                        loadWaterStock(),
+                        loadFinancialSummary()
+                    ]);
+                    
+                    showToast('Transaksi berhasil', 'success');
+                } else {
+                    showToast('Gagal menambah transaksi', 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                showToast('Terjadi kesalahan saat memproses transaksi', 'error');
+            } finally {
+                hideLoading();
             }
         }
         
@@ -2050,12 +2373,12 @@
             const liter = parseFloat(document.getElementById('new-product-liter').value) || 0;
             
             if (!name) {
-                showToast('Masukkan nama produk');
+                showToast('Masukkan nama produk', 'error');
                 return;
             }
             
             if (price <= 0) {
-                showToast('Harga jual harus lebih dari 0');
+                showToast('Harga jual harus lebih dari 0', 'error');
                 return;
             }
             
@@ -2078,25 +2401,35 @@
                 'Liter': liter
             };
             
-            // Add product
-            const response = await fetchData('Produk', 'insert', productData);
+            // Show loading
+            showLoading();
             
-            if (response.success) {
-                // Reset form
-                document.getElementById('new-product-name').value = '';
-                document.getElementById('new-product-price').value = '';
-                document.getElementById('new-product-cost').value = '';
-                document.getElementById('new-product-liter').value = '';
+            try {
+                // Add product
+                const response = await fetchData('Produk', 'insert', productData);
                 
-                // Close modal
-                closeModal('add-product-modal');
-                
-                // Refresh data
-                loadProducts();
-                
-                showToast('Produk berhasil ditambahkan');
-            } else {
-                showToast('Gagal menambah produk');
+                if (response.success) {
+                    // Reset form
+                    document.getElementById('new-product-name').value = '';
+                    document.getElementById('new-product-price').value = '';
+                    document.getElementById('new-product-cost').value = '';
+                    document.getElementById('new-product-liter').value = '';
+                    
+                    // Close modal
+                    closeModal('add-product-modal');
+                    
+                    // Refresh data
+                    await loadProducts();
+                    
+                    showToast('Produk berhasil ditambahkan', 'success');
+                } else {
+                    showToast('Gagal menambah produk', 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                showToast('Terjadi kesalahan saat menambah produk', 'error');
+            } finally {
+                hideLoading();
             }
         }
         
@@ -2127,12 +2460,12 @@
             const liter = parseFloat(document.getElementById('edit-product-liter').value) || 0;
             
             if (!name) {
-                showToast('Masukkan nama produk');
+                showToast('Masukkan nama produk', 'error');
                 return;
             }
             
             if (price <= 0) {
-                showToast('Harga jual harus lebih dari 0');
+                showToast('Harga jual harus lebih dari 0', 'error');
                 return;
             }
             
@@ -2156,19 +2489,29 @@
                 'Liter': liter
             };
             
-            // Update product
-            const response = await fetchData('Produk', 'update', productData);
+            // Show loading
+            showLoading();
             
-            if (response.success) {
-                // Close modal
-                closeModal('edit-product-modal');
+            try {
+                // Update product
+                const response = await fetchData('Produk', 'update', productData);
                 
-                // Refresh data
-                loadProducts();
-                
-                showToast('Produk berhasil diperbarui');
-            } else {
-                showToast('Gagal memperbarui produk');
+                if (response.success) {
+                    // Close modal
+                    closeModal('edit-product-modal');
+                    
+                    // Refresh data
+                    await loadProducts();
+                    
+                    showToast('Produk berhasil diperbarui', 'success');
+                } else {
+                    showToast('Gagal memperbarui produk', 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                showToast('Terjadi kesalahan saat memperbarui produk', 'error');
+            } finally {
+                hideLoading();
             }
         }
         
@@ -2180,18 +2523,28 @@
             const productIndex = products.findIndex(p => p['ID Produk'] === productId);
             if (productIndex === -1) return;
             
-            // Delete product
-            const response = await fetchData('Produk', 'delete', {
-                row: productIndex + 2 // +2 because of header and 0-based index
-            });
+            // Show loading
+            showLoading();
             
-            if (response.success) {
-                // Refresh data
-                loadProducts();
+            try {
+                // Delete product
+                const response = await fetchData('Produk', 'delete', {
+                    row: productIndex + 2 // +2 because of header and 0-based index
+                });
                 
-                showToast('Produk berhasil dihapus');
-            } else {
-                showToast('Gagal menghapus produk');
+                if (response.success) {
+                    // Refresh data
+                    await loadProducts();
+                    
+                    showToast('Produk berhasil dihapus', 'success');
+                } else {
+                    showToast('Gagal menghapus produk', 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                showToast('Terjadi kesalahan saat menghapus produk', 'error');
+            } finally {
+                hideLoading();
             }
         }
         
@@ -2207,7 +2560,7 @@
             const deposit = parseInt(document.getElementById('new-customer-deposit').value) || 0;
             
             if (!name) {
-                showToast('Masukkan nama pelanggan');
+                showToast('Masukkan nama pelanggan', 'error');
                 return;
             }
             
@@ -2222,24 +2575,34 @@
                 'Galon Titipan': deposit
             };
             
-            // Add customer
-            const response = await fetchData('Pelanggan', 'insert', customerData);
+            // Show loading
+            showLoading();
             
-            if (response.success) {
-                // Reset form
-                document.getElementById('new-customer-name').value = '';
-                document.getElementById('new-customer-contact').value = '';
-                document.getElementById('new-customer-deposit').value = '0';
+            try {
+                // Add customer
+                const response = await fetchData('Pelanggan', 'insert', customerData);
                 
-                // Close modal
-                closeModal('add-customer-modal');
-                
-                // Refresh data
-                loadCustomers();
-                
-                showToast('Pelanggan berhasil ditambahkan');
-            } else {
-                showToast('Gagal menambah pelanggan');
+                if (response.success) {
+                    // Reset form
+                    document.getElementById('new-customer-name').value = '';
+                    document.getElementById('new-customer-contact').value = '';
+                    document.getElementById('new-customer-deposit').value = '0';
+                    
+                    // Close modal
+                    closeModal('add-customer-modal');
+                    
+                    // Refresh data
+                    await loadCustomers();
+                    
+                    showToast('Pelanggan berhasil ditambahkan', 'success');
+                } else {
+                    showToast('Gagal menambah pelanggan', 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                showToast('Terjadi kesalahan saat menambah pelanggan', 'error');
+            } finally {
+                hideLoading();
             }
         }
         
@@ -2266,7 +2629,7 @@
             const deposit = parseInt(document.getElementById('edit-customer-deposit').value) || 0;
             
             if (!name) {
-                showToast('Masukkan nama pelanggan');
+                showToast('Masukkan nama pelanggan', 'error');
                 return;
             }
             
@@ -2282,19 +2645,29 @@
                 'Galon Titipan': deposit
             };
             
-            // Update customer
-            const response = await fetchData('Pelanggan', 'update', customerData);
+            // Show loading
+            showLoading();
             
-            if (response.success) {
-                // Close modal
-                closeModal('edit-customer-modal');
+            try {
+                // Update customer
+                const response = await fetchData('Pelanggan', 'update', customerData);
                 
-                // Refresh data
-                loadCustomers();
-                
-                showToast('Pelanggan berhasil diperbarui');
-            } else {
-                showToast('Gagal memperbarui pelanggan');
+                if (response.success) {
+                    // Close modal
+                    closeModal('edit-customer-modal');
+                    
+                    // Refresh data
+                    await loadCustomers();
+                    
+                    showToast('Pelanggan berhasil diperbarui', 'success');
+                } else {
+                    showToast('Gagal memperbarui pelanggan', 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                showToast('Terjadi kesalahan saat memperbarui pelanggan', 'error');
+            } finally {
+                hideLoading();
             }
         }
         
@@ -2306,18 +2679,28 @@
             const customerIndex = customers.findIndex(c => c['ID Pelanggan'] === customerId);
             if (customerIndex === -1) return;
             
-            // Delete customer
-            const response = await fetchData('Pelanggan', 'delete', {
-                row: customerIndex + 2 // +2 because of header and 0-based index
-            });
+            // Show loading
+            showLoading();
             
-            if (response.success) {
-                // Refresh data
-                loadCustomers();
+            try {
+                // Delete customer
+                const response = await fetchData('Pelanggan', 'delete', {
+                    row: customerIndex + 2 // +2 because of header and 0-based index
+                });
                 
-                showToast('Pelanggan berhasil dihapus');
-            } else {
-                showToast('Gagal menghapus pelanggan');
+                if (response.success) {
+                    // Refresh data
+                    await loadCustomers();
+                    
+                    showToast('Pelanggan berhasil dihapus', 'success');
+                } else {
+                    showToast('Gagal menghapus pelanggan', 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                showToast('Terjadi kesalahan saat menghapus pelanggan', 'error');
+            } finally {
+                hideLoading();
             }
         }
         
@@ -2332,7 +2715,7 @@
             const cost = parseInt(document.getElementById('water-cost').value) || 0;
             
             if (amount <= 0) {
-                showToast('Jumlah air harus lebih dari 0');
+                showToast('Jumlah air harus lebih dari 0', 'error');
                 return;
             }
             
@@ -2344,40 +2727,65 @@
             const newRemaining = currentRemaining + amount;
             const newTotalCost = currentTotalCost + cost;
             
-            // Update water stock
-            const response = await fetchData('Stok Air', 'update', {
-                row: 2,
-                'Sisa Liter': newRemaining,
-                'Liter Terpakai': 0,
-                'Total Biaya Suplai (Rp)': newTotalCost
-            });
+            // Show loading
+            showLoading();
             
-            if (response.success) {
-                // Add expense
-                const date = new Date();
-                const expenseData = {
-                    'Tanggal': date.toISOString(),
-                    'Jenis': 'Stok Air',
-                    'Jumlah': cost,
-                    'Keterangan': `Penambahan stok air ${amount} liter`
-                };
+            try {
+                // Update water stock
+                const response = await fetchData('Stok Air', 'update', {
+                    row: 2,
+                    'Sisa Liter': newRemaining,
+                    'Liter Terpakai': 0,
+                    'Total Biaya Suplai (Rp)': newTotalCost
+                });
                 
-                await fetchData('Pengeluaran', 'insert', expenseData);
-                
-                // Reset form
-                document.getElementById('water-amount').value = '';
-                document.getElementById('water-cost').value = '';
-                
-                // Close modal
-                closeModal('add-water-modal');
-                
-                // Refresh data
-                loadWaterStock();
-                loadExpenses();
-                
-                showToast('Stok air berhasil ditambahkan');
-            } else {
-                showToast('Gagal menambah stok air');
+                if (response.success) {
+                    // Hitung total pemasukan saat ini
+                    const totalIncome = transactions
+                        .filter(t => t['Status'] === 'Lunas')
+                        .reduce((sum, t) => sum + parseInt(t['Harga Jual (Rp)'] || 0), 0);
+                    
+                    // Hitung total pengeluaran saat ini
+                    const currentTotalExpenses = expenses.reduce((sum, e) => sum + parseInt(e['Jumlah'] || 0), 0);
+                    
+                    // Hitung saldo setelah pengeluaran baru
+                    const newBalance = totalIncome - (currentTotalExpenses + cost);
+                    
+                    // Add expense dengan format yang sesuai
+                    const date = new Date();
+                    const expenseData = {
+                        'Tanggal': date.toISOString().split('T')[0], // Format YYYY-MM-DD
+                        'Keterangan': `Penambahan stok air ${amount} liter`,
+                        'Jenis': 'Stok Air',
+                        'Jumlah': cost,
+                        'Saldo': newBalance // Tambahkan saldo setelah pengeluaran
+                    };
+                    
+                    await fetchData('Pengeluaran', 'insert', expenseData);
+                    
+                    // Reset form
+                    document.getElementById('water-amount').value = '';
+                    document.getElementById('water-cost').value = '';
+                    
+                    // Close modal
+                    closeModal('add-water-modal');
+                    
+                    // Refresh data
+                    await Promise.all([
+                        loadWaterStock(),
+                        loadExpenses(),
+                        loadFinancialSummary()
+                    ]);
+                    
+                    showToast('Stok air berhasil ditambahkan', 'success');
+                } else {
+                    showToast('Gagal menambah stok air', 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                showToast('Terjadi kesalahan saat menambah stok air', 'error');
+            } finally {
+                hideLoading();
             }
         }
         
@@ -2393,37 +2801,62 @@
             const description = document.getElementById('expense-description').value;
             
             if (amount <= 0) {
-                showToast('Jumlah harus lebih dari 0');
+                showToast('Jumlah harus lebih dari 0', 'error');
                 return;
             }
             
-            // Generate expense data
+            // Hitung total pemasukan saat ini
+            const totalIncome = transactions
+                .filter(t => t['Status'] === 'Lunas')
+                .reduce((sum, t) => sum + parseInt(t['Harga Jual (Rp)'] || 0), 0);
+            
+            // Hitung total pengeluaran saat ini
+            const currentTotalExpenses = expenses.reduce((sum, e) => sum + parseInt(e['Jumlah'] || 0), 0);
+            
+            // Hitung saldo setelah pengeluaran baru
+            const newBalance = totalIncome - (currentTotalExpenses + amount);
+            
+            // Generate expense data dengan format yang sesuai
             const date = new Date();
             const expenseData = {
-                'Tanggal': date.toISOString(),
+                'Tanggal': date.toISOString().split('T')[0], // Format YYYY-MM-DD
+                'Keterangan': description,
                 'Jenis': type,
                 'Jumlah': amount,
-                'Keterangan': description
+                'Saldo': newBalance // Tambahkan saldo setelah pengeluaran
             };
             
-            // Add expense
-            const response = await fetchData('Pengeluaran', 'insert', expenseData);
+            // Show loading
+            showLoading();
             
-            if (response.success) {
-                // Reset form
-                document.getElementById('expense-type').value = 'Stok Air';
-                document.getElementById('expense-amount').value = '';
-                document.getElementById('expense-description').value = '';
+            try {
+                // Add expense
+                const response = await fetchData('Pengeluaran', 'insert', expenseData);
                 
-                // Close modal
-                closeModal('add-expense-modal');
-                
-                // Refresh data
-                loadExpenses();
-                
-                showToast('Pengeluaran berhasil ditambahkan');
-            } else {
-                showToast('Gagal menambah pengeluaran');
+                if (response.success) {
+                    // Reset form
+                    document.getElementById('expense-type').value = 'Stok Air';
+                    document.getElementById('expense-amount').value = '';
+                    document.getElementById('expense-description').value = '';
+                    
+                    // Close modal
+                    closeModal('add-expense-modal');
+                    
+                    // Refresh data
+                    await Promise.all([
+                        loadExpenses(),
+                        loadFinancialSummary()
+                    ]);
+                    
+                    showToast('Pengeluaran berhasil ditambahkan', 'success');
+                } else {
+                    showToast('Gagal menambah pengeluaran', 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                showToast('Terjadi kesalahan saat menambah pengeluaran', 'error');
+            } finally {
+                hideLoading();
             }
         }
         
@@ -2431,7 +2864,7 @@
         function clearLocalStorage() {
             if (confirm('Apakah Anda yakin ingin menghapus semua data di local storage?')) {
                 localStorage.clear();
-                showToast('Data local storage berhasil dihapus');
+                showToast('Data local storage berhasil dihapus', 'success');
             }
         }
         
@@ -2461,26 +2894,38 @@
                 API_KEY = apiKey;
             }
             
-            // Update settings
-            const response = await fetchData('Pengaturan', 'update', {
-                row: 2,
-                ...settingsData
-            });
+            // Show loading
+            showLoading();
             
-            if (response.success) {
-                // Update water stock capacity
-                await fetchData('Stok Air', 'update', {
+            try {
+                // Update settings
+                const response = await fetchData('Pengaturan', 'update', {
                     row: 2,
-                    'Kapasitas Toren': tankCapacity
+                    ...settingsData
                 });
                 
-                // Refresh data
-                loadSettings();
-                loadWaterStock();
-                
-                showToast('Pengaturan berhasil disimpan');
-            } else {
-                showToast('Gagal menyimpan pengaturan');
+                if (response.success) {
+                    // Update water stock capacity
+                    await fetchData('Stok Air', 'update', {
+                        row: 2,
+                        'Kapasitas Toren': tankCapacity
+                    });
+                    
+                    // Refresh data
+                    await Promise.all([
+                        loadSettings(),
+                        loadWaterStock()
+                    ]);
+                    
+                    showToast('Pengaturan berhasil disimpan', 'success');
+                } else {
+                    showToast('Gagal menyimpan pengaturan', 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                showToast('Terjadi kesalahan saat menyimpan pengaturan', 'error');
+            } finally {
+                hideLoading();
             }
         }
         
@@ -2510,7 +2955,7 @@
         }
         
         // Listen for payment amount changes
-        document.getElementById('payment-amount').addEventListener('input', updateRemainingDebt);
+        document.getElementById('payment-amount')?.addEventListener('input', updateRemainingDebt);
         
         // Pay Debt
         async function payDebt() {
@@ -2520,12 +2965,12 @@
             const debtAmount = parseInt(document.getElementById('debt-amount').value) || 0;
             
             if (paymentAmount <= 0) {
-                showToast('Jumlah pembayaran harus lebih dari 0');
+                showToast('Jumlah pembayaran harus lebih dari 0', 'error');
                 return;
             }
             
             if (paymentAmount > debtAmount) {
-                showToast('Jumlah pembayaran melebihi hutang');
+                showToast('Jumlah pembayaran melebihi hutang', 'error');
                 return;
             }
             
@@ -2536,42 +2981,55 @@
             // Update transaction status
             const status = paymentAmount === debtAmount ? 'Lunas' : 'Hutang';
             
-            const response = await fetchData('Transaksi', 'update', {
-                row: transactionIndex + 2, // +2 because of header and 0-based index
-                'Status': status
-            });
+            // Show loading
+            showLoading();
             
-            if (response.success) {
-                // Create a new transaction for the payment if partial payment
-                if (paymentAmount < debtAmount) {
-                    const date = new Date();
-                    const paymentTransactionId = `PAY-${date.getFullYear()}${(date.getMonth()+1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+            try {
+                const response = await fetchData('Transaksi', 'update', {
+                    row: transactionIndex + 2, // +2 because of header and 0-based index
+                    'Status': status
+                });
+                
+                if (response.success) {
+                    // Create a new transaction for the payment if partial payment
+                    if (paymentAmount < debtAmount) {
+                        const date = new Date();
+                        const paymentTransactionId = `PAY-${date.getFullYear()}${(date.getMonth()+1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+                        
+                        const paymentData = {
+                            'ID Transaksi': paymentTransactionId,
+                            'Tanggal': date.toISOString(),
+                            'Produk': 'Pembayaran Hutang',
+                            'Jumlah': 1,
+                            'Harga Jual (Rp)': paymentAmount,
+                            'Harga Pokok (Rp)': 0,
+                            'Laba Kotor (Rp)': paymentAmount,
+                            'Nama Pelanggan': document.getElementById('debt-customer-name').value,
+                            'Status': 'Lunas'
+                        };
+                        
+                        await fetchData('Transaksi', 'insert', paymentData);
+                    }
                     
-                    const paymentData = {
-                        'ID Transaksi': paymentTransactionId,
-                        'Tanggal': date.toISOString(),
-                        'Produk': 'Pembayaran Hutang',
-                        'Jumlah': 1,
-                        'Harga Jual (Rp)': paymentAmount,
-                        'Harga Pokok (Rp)': 0,
-                        'Laba Kotor (Rp)': paymentAmount,
-                        'Nama Pelanggan': document.getElementById('debt-customer-name').value,
-                        'Status': 'Lunas'
-                    };
+                    // Close modal
+                    closeModal('payment-debt-modal');
                     
-                    await fetchData('Transaksi', 'insert', paymentData);
+                    // Refresh data
+                    await Promise.all([
+                        loadTransactions(),
+                        loadDebts(),
+                        loadFinancialSummary()
+                    ]);
+                    
+                    showToast('Pembayaran berhasil', 'success');
+                } else {
+                    showToast('Gagal memproses pembayaran', 'error');
                 }
-                
-                // Close modal
-                closeModal('payment-debt-modal');
-                
-                // Refresh data
-                loadTransactions();
-                loadDebts();
-                
-                showToast('Pembayaran berhasil');
-            } else {
-                showToast('Gagal memproses pembayaran');
+            } catch (error) {
+                console.error(error);
+                showToast('Terjadi kesalahan saat memproses pembayaran', 'error');
+            } finally {
+                hideLoading();
             }
         }
         
@@ -2636,21 +3094,27 @@
                 .slice(0, 5);
             
             const topProductsContainer = document.getElementById('top-products');
-            topProductsContainer.innerHTML = '';
-            
-            if (topProducts.length === 0) {
-                topProductsContainer.innerHTML = '<p class="text-gray-500 text-center py-2">Tidak ada data</p>';
-            } else {
-                topProducts.forEach(([product, quantity]) => {
-                    const productItem = document.createElement('div');
-                    productItem.className = 'flex justify-between items-center py-1';
-                    productItem.innerHTML = `
-                        <span class="text-sm">${product}</span>
-                        <span class="text-sm font-medium">${quantity} item</span>
-                    `;
-                    topProductsContainer.appendChild(productItem);
-                });
+            if (topProductsContainer) {
+                topProductsContainer.innerHTML = '';
+                
+                if (topProducts.length === 0) {
+                    topProductsContainer.innerHTML = '<p class="text-gray-500 text-center py-2">Tidak ada data</p>';
+                } else {
+                    topProducts.forEach(([product, quantity], index) => {
+                        const productItem = document.createElement('div');
+                        productItem.className = 'flex justify-between items-center py-1';
+                        productItem.style.animationDelay = `${index * 0.05}s`;
+                        productItem.style.animation = 'slideUp 0.3s ease-out forwards';
+                        productItem.innerHTML = `
+                            <span class="text-sm">${product}</span>
+                            <span class="text-sm font-medium">${quantity} item</span>
+                        `;
+                        topProductsContainer.appendChild(productItem);
+                    });
+                }
             }
+            
+            showToast('Laporan berhasil dibuat', 'success');
         }
         
         // Close Modal
@@ -2659,15 +3123,33 @@
         }
         
         // Show Toast Notification
-        function showToast(message) {
+        function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             const toastMessage = document.getElementById('toast-message');
+            const toastIcon = toast.querySelector('.toast-icon');
             
+            // Set message
             toastMessage.textContent = message;
-            toast.classList.remove('hidden');
             
+            // Set type and icon
+            toast.className = 'toast';
+            if (type === 'success') {
+                toast.classList.add('success');
+                toastIcon.className = 'fas fa-check-circle toast-icon';
+            } else if (type === 'error') {
+                toast.classList.add('error');
+                toastIcon.className = 'fas fa-exclamation-circle toast-icon';
+            } else if (type === 'warning') {
+                toast.classList.add('warning');
+                toastIcon.className = 'fas fa-exclamation-triangle toast-icon';
+            }
+            
+            // Show toast
+            toast.classList.add('show');
+            
+            // Hide toast after 3 seconds
             setTimeout(() => {
-                toast.classList.add('hidden');
+                toast.classList.remove('show');
             }, 3000);
         }
     </script>
