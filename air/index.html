@@ -3,28 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kasir Stok Air</title>
+    <title>Kasir Stok Air - Realtime Update</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         body { 
             font-family: 'Poppins', sans-serif;
-            background-color: #f8fafc;
-            color: #000000;
-            font-size: 14px; /* Mengurangi ukuran font default */
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-size: 14px;
         }
+        
+        /* CSS Variables for Theme Support */
+        :root {
+            /* Default Theme */
+            --bg-color: #f8fafc;
+            --text-color: #000000;
+            --card-bg: #ffffff;
+            --card-border: #e2e8f0;
+            --input-bg: #ffffff;
+            --input-border: #cbd5e1;
+            --input-text: #000000;
+            --button-bg: linear-gradient(to right, #134e4a, #000000);
+            --button-hover: linear-gradient(to right, #0f766e, #000000);
+            --nav-bg: linear-gradient(to right, #134e4a, #000000);
+            --header-bg: linear-gradient(to right, #134e4a, #000000);
+            --modal-bg: #ffffff;
+            --modal-border: #e2e8f0;
+            --toast-bg: linear-gradient(to right, #134e4a, #000000);
+            --toast-success: linear-gradient(to right, #10b981, #059669);
+            --toast-error: linear-gradient(to right, #ef4444, #dc2626);
+            --toast-warning: linear-gradient(to right, #f59e0b, #d97706);
+        }
+        
+        /* Dark Theme */
+        body.dark-theme {
+            --bg-color: #1f2937;
+            --text-color: #f9fafb;
+            --card-bg: #374151;
+            --card-border: #4b5563;
+            --input-bg: #374151;
+            --input-border: #4b5563;
+            --input-text: #f9fafb;
+            --button-bg: linear-gradient(to right, #047857, #065f46);
+            --button-hover: linear-gradient(to right, #059669, #047857);
+            --nav-bg: linear-gradient(to right, #047857, #065f46);
+            --header-bg: linear-gradient(to right, #047857, #065f46);
+            --modal-bg: #374151;
+            --modal-border: #4b5563;
+            --toast-bg: linear-gradient(to right, #047857, #065f46);
+            --toast-success: linear-gradient(to right, #10b981, #059669);
+            --toast-error: linear-gradient(to right, #ef4444, #dc2626);
+            --toast-warning: linear-gradient(to right, #f59e0b, #d97706);
+        }
+        
+        /* Light Theme */
+        body.light-theme {
+            --bg-color: #ffffff;
+            --text-color: #111827;
+            --card-bg: #f9fafb;
+            --card-border: #e5e7eb;
+            --input-bg: #ffffff;
+            --input-border: #d1d5db;
+            --input-text: #111827;
+            --button-bg: linear-gradient(to right, #3b82f6, #2563eb);
+            --button-hover: linear-gradient(to right, #2563eb, #1d4ed8);
+            --nav-bg: linear-gradient(to right, #3b82f6, #2563eb);
+            --header-bg: linear-gradient(to right, #3b82f6, #2563eb);
+            --modal-bg: #ffffff;
+            --modal-border: #e5e7eb;
+            --toast-bg: linear-gradient(to right, #3b82f6, #2563eb);
+            --toast-success: linear-gradient(to right, #10b981, #059669);
+            --toast-error: linear-gradient(to right, #ef4444, #dc2626);
+            --toast-warning: linear-gradient(to right, #f59e0b, #d97706);
+        }
+        
         .content-container { 
             padding-bottom: 70px; 
-            padding-top: 110px; /* Tambahkan ruang untuk menu horizontal */
+            padding-top: 110px;
         }
         .bottom-nav { 
             height: 70px; 
-            background: linear-gradient(to right, #134e4a, #000000);
+            background: var(--nav-bg);
         }
         .top-nav { 
             height: 60px; 
-            background: linear-gradient(to right, #134e4a, #000000);
+            background: var(--header-bg);
             transition: background 0.3s ease;
         }
         .thermal-print {
@@ -35,25 +100,30 @@
             line-height: 1.4;
         }
         .card {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         .btn-primary {
-            background: linear-gradient(to right, #134e4a, #000000);
+            background: var(--button-bg);
             color: white;
             transition: all 0.3s ease;
         }
         .btn-primary:hover {
-            background: linear-gradient(to right, #0f766e, #000000);
+            background: var(--button-hover);
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(19, 78, 74, 0.3);
         }
         .input-field {
-            background: #ffffff;
-            border: 1px solid #cbd5e1;
-            color: #000000;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            color: var(--input-text);
             transition: all 0.2s ease;
+        }
+        .input-field:disabled {
+            background-color: #f3f4f6;
+            color: #6b7280;
+            cursor: not-allowed;
         }
         .input-field:focus {
             border-color: #134e4a;
@@ -61,9 +131,8 @@
             box-shadow: 0 0 0 2px rgba(19, 78, 74, 0.3);
         }
         
-        /* PERUBAHAN CSS UNTUK NAV-BUTTON ACTIVE */
         .nav-btn.active {
-            color: #edff00; /* Warna kuning terang untuk teks tombol aktif */
+            color: #edff00;
         }
         
         .nav-btn.active::before {
@@ -82,16 +151,16 @@
         }
         
         .cart-item {
-            background: #f1f5f9;
-            border: 1px solid #e2e8f0;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
         }
         .payment-method.active {
-            background: linear-gradient(to right, #134e4a, #000000);
+            background: var(--button-bg);
             color: white;
         }
         .modal-content {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
+            background: var(--modal-bg);
+            border: 1px solid var(--modal-border);
         }
         .gradient-text {
             background: linear-gradient(to right, #134e4a, #000000);
@@ -115,7 +184,8 @@
             color: white;
             cursor: not-allowed;
         }
-        /* Different colors for dashboard cards */
+        
+        /* Card colors */
         .card-water {
             background: linear-gradient(135deg, #e0f2fe, #bae6fd);
             border-left: 4px solid #0284c7;
@@ -136,39 +206,55 @@
             background: linear-gradient(135deg, #dbeafe, #bfdbfe);
             border-left: 4px solid #3b82f6;
         }
-        .product-grid-item {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            transition: all 0.2s ease;
+        
+        /* Product List Style */
+        .product-list-item {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
             border-radius: 8px;
-            overflow: hidden;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
             cursor: pointer;
             position: relative;
-        }
-        .product-grid-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            border-color: #134e4a;
-        }
-        .product-grid-item-content {
-            padding: 12px;
-        }
-        .product-grid-item-footer {
-            padding: 8px 12px;
-            background: #f1f5f9;
-            border-top: 1px solid #e2e8f0;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
+        
+        .product-list-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-color: #134e4a;
+        }
+        
+        .product-list-info {
+            flex: 1;
+        }
+        
+        .product-list-name {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        
+        .product-list-details {
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        .product-list-price {
+            font-weight: bold;
+            color: #134e4a;
+            font-size: 16px;
+        }
+        
         .product-actions {
             display: flex;
             gap: 8px;
+            margin-left: 16px;
         }
-        .cart-quantity-input {
-            width: 50px;
-            text-align: center;
-        }
+        
         .cart-badge {
             position: absolute;
             top: -8px;
@@ -201,7 +287,8 @@
             font-weight: bold;
             animation: pulse 2s infinite;
         }
-        /* Modern receipt styles */
+        
+        /* Receipt styles */
         .receipt-container {
             width: 100%;
             max-width: 400px;
@@ -228,6 +315,12 @@
             justify-content: center;
             color: white;
             font-size: 24px;
+            overflow: hidden;
+        }
+        .receipt-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .receipt-title {
             font-size: 18px;
@@ -321,34 +414,7 @@
             margin-top: 5px;
             color: #134e4a;
         }
-        /* Dropdown menu styles */
-        .dropdown-menu {
-            position: absolute;
-            top: 60px;
-            left: 0;
-            right: 0;
-            background: white;
-            border-radius: 0 0 12px 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            z-index: 20;
-            display: none;
-            animation: slideDown 0.3s ease;
-        }
-        .dropdown-menu.show {
-            display: block;
-        }
-        .dropdown-item {
-            padding: 12px 20px;
-            border-bottom: 1px solid #f1f5f9;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        .dropdown-item:hover {
-            background-color: #f8fafc;
-        }
-        .dropdown-item:last-child {
-            border-bottom: none;
-        }
+        
         /* Header color themes */
         .header-home {
             background: linear-gradient(to right, #134e4a, #000000);
@@ -416,13 +482,13 @@
             font-weight: 500;
         }
         
-        /* Toast Notification Styles - PERUBAHAN POSISI */
+        /* Toast Notification */
         .toast {
             position: fixed;
-            top: 80px; /* Dipindahkan ke bagian atas halaman */
+            top: 80px;
             left: 50%;
-            transform: translateX(-50%) translateY(-20px); /* Mulai dari sedikit di atas viewport */
-            background: linear-gradient(to right, #134e4a, #000000);
+            transform: translateX(-50%) translateY(-20px);
+            background: var(--toast-bg);
             color: white;
             padding: 16px 24px;
             border-radius: 8px;
@@ -435,7 +501,7 @@
             max-width: 80%;
         }
         .toast.show {
-            transform: translateX(-50%) translateY(0); /* Posisi final di bagian atas */
+            transform: translateX(-50%) translateY(0);
             opacity: 1;
         }
         .toast-icon {
@@ -446,13 +512,13 @@
             font-weight: 500;
         }
         .toast.success {
-            background: linear-gradient(to right, #10b981, #059669);
+            background: var(--toast-success);
         }
         .toast.error {
-            background: linear-gradient(to right, #ef4444, #dc2626);
+            background: var(--toast-error);
         }
         .toast.warning {
-            background: linear-gradient(to right, #f59e0b, #d97706);
+            background: var(--toast-warning);
         }
         
         /* Animations */
@@ -475,59 +541,6 @@
         @keyframes slideUp {
             from { transform: translateY(20px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
-        }
-        
-        /* Button animation */
-        .btn-animate {
-            position: relative;
-            overflow: hidden;
-        }
-        .btn-animate:after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 5px;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.5);
-            opacity: 0;
-            border-radius: 100%;
-            transform: scale(1, 1) translate(-50%);
-            transform-origin: 50% 50%;
-        }
-        .btn-animate:focus:not(:active)::after {
-            animation: ripple 1s ease-out;
-        }
-        @keyframes ripple {
-            0% {
-                transform: scale(0, 0);
-                opacity: 0.5;
-            }
-            100% {
-                transform: scale(100, 100);
-                opacity: 0;
-            }
-        }
-        
-        /* Card animation */
-        .card-animate {
-            animation: fadeIn 0.5s ease-out;
-        }
-        
-        /* Page transition animation */
-        .page {
-            animation: fadeIn 0.3s ease-out;
-        }
-        
-        /* Skeleton loading animation */
-        .skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
-        }
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
         }
         
         /* Water Tank Visualization */
@@ -576,97 +589,6 @@
             font-weight: bold;
             color: #1f2937;
             z-index: 10;
-        }
-        
-        .water-tank-markers {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            pointer-events: none;
-        }
-        
-        .water-tank-marker {
-            position: absolute;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background-color: rgba(75, 85, 99, 0.3);
-        }
-        
-        .water-tank-marker.full {
-            top: 20%;
-        }
-        
-        .water-tank-marker.high {
-            top: 40%;
-        }
-        
-        .water-tank-marker.medium {
-            top: 60%;
-        }
-        
-        .water-tank-marker.low {
-            top: 80%;
-        }
-        
-        .water-tank-marker.critical {
-            top: 95%;
-        }
-        
-        .water-tank-labels {
-            position: absolute;
-            top: 0;
-            left: -50px;
-            right: 0;
-            bottom: 0;
-            pointer-events: none;
-        }
-        
-        .water-tank-label {
-            position: absolute;
-            right: 100%;
-            padding-right: 8px;
-            font-size: 12px;
-            color: #4b5563;
-            transform: translateY(-50%);
-        }
-        
-        .water-tank-label.full {
-            top: 20%;
-        }
-        
-        .water-tank-label.high {
-            top: 40%;
-        }
-        
-        .water-tank-label.medium {
-            top: 60%;
-        }
-        
-        .water-tank-label.low {
-            top: 80%;
-        }
-        
-        .water-tank-label.critical {
-            top: 95%;
-        }
-        
-        .water-alert {
-            position: absolute;
-            top: -40px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-weight: bold;
-            color: #ef4444;
-            animation: blink 1s infinite;
-        }
-        
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
         }
         
         /* Notification Panel */
@@ -719,6 +641,7 @@
             padding: 12px 16px;
             border-bottom: 1px solid #f1f5f9;
             transition: background-color 0.2s;
+            cursor: pointer;
         }
         
         .notification-item:hover {
@@ -738,6 +661,24 @@
         .notification-text {
             font-size: 14px;
             color: #1f2937;
+        }
+        
+        .notification-status {
+            font-size: 11px;
+            margin-top: 4px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        
+        .notification-status.enable {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        
+        .notification-status.disable {
+            background-color: #fee2e2;
+            color: #991b1b;
         }
         
         .notification-empty {
@@ -772,79 +713,6 @@
             font-size: 18px;
             font-weight: bold;
             color: #059669;
-        }
-        
-        /* Product price display */
-        .product-price {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: #134e4a;
-            color: white;
-            border-radius: 4px;
-            padding: 4px 8px;
-            font-size: 12px;
-            font-weight: bold;
-            z-index: 5;
-        }
-        
-        /* Menu list panel */
-        .menu-list-panel {
-            position: absolute;
-            top: 60px;
-            right: 20px;
-            width: 250px;
-            max-height: 400px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            z-index: 100;
-            overflow: hidden;
-            display: none;
-            animation: slideDown 0.3s ease;
-        }
-        
-        .menu-list-panel.show {
-            display: block;
-        }
-        
-        .menu-list-header {
-            padding: 12px 16px;
-            background: linear-gradient(to right, #134e4a, #000000);
-            color: white;
-            font-weight: 600;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .menu-list {
-            max-height: 340px;
-            overflow-y: auto;
-        }
-        
-        .menu-item {
-            padding: 12px 16px;
-            border-bottom: 1px solid #f1f5f9;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            display: flex;
-            align-items: center;
-        }
-        
-        .menu-item:hover {
-            background-color: #f8fafc;
-        }
-        
-        .menu-item:last-child {
-            border-bottom: none;
-        }
-        
-        .menu-item i {
-            margin-right: 12px;
-            width: 20px;
-            text-align: center;
-            color: #134e4a;
         }
         
         /* Cart Panel */
@@ -910,44 +778,6 @@
             margin-bottom: 12px;
             font-weight: bold;
             font-size: 16px;
-        }
-        
-        /* Bottom Navigation Active State */
-        .nav-btn {
-            position: relative;
-            transition: all 0.3s ease;
-        }
-        
-        /* Water Stock History */
-        .water-stock-history {
-            margin-top: 20px;
-        }
-        
-        .history-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        
-        .history-item:last-child {
-            border-bottom: none;
-        }
-        
-        .history-date {
-            font-size: 12px;
-            color: #6b7280;
-        }
-        
-        .history-amount {
-            font-weight: bold;
-            color: #134e4a;
-        }
-        
-        .history-cost {
-            font-size: 12px;
-            color: #6b7280;
         }
         
         /* Horizontal Menu Bar */
@@ -1053,6 +883,231 @@
         input:checked + .slider:before {
             transform: translateX(26px);
         }
+        
+        /* Receipt action buttons */
+        .receipt-actions {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 16px;
+        }
+        
+        .receipt-action-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .receipt-action-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .receipt-print-btn {
+            background: linear-gradient(to right, #134e4a, #000000);
+            color: white;
+        }
+        
+        .receipt-download-btn {
+            background: linear-gradient(to right, #059669, #047857);
+            color: white;
+        }
+        
+        .receipt-close-btn {
+            background: linear-gradient(to right, #ef4444, #dc2626);
+            color: white;
+        }
+        
+        /* Product type selector */
+        .product-type-selector {
+            position: relative;
+        }
+        
+        .product-type-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .product-type-dropdown.show {
+            display: block;
+        }
+        
+        .product-type-option {
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .product-type-option:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .product-type-option.selected {
+            background-color: #134e4a;
+            color: white;
+        }
+        
+        .add-new-type {
+            border-top: 1px solid #e5e7eb;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #134e4a;
+            font-weight: 500;
+        }
+        
+        .add-new-type:hover {
+            background-color: #f0fdf4;
+        }
+        
+        /* Hidden reload container */
+        .reload-container {
+            position: fixed;
+            top: -100px;
+            left: -100px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            opacity: 0;
+        }
+        
+        /* Water Stock History */
+        .water-stock-history {
+            margin-top: 20px;
+        }
+        
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        
+        .history-date {
+            font-size: 12px;
+            color: #6b7280;
+        }
+        
+        .history-amount {
+            font-weight: bold;
+            color: #134e4a;
+        }
+        
+        .history-cost {
+            font-size: 12px;
+            color: #6b7280;
+        }
+        
+        /* Page Loading Indicator */
+        .page-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(to right, #134e4a, #000000);
+            z-index: 9999;
+            transition: width 0.3s ease;
+        }
+        
+        /* Real-time Update Indicator */
+        .realtime-indicator {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: rgba(19, 78, 74, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .realtime-indicator.show {
+            opacity: 1;
+        }
+        
+        .realtime-indicator i {
+            animation: spin 1s linear infinite;
+        }
+        
+        /* Theme Selector Styles */
+        .theme-selector {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .theme-option {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        
+        .theme-option.active {
+            border-color: #134e4a;
+            box-shadow: 0 0 0 2px rgba(19, 78, 74, 0.2);
+        }
+        
+        .theme-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .theme-default {
+            background: linear-gradient(to right, #134e4a, #000000);
+            color: white;
+        }
+        
+        .theme-dark {
+            background: linear-gradient(to right, #047857, #065f46);
+            color: white;
+        }
+        
+        .theme-light {
+            background: linear-gradient(to right, #3b82f6, #2563eb);
+            color: white;
+        }
+        
+        .theme-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        
+        .theme-name {
+            font-size: 12px;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
@@ -1062,6 +1117,20 @@
             <div class="loading-spinner"></div>
             <div class="loading-text">Memuat data...</div>
         </div>
+    </div>
+    
+    <!-- Page Loading Indicator -->
+    <div id="page-loading" class="page-loading" style="width: 0%"></div>
+    
+    <!-- Real-time Update Indicator -->
+    <div id="realtime-indicator" class="realtime-indicator">
+        <i class="fas fa-sync-alt"></i>
+        <span>Memperbarui data...</span>
+    </div>
+    
+    <!-- Hidden container for background reload -->
+    <div class="reload-container">
+        <iframe id="reload-frame" width="1" height="1"></iframe>
     </div>
     
     <!-- Top Navigation -->
@@ -1174,7 +1243,6 @@
                         <p id="available-products" class="text-2xl font-bold text-[#7e22ce]">--</p>
                         <p class="text-xs text-gray-500">Jenis</p>
                     </div>
-                    <!-- Saldo Kas Card -->
                     <div class="card-cash rounded-lg p-4 col-span-2">
                         <p class="text-sm text-gray-600">Saldo Kas</p>
                         <p id="cash-balance" class="text-2xl font-bold text-[#3b82f6]">--</p>
@@ -1205,8 +1273,8 @@
                         </button>
                     </div>
                 </div>
-                <div id="products-grid" class="grid grid-cols-2 gap-4">
-                    <!-- Products will be loaded here -->
+                <div id="products-list" class="space-y-3">
+                    <!-- Products will be loaded here as list -->
                 </div>
             </div>
         </div>
@@ -1328,20 +1396,6 @@
                                 <div class="water-wave"></div>
                             </div>
                             <div class="water-level-indicator" id="water-percentage">0%</div>
-                            <div class="water-tank-markers">
-                                <div class="water-tank-marker full"></div>
-                                <div class="water-tank-marker high"></div>
-                                <div class="water-tank-marker medium"></div>
-                                <div class="water-tank-marker low"></div>
-                                <div class="water-tank-marker critical"></div>
-                            </div>
-                            <div class="water-tank-labels">
-                                <div class="water-tank-label full">Penuh</div>
-                                <div class="water-tank-label high">Tinggi</div>
-                                <div class="water-tank-label medium">Sedang</div>
-                                <div class="water-tank-label low">Rendah</div>
-                                <div class="water-tank-label critical">Kritis</div>
-                            </div>
                         </div>
                         <p class="mt-2 text-sm text-gray-600">Level Air</p>
                     </div>
@@ -1370,6 +1424,31 @@
         <div id="settings-page" class="page p-4 hidden">
             <div class="card rounded-xl shadow-md p-5 card-animate">
                 <h2 class="text-xl font-bold mb-4">Pengaturan</h2>
+                
+                <!-- Theme Selector -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium mb-2">Tema</label>
+                    <div class="theme-selector">
+                        <div class="theme-option theme-default active" onclick="setTheme('default')">
+                            <div class="theme-icon">
+                                <i class="fas fa-palette"></i>
+                            </div>
+                            <div class="theme-name">Default</div>
+                        </div>
+                        <div class="theme-option theme-dark" onclick="setTheme('dark')">
+                            <div class="theme-icon">
+                                <i class="fas fa-moon"></i>
+                            </div>
+                            <div class="theme-name">Dark</div>
+                        </div>
+                        <div class="theme-option theme-light" onclick="setTheme('light')">
+                            <div class="theme-icon">
+                                <i class="fas fa-sun"></i>
+                            </div>
+                            <div class="theme-name">Light</div>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="mb-4">
                     <label class="block text-sm font-medium mb-1">Nama Usaha</label>
@@ -1403,7 +1482,7 @@
                 
                 <div class="mb-4">
                     <label class="block text-sm font-medium mb-1">API Script</label>
-                    <input type="text" id="api-script-input" placeholder="AKfycby_6VvnaHFQ4hmJALaX5-Zk1bF-nHzyuGR_FfdDvtJfbu_YMWLsVycoCrtCT-DlyMAv" class="w-full input-field rounded-lg px-3 py-2">
+                    <input type="text" id="api-script-input" placeholder="AKfycby_6VvnaHFQ4hmJALaX5-Zk1bF-nHzyuGR_FfdDvtJfbu_YMWLsVycoCrtCT-DlyMAv" class="w-full input-field rounded-lg px-3 py-2" onchange="disableApiKeyInput()">
                 </div>
                 
                 <!-- Local Storage Toggle -->
@@ -1446,7 +1525,6 @@
         
         <!-- Expenses Page -->
         <div id="expenses-page" class="page p-4 hidden">
-            <!-- Current Cash Balance Card -->
             <div class="card rounded-xl shadow-md p-5 mb-5 card-animate">
                 <h2 class="text-xl font-bold mb-4">Saldo Kas Saat Ini</h2>
                 <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
@@ -1554,17 +1632,17 @@
             <i class="fas fa-home text-xl mb-1"></i>
             <span class="text-xs">Home</span>
         </button>
-        <button onclick="showPage('products')" class="nav-btn flex flex-col items-center justify-center p-2 text-white">
+        <button onclick="showPage('products')" class="nav-btn flex flex-col items-center justify-center mr-8 p-2 text-white">
             <i class="fas fa-box text-xl mb-1"></i>
             <span class="text-xs">Produk</span>
         </button>
-        <button onclick="showPage('history')" class="nav-btn flex flex-col items-center justify-center p-2 text-white">
+        <button onclick="showPage('history')" class="nav-btn flex flex-col items-center justify-center ml-12 p-2 text-white">
             <i class="fas fa-history text-xl mb-1"></i>
             <span class="text-xs">Riwayat</span>
         </button>
         <button onclick="showPage('water-stock')" class="nav-btn flex flex-col items-center justify-center p-2 text-white">
             <i class="fas fa-tint text-xl mb-1"></i>
-            <span class="text-xs">Stok Air</span>
+            <span class="text-xs">Stok</span>
         </button>
     </div>
     
@@ -1590,11 +1668,16 @@
             
             <div class="mb-4">
                 <label class="block text-sm font-medium mb-1">Jenis</label>
-                <select id="new-product-type" class="w-full input-field rounded-lg px-3 py-2">
-                    <option value="Galon">Galon</option>
-                    <option value="Botol">Botol</option>
-                    <option value="Lainnya">Lainnya</option>
-                </select>
+                <div class="product-type-selector">
+                    <input type="text" id="new-product-type" class="w-full input-field rounded-lg px-3 py-2" readonly onclick="toggleProductTypeDropdown()">
+                    <div id="product-type-dropdown" class="product-type-dropdown">
+                        <div id="product-type-options"></div>
+                        <div class="add-new-type" onclick="addNewProductType()">
+                            <i class="fas fa-plus"></i>
+                            <span>Tambah jenis baru</span>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <div class="mb-4">
@@ -1633,11 +1716,16 @@
             
             <div class="mb-4">
                 <label class="block text-sm font-medium mb-1">Jenis</label>
-                <select id="edit-product-type" class="w-full input-field rounded-lg px-3 py-2">
-                    <option value="Galon">Galon</option>
-                    <option value="Botol">Botol</option>
-                    <option value="Lainnya">Lainnya</option>
-                </select>
+                <div class="product-type-selector">
+                    <input type="text" id="edit-product-type" class="w-full input-field rounded-lg px-3 py-2" readonly onclick="toggleEditProductTypeDropdown()">
+                    <div id="edit-product-type-dropdown" class="product-type-dropdown">
+                        <div id="edit-product-type-options"></div>
+                        <div class="add-new-type" onclick="addNewEditProductType()">
+                            <i class="fas fa-plus"></i>
+                            <span>Tambah jenis baru</span>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <div class="mb-4">
@@ -1723,7 +1811,7 @@
             
             <div class="flex space-x-3">
                 <button onclick="closeModal('add-water-modal')" class="flex-1 bg-gray-200 py-2 rounded-lg font-medium btn-animate">Batal</button>
-                <button onclick="addWaterStock()" class="flex-1 btn-primary py-2 rounded-lg font-medium btn-animate">
+                <button onclick="addWaterStock()" class="flex-1 btn-primary py-3 rounded-lg font-medium btn-animate">
                     <i class="fas fa-plus-circle mr-2"></i> Tambah Stok
                 </button>
             </div>
@@ -1775,11 +1863,16 @@
                 <!-- Receipt content will be loaded here -->
             </div>
             
-            <div class="flex space-x-3 mt-4">
-                <button onclick="closeModal('receipt-modal')" class="flex-1 bg-gray-200 py-2 rounded-lg font-medium btn-animate">Tutup</button>
-                <button onclick="printReceipt()" class="flex-1 btn-primary py-2 rounded-lg font-medium btn-animate">
-                    <i class="fas fa-print mr-2"></i> Cetak
-                </button>
+            <div class="receipt-actions">
+                <div class="receipt-action-btn receipt-print-btn" onclick="printReceipt()" title="Cetak">
+                    <i class="fas fa-print"></i>
+                </div>
+                <div class="receipt-action-btn receipt-download-btn" onclick="downloadReceipt()" title="Download">
+                    <i class="fas fa-download"></i>
+                </div>
+                <div class="receipt-action-btn receipt-close-btn" onclick="closeModal('receipt-modal')" title="Tutup">
+                    <i class="fas fa-times"></i>
+                </div>
             </div>
         </div>
     </div>
@@ -1822,6 +1915,7 @@
         <span id="toast-message" class="toast-message"></span>
     </div>
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         // API Configuration
         let API_KEY = 'AKfycby_6VvnaHFQ4hmJALaX5-Zk1bF-nHzyuGR_FfdDvtJfbu_YMWLsVycoCrtCT-DlyMAv';
@@ -1839,11 +1933,17 @@
         let cart = [];
         let notifications = [];
         let showProductActions = false;
-        let productClickCount = {}; // Track product click counts
-        let localStorageEnabled = false; // Local storage status
+        let productClickCount = {};
+        let localStorageEnabled = false;
+        let currentReceiptData = null;
+        let currentTheme = 'default';
         
         // Initialize App
         document.addEventListener('DOMContentLoaded', function() {
+            // Load theme preference
+            const savedTheme = localStorage.getItem('appTheme') || 'default';
+            setTheme(savedTheme);
+            
             // Check if local storage is enabled
             const localStorageStatus = localStorage.getItem('localStorageEnabled');
             if (localStorageStatus === 'true') {
@@ -1891,7 +1991,7 @@
                         });
                         
                         // Update UI elements
-                        updateProductsGrid();
+                        updateProductsList();
                         updateCustomersList();
                         updateTransactionsList();
                         updateExpensesList();
@@ -1983,6 +2083,16 @@
             document.getElementById('loading-overlay').classList.remove('active');
         }
         
+        // Show Real-time Update Indicator
+        function showRealtimeIndicator() {
+            const indicator = document.getElementById('realtime-indicator');
+            indicator.classList.add('show');
+            
+            setTimeout(() => {
+                indicator.classList.remove('show');
+            }, 2000);
+        }
+        
         // Toggle Notification Panel
         function toggleNotificationPanel() {
             const notificationPanel = document.getElementById('notification-panel');
@@ -2018,6 +2128,20 @@
                 !cartPanel.contains(event.target) && !cartButton) {
                 notificationPanel.classList.remove('show');
                 cartPanel.classList.remove('show');
+            }
+            
+            // Close product type dropdowns when clicking outside
+            const productTypeDropdown = document.getElementById('product-type-dropdown');
+            const editProductTypeDropdown = document.getElementById('edit-product-type-dropdown');
+            
+            if (productTypeDropdown && !productTypeDropdown.contains(event.target) && 
+                event.target.id !== 'new-product-type') {
+                productTypeDropdown.classList.remove('show');
+            }
+            
+            if (editProductTypeDropdown && !editProductTypeDropdown.contains(event.target) && 
+                event.target.id !== 'edit-product-type') {
+                editProductTypeDropdown.classList.remove('show');
             }
         });
         
@@ -2072,7 +2196,7 @@
                 loadExpenses();
                 loadFinancialSummary();
             } else if (pageId === 'products') {
-                updateProductsGrid();
+                updateProductsList();
                 updateCartSummary();
             } else if (pageId === 'transaction') {
                 updateCartDisplay();
@@ -2168,7 +2292,7 @@
             }
         }
         
-        // API Functions
+        // API Functions with Real-time Updates
         async function fetchData(sheet, action, params = {}) {
             // If offline and local storage is enabled, try to get data from local storage
             if (!navigator.onLine && localStorageEnabled) {
@@ -2206,6 +2330,9 @@
             fullUrl.searchParams.append('sheet', sheet);
             fullUrl.searchParams.append('action', action);
             
+            // Add timestamp for cache busting
+            fullUrl.searchParams.append('_', Date.now());
+            
             Object.keys(params).forEach(key => {
                 fullUrl.searchParams.append(key, params[key]);
             });
@@ -2214,12 +2341,19 @@
                 const response = await fetch(fullUrl);
                 const data = await response.json();
                 
-                // Save data to local storage if enabled
-                if (localStorageEnabled && data.success) {
-                    saveDataToLocalStorage();
+                if (data.success) {
+                    // Save data to local storage if enabled
+                    if (localStorageEnabled) {
+                        saveDataToLocalStorage();
+                    }
+                    
+                    // Trigger real-time updates
+                    triggerRealTimeUpdates(sheet, action, data);
+                    
+                    return data;
                 }
                 
-                return data;
+                return { success: false, message: data.message || 'Unknown error' };
             } catch (error) {
                 console.error('Error fetching data:', error);
                 
@@ -2231,6 +2365,104 @@
                 }
                 
                 return { success: false, message: 'Network error' };
+            }
+        }
+        
+        // Trigger Real-time Updates
+        function triggerRealTimeUpdates(sheet, action, data) {
+            // Show real-time indicator
+            showRealtimeIndicator();
+            
+            switch(sheet) {
+                case 'Produk':
+                    if (action === 'insert' || action === 'update' || action === 'delete') {
+                        updateProductsList();
+                        updateCartSummary();
+                        updateCartPanel();
+                        
+                        // Update product select di halaman transaksi
+                        const productSelect = document.getElementById('product-select');
+                        if (productSelect) {
+                            productSelect.innerHTML = '<option value="">Pilih Produk</option>';
+                            products.forEach(product => {
+                                const option = document.createElement('option');
+                                option.value = product['ID Produk'];
+                                option.textContent = `${product['Nama Produk']} - Rp ${parseInt(product['Harga Jual (Rp)']).toLocaleString('id-ID')}`;
+                                productSelect.appendChild(option);
+                            });
+                        }
+                    }
+                    break;
+                    
+                case 'Transaksi':
+                    if (action === 'insert') {
+                        loadTransactions();
+                        updateRecentTransactions();
+                        loadFinancialSummary();
+                        
+                        // Update dashboard jika sedang ditampilkan
+                        if (!document.getElementById('home-page').classList.contains('hidden')) {
+                            loadDashboard();
+                        }
+                    }
+                    break;
+                    
+                case 'Stok Air':
+                    if (action === 'update') {
+                        updateWaterTankVisualization();
+                        checkWaterLevel();
+                        
+                        // Update dashboard jika sedang ditampilkan
+                        if (!document.getElementById('home-page').classList.contains('hidden')) {
+                            loadDashboard();
+                        }
+                        
+                        // Update halaman stok air jika sedang ditampilkan
+                        if (!document.getElementById('water-stock-page').classList.contains('hidden')) {
+                            document.getElementById('water-remaining').textContent = waterStock['Sisa Liter'] || '0';
+                            document.getElementById('water-used').textContent = waterStock['Liter Terpakai'] || '0';
+                            document.getElementById('total-water-used').textContent = waterStock['Total Liter Terpakai'] || '0';
+                            document.getElementById('total-supply-cost').textContent = parseInt(waterStock['Total Biaya Suplai (Rp)'] || 0).toLocaleString('id-ID');
+                        }
+                    }
+                    break;
+                    
+                case 'Pelanggan':
+                    if (action === 'insert' || action === 'update' || action === 'delete') {
+                        updateCustomersList();
+                        
+                        // Update customer select di halaman transaksi
+                        const customerSelect = document.getElementById('customer-select');
+                        if (customerSelect) {
+                            customerSelect.innerHTML = '<option value="">Pilih Pelanggan</option>';
+                            customers.forEach(customer => {
+                                const option = document.createElement('option');
+                                option.value = customer['ID Pelanggan'];
+                                option.textContent = customer['Nama'];
+                                customerSelect.appendChild(option);
+                            });
+                        }
+                    }
+                    break;
+                    
+                case 'Pengeluaran':
+                    if (action === 'insert') {
+                        updateExpensesList();
+                        loadFinancialSummary();
+                        
+                        // Update dashboard jika sedang ditampilkan
+                        if (!document.getElementById('home-page').classList.contains('hidden')) {
+                            loadDashboard();
+                        }
+                    }
+                    break;
+                    
+                case 'Notifikasi':
+                    if (action === 'insert' || action === 'update' || action === 'clear') {
+                        updateNotificationBadge();
+                        updateNotificationList();
+                    }
+                    break;
             }
         }
         
@@ -2283,54 +2515,67 @@
                     });
                 }
                 
-                // Update products grid
-                updateProductsGrid();
+                // Update products list
+                updateProductsList();
             }
         }
         
-        // Update Products Grid
-        function updateProductsGrid() {
-            const productsGrid = document.getElementById('products-grid');
-            if (!productsGrid) return;
+        // Update Products List (optimized with DocumentFragment)
+        function updateProductsList() {
+            const productsList = document.getElementById('products-list');
+            if (!productsList) return;
             
-            productsGrid.innerHTML = '';
+            // Use DocumentFragment for better performance
+            const fragment = document.createDocumentFragment();
             
             if (products.length === 0) {
-                productsGrid.innerHTML = '<p class="text-gray-500 text-center py-4 col-span-2">Belum ada produk</p>';
-                return;
+                const emptyMessage = document.createElement('p');
+                emptyMessage.className = 'text-gray-500 text-center py-4';
+                emptyMessage.textContent = 'Belum ada produk';
+                fragment.appendChild(emptyMessage);
+            } else {
+                products.forEach((product, index) => {
+                    const productItem = createProductListItem(product, index);
+                    fragment.appendChild(productItem);
+                });
             }
             
-            products.forEach((product, index) => {
-                const productId = product['ID Produk'];
-                const productCard = document.createElement('div');
-                productCard.className = 'product-grid-item';
-                productCard.style.animationDelay = `${index * 0.05}s`;
-                productCard.style.animation = 'slideUp 0.3s ease-out forwards';
-                
-                // Add click event to the entire card
-                productCard.onclick = function() {
-                    addProductToCartFromProducts(productId);
-                };
-                
-                productCard.innerHTML = `
-                    <div class="product-grid-item-content">
-                        <h3 class="font-semibold">${product['Nama Produk']}</h3>
-                        <p class="text-sm text-gray-600">${product['Jenis']} - ${product['Liter']}L</p>
-                    </div>
-                    <div class="product-grid-item-footer">
-                        <div class="product-actions" ${showProductActions ? '' : 'style="display: none;"'}>
-                            <button onclick="event.stopPropagation(); editProduct('${productId}')" class="text-[#134e4a] hover:text-[#0f766e]">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button onclick="event.stopPropagation(); deleteProduct('${productId}')" class="text-red-600 hover:text-red-800">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                        <div class="product-price">Rp ${parseInt(product['Harga Jual (Rp)']).toLocaleString('id-ID')}</div>
-                    </div>
-                `;
-                productsGrid.appendChild(productCard);
-            });
+            // Clear and update in one operation
+            productsList.innerHTML = '';
+            productsList.appendChild(fragment);
+        }
+        
+        // Create Product List Item
+        function createProductListItem(product, index) {
+            const productId = product['ID Produk'];
+            const productItem = document.createElement('div');
+            productItem.className = 'product-list-item';
+            productItem.style.animationDelay = `${index * 0.05}s`;
+            productItem.style.animation = 'slideUp 0.3s ease-out forwards';
+            
+            // Add click event to the entire item
+            productItem.onclick = function() {
+                addProductToCartFromProducts(productId);
+            };
+            
+            // Create inner HTML
+            productItem.innerHTML = `
+                <div class="product-list-info">
+                    <div class="product-list-name">${product['Nama Produk']}</div>
+                    <div class="product-list-details">${product['Jenis']} - ${product['Liter']}L</div>
+                </div>
+                <div class="product-list-price">Rp ${parseInt(product['Harga Jual (Rp)']).toLocaleString('id-ID')}</div>
+                <div class="product-actions" ${showProductActions ? '' : 'style="display: none;"'}>
+                    <button onclick="event.stopPropagation(); editProduct('${productId}')" class="text-[#134e4a] hover:text-[#0f766e]">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button onclick="event.stopPropagation(); deleteProduct('${productId}')" class="text-red-600 hover:text-red-800">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            
+            return productItem;
         }
         
         // Toggle Product Actions
@@ -2615,7 +2860,7 @@
         // Update water tank visualization
         function updateWaterTankVisualization() {
             const remaining = parseInt(waterStock['Sisa Liter'] || 0);
-            const capacity = parseInt(settings['Kapasitas Toren (Liter)'] || 1000); // Default to 1000 if not set
+            const capacity = parseInt(settings['Kapasitas Toren (Liter)'] || 1000);
             
             // Calculate percentage
             const percentage = capacity > 0 ? Math.min(100, Math.max(0, (remaining / capacity) * 100)) : 0;
@@ -2675,6 +2920,13 @@
                 // Sort notifications by date (newest first)
                 notifications.sort((a, b) => new Date(b['Tanggal']) - new Date(a['Tanggal']));
                 
+                // Ensure all notifications have status field
+                notifications.forEach(notification => {
+                    if (!notification['Status']) {
+                        notification['Status'] = 'enable';
+                    }
+                });
+                
                 // Update notification badge
                 updateNotificationBadge();
                 
@@ -2687,10 +2939,13 @@
         function updateNotificationBadge() {
             const notificationBadge = document.getElementById('notification-badge');
             
-            if (notifications.length === 0) {
+            // Filter notifications with status "enable"
+            const enabledNotifications = notifications.filter(n => n['Status'] !== 'disable');
+            
+            if (enabledNotifications.length === 0) {
                 notificationBadge.classList.add('hidden');
             } else {
-                notificationBadge.textContent = notifications.length > 99 ? '99+' : notifications.length;
+                notificationBadge.textContent = enabledNotifications.length > 99 ? '99+' : enabledNotifications.length;
                 notificationBadge.classList.remove('hidden');
             }
         }
@@ -2702,16 +2957,27 @@
             
             notificationList.innerHTML = '';
             
-            if (notifications.length === 0) {
+            // Filter notifications with status "enable"
+            const enabledNotifications = notifications.filter(n => n['Status'] !== 'disable');
+            
+            if (enabledNotifications.length === 0) {
                 notificationList.innerHTML = '<div class="notification-empty">Tidak ada notifikasi</div>';
                 return;
             }
             
-            notifications.forEach((notification, index) => {
+            enabledNotifications.forEach((notification, index) => {
+                // Find original index in notifications array
+                const originalIndex = notifications.findIndex(n => n === notification);
+                
                 const notificationItem = document.createElement('div');
                 notificationItem.className = 'notification-item';
                 notificationItem.style.animationDelay = `${index * 0.05}s`;
                 notificationItem.style.animation = 'slideUp 0.3s ease-out forwards';
+                
+                // Add click event to toggle status
+                notificationItem.onclick = function() {
+                    handleNotificationClick(originalIndex);
+                };
                 
                 const date = new Date(notification['Tanggal']);
                 const formattedDate = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -2725,12 +2991,58 @@
             });
         }
         
+        // Handle Notification Click
+        function handleNotificationClick(index) {
+            const notification = notifications[index];
+            
+            // Ensure notification has status field
+            if (!notification['Status']) {
+                notification['Status'] = 'enable';
+            }
+            
+            // Update notification status to "disable" when clicked
+            updateNotificationStatus(index, 'disable');
+        }
+        
+        // Update Notification Status
+        async function updateNotificationStatus(index, newStatus) {
+            const notification = notifications[index];
+            
+            try {
+                // Update status in database
+                const response = await fetchData('Notifikasi', 'update', {
+                    row: index + 2, // +2 because row 1 is header and row 2 is first data row
+                    'Status': newStatus
+                });
+                
+                if (response.success) {
+                    // Update status in local array
+                    notification['Status'] = newStatus;
+                    
+                    // Update UI
+                    updateNotificationList();
+                    updateNotificationBadge();
+                    
+                    showToast(`Notifikasi ${newStatus === 'enable' ? 'ditampilkan' : 'disembunyikan'}`, 'success');
+                    
+                    // Reload page in background after updating notification status
+                    reloadPageInBackground();
+                } else {
+                    showToast('Gagal mengubah status notifikasi', 'error');
+                }
+            } catch (error) {
+                console.error('Error updating notification status:', error);
+                showToast('Terjadi kesalahan saat mengubah status notifikasi', 'error');
+            }
+        }
+        
         // Add Notification
         async function addNotification(type, message) {
             const date = new Date();
             const notificationData = {
                 'Tanggal': date.toISOString(),
-                'Notifikasi': message
+                'Notifikasi': message,
+                'Status': 'enable' // Default status is enable
             };
             
             try {
@@ -2747,6 +3059,9 @@
                     
                     // Show toast notification
                     showToast(message, type);
+                    
+                    // Reload page in background after adding notification
+                    reloadPageInBackground();
                 }
             } catch (error) {
                 console.error('Error adding notification:', error);
@@ -2773,6 +3088,9 @@
                     updateNotificationList();
                     
                     showToast('Semua notifikasi berhasil dihapus', 'success');
+                    
+                    // Reload page in background after clearing notifications
+                    reloadPageInBackground();
                 }
             } catch (error) {
                 console.error('Error clearing notifications:', error);
@@ -2828,6 +3146,9 @@
                         <div class="text-right">
                             <p class="font-medium text-[#134e4a]">Rp ${parseInt(transaction['Harga Jual (Rp)']).toLocaleString('id-ID')}</p>
                             <p class="text-xs ${transaction['Status'] === 'Lunas' ? 'text-green-600' : 'text-yellow-600'}">${transaction['Status']}</p>
+                            <button onclick="printTransactionReceipt('${transaction['ID Transaksi']}')" class="mt-2 text-blue-600 hover:text-blue-800 text-sm">
+                                <i class="fas fa-print mr-1"></i> Cetak Ulang
+                            </button>
                         </div>
                     </div>
                 `;
@@ -2992,7 +3313,7 @@
             
             // Update today transactions
             const today = new Date();
-            const todayDateString = today.toISOString().split('T')[0]; // Get date part only
+            const todayDateString = today.toISOString().split('T')[0];
             const todayTransactions = transactions.filter(t => {
                 const transactionDate = new Date(t['Tanggal']);
                 const transactionDateString = transactionDate.toISOString().split('T')[0];
@@ -3192,6 +3513,13 @@
             
             cartTotal.textContent = total.toLocaleString('id-ID');
             
+            // Auto-fill payment amount with total
+            const paymentAmountInput = document.getElementById('payment-amount');
+            if (paymentAmountInput) {
+                paymentAmountInput.value = total;
+                updateChangeCalculation();
+            }
+            
             // Update change calculation if payment method is cash
             if (currentPaymentMethod === 'cash') {
                 updateChangeCalculation();
@@ -3210,18 +3538,18 @@
         
         // Increase Quantity
         function increaseQuantity(index) {
-            cart[index].quantity += 1;
-            updateCartDisplay();
-            updateCartPanel();
-        }
-        
-        // Decrease Quantity
-        function decreaseQuantity(index) {
             if (cart[index].quantity > 1) {
                 cart[index].quantity -= 1;
                 updateCartDisplay();
                 updateCartPanel();
             }
+        }
+        
+        // Decrease Quantity
+        function decreaseQuantity(index) {
+            cart[index].quantity += 1;
+            updateCartDisplay();
+            updateCartPanel();
         }
         
         // Remove from Cart
@@ -3359,6 +3687,10 @@
                     updateCartSummary();
                     updateCartPanel();
                     
+                    // Hide cart badge after successful transaction
+                    const cartBadge = document.getElementById('cart-badge');
+                    cartBadge.classList.add('hidden');
+                    
                     // Calculate change
                     const change = currentPaymentMethod === 'cash' ? paymentAmount - totalPrice : 0;
                     
@@ -3376,6 +3708,9 @@
                     ]);
                     
                     showToast('Transaksi berhasil', 'success');
+                    
+                    // Reload page in background after processing transaction
+                    reloadPageInBackground();
                 } else {
                     showToast('Gagal menambah transaksi', 'error');
                 }
@@ -3400,11 +3735,22 @@
                 totalAmount += item.price * item.quantity;
             });
             
+            // Store receipt data for download
+            currentReceiptData = {
+                transactionData: transactionData,
+                cartItems: cartItems,
+                paymentAmount: paymentAmount,
+                change: change,
+                formattedDate: formattedDate,
+                formattedTime: formattedTime,
+                totalAmount: totalAmount
+            };
+            
             // Generate receipt content with modern style like Alfamart/Indomart
             let receiptHTML = `
                 <div class="receipt-header">
                     <div class="receipt-logo">
-                        <i class="fas fa-tint"></i>
+                        ${settings['Logo'] ? `<img src="${settings['Logo']}" alt="Logo" crossorigin="anonymous">` : '<i class="fas fa-tint"></i>'}
                     </div>
                     <div class="receipt-title">${settings['Nama Usaha'] || 'Kasir Stok Air'}</div>
                     <div class="receipt-subtitle">${settings['Alamat Usaha'] || 'Jl. Contoh No. 123'}</div>
@@ -3539,6 +3885,12 @@
                             justify-content: center;
                             color: white;
                             font-size: 24px;
+                            overflow: hidden;
+                        }
+                        .receipt-logo img {
+                            width: 100%;
+                            height: 100%;
+                            object-fit: cover;
                         }
                         .receipt-title {
                             font-size: 18px;
@@ -3645,6 +3997,172 @@
             printWindow.print();
         }
         
+        // Download Receipt as Image
+        function downloadReceipt() {
+            if (!currentReceiptData) return;
+            
+            const receiptElement = document.getElementById('receipt-content');
+            
+            // Wait for all images to load before capturing
+            const images = receiptElement.querySelectorAll('img');
+            let loadedImages = 0;
+            
+            if (images.length === 0) {
+                // If no images, directly download
+                captureAndDownloadReceipt(receiptElement);
+            } else {
+                // Wait for all images to load
+                images.forEach(img => {
+                    if (img.complete) {
+                        loadedImages++;
+                    } else {
+                        img.onload = () => {
+                            loadedImages++;
+                            if (loadedImages === images.length) {
+                                captureAndDownloadReceipt(receiptElement);
+                            }
+                        };
+                        img.onerror = () => {
+                            loadedImages++;
+                            if (loadedImages === images.length) {
+                                captureAndDownloadReceipt(receiptElement);
+                            }
+                        };
+                    }
+                });
+                
+                // Check if all images are already loaded
+                if (loadedImages === images.length) {
+                    captureAndDownloadReceipt(receiptElement);
+                }
+            }
+        }
+        
+        // Capture and Download Receipt
+        function captureAndDownloadReceipt(receiptElement) {
+            html2canvas(receiptElement, {
+                scale: 2,
+                backgroundColor: '#ffffff',
+                logging: false,
+                useCORS: true, // Allow cross-origin images
+                allowTaint: true // Allow tainted cross-origin images
+            }).then(canvas => {
+                // Convert canvas to blob
+                canvas.toBlob(blob => {
+                    // Create download link
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `Nota-${currentReceiptData.transactionData['ID Transaksi']}.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    
+                    showToast('Nota berhasil diunduh', 'success');
+                }, 'image/png');
+            }).catch(error => {
+                console.error('Error generating receipt image:', error);
+                showToast('Gagal mengunduh nota', 'error');
+            });
+        }
+        
+        // Print Transaction Receipt from History
+        function printTransactionReceipt(transactionId) {
+            const transaction = transactions.find(t => t['ID Transaksi'] === transactionId);
+            if (!transaction) return;
+            
+            // Create receipt data from transaction
+            const date = new Date(transaction['Tanggal']);
+            const formattedDate = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            const formattedTime = date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            
+            // Parse products from transaction
+            const productsText = transaction['Produk'];
+            const productMatches = productsText.match(/([^,]+)\s*\((\d+)\)/g) || [];
+            const cartItems = productMatches.map(match => {
+                const [, name, quantity] = match.match(/([^,]+)\s*\((\d+)\)/);
+                const product = products.find(p => p['Nama Produk'] === name.trim());
+                return {
+                    name: name.trim(),
+                    quantity: parseInt(quantity),
+                    price: product ? parseInt(product['Harga Jual (Rp)']) : 0
+                };
+            });
+            
+            const totalPrice = parseInt(transaction['Harga Jual (Rp)']);
+            
+            // Show receipt
+            showReceipt(transaction, cartItems, totalPrice, 0);
+        }
+        
+        // Toggle Product Type Dropdown
+        function toggleProductTypeDropdown() {
+            const dropdown = document.getElementById('product-type-dropdown');
+            dropdown.classList.toggle('show');
+            
+            if (dropdown.classList.contains('show')) {
+                populateProductTypeOptions('product-type-options');
+            }
+        }
+        
+        // Toggle Edit Product Type Dropdown
+        function toggleEditProductTypeDropdown() {
+            const dropdown = document.getElementById('edit-product-type-dropdown');
+            dropdown.classList.toggle('show');
+            
+            if (dropdown.classList.contains('show')) {
+                populateProductTypeOptions('edit-product-type-options');
+            }
+        }
+        
+        // Populate Product Type Options
+        function populateProductTypeOptions(containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            // Get unique product types
+            const productTypes = [...new Set(products.map(p => p['Jenis']))];
+            
+            productTypes.forEach(type => {
+                const option = document.createElement('div');
+                option.className = 'product-type-option';
+                option.textContent = type;
+                option.onclick = function() {
+                    selectProductType(type, containerId);
+                };
+                container.appendChild(option);
+            });
+        }
+        
+        // Select Product Type
+        function selectProductType(type, containerId) {
+            const inputId = containerId === 'product-type-options' ? 'new-product-type' : 'edit-product-type';
+            document.getElementById(inputId).value = type;
+            
+            // Close dropdown
+            const dropdownId = containerId === 'product-type-options' ? 'product-type-dropdown' : 'edit-product-type-dropdown';
+            document.getElementById(dropdownId).classList.remove('show');
+        }
+        
+        // Add New Product Type
+        function addNewProductType() {
+            const newType = prompt('Masukkan jenis produk baru:');
+            if (newType && newType.trim()) {
+                document.getElementById('new-product-type').value = newType.trim();
+                document.getElementById('product-type-dropdown').classList.remove('show');
+            }
+        }
+        
+        // Add New Edit Product Type
+        function addNewEditProductType() {
+            const newType = prompt('Masukkan jenis produk baru:');
+            if (newType && newType.trim()) {
+                document.getElementById('edit-product-type').value = newType.trim();
+                document.getElementById('edit-product-type-dropdown').classList.remove('show');
+            }
+        }
+        
         // Show Add Product Modal
         function showAddProductModal() {
             document.getElementById('add-product-modal').classList.remove('hidden');
@@ -3665,6 +4183,11 @@
             
             if (price <= 0) {
                 showToast('Harga jual harus lebih dari 0', 'error');
+                return;
+            }
+            
+            if (!type) {
+                showToast('Pilih jenis produk', 'error');
                 return;
             }
             
@@ -3700,6 +4223,7 @@
                     document.getElementById('new-product-price').value = '';
                     document.getElementById('new-product-cost').value = '';
                     document.getElementById('new-product-liter').value = '';
+                    document.getElementById('new-product-type').value = '';
                     
                     // Close modal
                     closeModal('add-product-modal');
@@ -3711,6 +4235,9 @@
                     addNotification('success', `Produk "${name}" berhasil ditambahkan`);
                     
                     showToast('Produk berhasil ditambahkan', 'success');
+                    
+                    // Reload page in background after adding product
+                    reloadPageInBackground();
                 } else {
                     showToast('Gagal menambah produk', 'error');
                 }
@@ -3758,6 +4285,11 @@
                 return;
             }
             
+            if (!type) {
+                showToast('Pilih jenis produk', 'error');
+                return;
+            }
+            
             // Calculate profit and margin
             const profit = price - cost;
             const margin = price > 0 ? (profit / price * 100).toFixed(2) : 0;
@@ -3768,7 +4300,7 @@
             
             // Prepare product data
             const productData = {
-                row: productIndex + 2, // +2 because of header and 0-based index
+                row: productIndex + 2,
                 'Nama Produk': name,
                 'Harga Jual (Rp)': price,
                 'Harga Pokok (Rp)': cost,
@@ -3796,6 +4328,9 @@
                     addNotification('success', `Produk "${name}" berhasil diperbarui`);
                     
                     showToast('Produk berhasil diperbarui', 'success');
+                    
+                    // Reload page in background after updating product
+                    reloadPageInBackground();
                 } else {
                     showToast('Gagal memperbarui produk', 'error');
                 }
@@ -3823,7 +4358,7 @@
             try {
                 // Delete product
                 const response = await fetchData('Produk', 'delete', {
-                    row: productIndex + 2 // +2 because of header and 0-based index
+                    row: productIndex + 2
                 });
                 
                 if (response.success) {
@@ -3834,6 +4369,9 @@
                     addNotification('warning', `Produk "${productName}" berhasil dihapus`);
                     
                     showToast('Produk berhasil dihapus', 'success');
+                    
+                    // Reload page in background after deleting product
+                    reloadPageInBackground();
                 } else {
                     showToast('Gagal menghapus produk', 'error');
                 }
@@ -3895,6 +4433,9 @@
                     addNotification('success', `Pelanggan "${name}" berhasil ditambahkan`);
                     
                     showToast('Pelanggan berhasil ditambahkan', 'success');
+                    
+                    // Reload page in background after adding customer
+                    reloadPageInBackground();
                 } else {
                     showToast('Gagal menambah pelanggan', 'error');
                 }
@@ -3939,7 +4480,7 @@
             
             // Prepare customer data
             const customerData = {
-                row: customerIndex + 2, // +2 because of header and 0-based index
+                row: customerIndex + 2,
                 'Nama': name,
                 'Kontak': contact,
                 'Galon Titipan': deposit
@@ -3963,6 +4504,9 @@
                     addNotification('success', `Pelanggan "${name}" berhasil diperbarui`);
                     
                     showToast('Pelanggan berhasil diperbarui', 'success');
+                    
+                    // Reload page in background after updating customer
+                    reloadPageInBackground();
                 } else {
                     showToast('Gagal memperbarui pelanggan', 'error');
                 }
@@ -3990,7 +4534,7 @@
             try {
                 // Delete customer
                 const response = await fetchData('Pelanggan', 'delete', {
-                    row: customerIndex + 2 // +2 because of header and 0-based index
+                    row: customerIndex + 2
                 });
                 
                 if (response.success) {
@@ -4001,6 +4545,9 @@
                     addNotification('warning', `Pelanggan "${customerName}" berhasil dihapus`);
                     
                     showToast('Pelanggan berhasil dihapus', 'success');
+                    
+                    // Reload page in background after deleting customer
+                    reloadPageInBackground();
                 } else {
                     showToast('Gagal menghapus pelanggan', 'error');
                 }
@@ -4037,9 +4584,9 @@
             const currentTotalCost = parseInt(waterStock['Total Biaya Suplai (Rp)'] || 0);
             
             // Calculate new values
-            const newRemaining = tankCapacity; // Set to full capacity
-            const newUsed = 0; // Reset to 0
-            const newTotalUsed = currentTotalUsed; // Tetap menggunakan nilai yang ada
+            const newRemaining = tankCapacity;
+            const newUsed = 0;
+            const newTotalUsed = currentTotalUsed;
             const newTotalCost = currentTotalCost + supplyCost;
             
             // Show loading
@@ -4070,11 +4617,11 @@
                     // Add expense dengan format yang sesuai
                     const date = new Date();
                     const expenseData = {
-                        'Tanggal': date.toISOString().split('T')[0], // Format YYYY-MM-DD
+                        'Tanggal': date.toISOString().split('T')[0],
                         'Keterangan': `Penambahan stok air ${tankCapacity} liter`,
                         'Jenis': 'Stok Air',
                         'Jumlah': supplyCost,
-                        'Saldo': newBalance // Tambahkan saldo setelah pengeluaran
+                        'Saldo': newBalance
                     };
                     
                     await fetchData('Pengeluaran', 'insert', expenseData);
@@ -4094,6 +4641,9 @@
                     ]);
                     
                     showToast('Stok air berhasil ditambahkan', 'success');
+                    
+                    // Reload page in background after adding water stock
+                    reloadPageInBackground();
                 } else {
                     showToast('Gagal menambah stok air', 'error');
                 }
@@ -4132,14 +4682,14 @@
             // Hitung saldo setelah pengeluaran baru
             const newBalance = totalIncome - (currentTotalExpenses + amount);
             
-            // Generate expense data dengan format yang sesuai
+            // Generate expense data
             const date = new Date();
             const expenseData = {
-                'Tanggal': date.toISOString().split('T')[0], // Format YYYY-MM-DD
+                'Tanggal': date.toISOString().split('T')[0],
                 'Keterangan': description,
                 'Jenis': type,
                 'Jumlah': amount,
-                'Saldo': newBalance // Tambahkan saldo setelah pengeluaran
+                'Saldo': newBalance
             };
             
             // Show loading
@@ -4168,6 +4718,9 @@
                     ]);
                     
                     showToast('Pengeluaran berhasil ditambahkan', 'success');
+                    
+                    // Reload page in background after adding expense
+                    reloadPageInBackground();
                 } else {
                     showToast('Gagal menambah pengeluaran', 'error');
                 }
@@ -4187,6 +4740,9 @@
                 document.getElementById('local-storage-toggle').checked = false;
                 localStorageEnabled = false;
                 showToast('Data local storage berhasil dihapus', 'success');
+                
+                // Reload page in background after clearing local storage
+                reloadPageInBackground();
             }
         }
         
@@ -4243,6 +4799,9 @@
                     addNotification('success', 'Pengaturan berhasil disimpan');
                     
                     showToast('Pengaturan berhasil disimpan', 'success');
+                    
+                    // Reload page in background after saving settings
+                    reloadPageInBackground();
                 } else {
                     showToast('Gagal menyimpan pengaturan', 'error');
                 }
@@ -4311,7 +4870,7 @@
             
             try {
                 const response = await fetchData('Transaksi', 'update', {
-                    row: transactionIndex + 2, // +2 because of header and 0-based index
+                    row: transactionIndex + 2,
                     'Status': status
                 });
                 
@@ -4350,6 +4909,9 @@
                     ]);
                     
                     showToast('Pembayaran berhasil', 'success');
+                    
+                    // Reload page in background after paying debt
+                    reloadPageInBackground();
                 } else {
                     showToast('Gagal memproses pembayaran', 'error');
                 }
@@ -4481,14 +5043,114 @@
             }, 3000);
         }
         
-        // Add event listener for payment amount input to calculate change in real-time
+        // Disable API Key Input
+        function disableApiKeyInput() {
+            const apiKeyInput = document.getElementById('api-script-input');
+            if (apiKeyInput && apiKeyInput.value.trim() !== '') {
+                apiKeyInput.disabled = true;
+                showToast('API key telah disimpan dan dikunci untuk keamanan', 'success');
+            }
+        }
+        
+        // Reload Page in Background
+        function reloadPageInBackground() {
+            const reloadFrame = document.getElementById('reload-frame');
+            if (reloadFrame) {
+                // Add timestamp for cache busting
+                const timestamp = new Date().getTime();
+                reloadFrame.src = window.location.href + '?t=' + timestamp;
+                
+                // Listen for load event to know when reload is complete
+                reloadFrame.onload = function() {
+                    console.log('Background reload completed');
+                    // Refresh critical data
+                    refreshCriticalData();
+                };
+            }
+        }
+        
+        // Refresh Critical Data
+        function refreshCriticalData() {
+            // Refresh only the most critical data
+            loadWaterStock();
+            loadFinancialSummary();
+        }
+        
+        // Refresh All Data
+        async function refreshAllData() {
+            showLoading();
+            
+            try {
+                // Refresh all data
+                await Promise.all([
+                    loadSettings(),
+                    loadProducts(),
+                    loadCustomers(),
+                    loadWaterStock(),
+                    loadTransactions(),
+                    loadExpenses(),
+                    loadNotifications()
+                ]);
+                
+                showToast('Semua data berhasil diperbarui', 'success');
+                
+                // Reload page in background after refreshing data
+                reloadPageInBackground();
+            } catch (error) {
+                console.error(error);
+                showToast('Gagal memperbarui data', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        // Set Theme
+        function setTheme(theme) {
+            // Remove all theme classes
+            document.body.classList.remove('default-theme', 'dark-theme', 'light-theme');
+            
+            // Add selected theme class
+            document.body.classList.add(`${theme}-theme`);
+            
+            // Update theme selector UI
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            
+            document.querySelector(`.theme-${theme}`).classList.add('active');
+            
+            // Save theme preference
+            localStorage.setItem('appTheme', theme);
+            currentTheme = theme;
+            
+            // Apply theme-specific styles
+            applyThemeStyles(theme);
+        }
+        
+        // Apply Theme-specific Styles
+        function applyThemeStyles(theme) {
+            // Theme-specific styles can be applied here if needed
+            // For now, CSS variables handle most of the theming
+        }
+        
+        // Add event listeners for real-time updates
         document.addEventListener('DOMContentLoaded', function() {
+            // Event listener for payment amount input to calculate change in real-time
             const paymentAmountInput = document.getElementById('payment-amount');
             if (paymentAmountInput) {
                 paymentAmountInput.addEventListener('input', updateChangeCalculation);
             }
             
-            // Check online/offline status
+            // Event listener for cart quantity changes
+            document.addEventListener('change', function(e) {
+                if (e.target.classList.contains('cart-quantity-input')) {
+                    const index = parseInt(e.target.dataset.index);
+                    const value = parseInt(e.target.value) || 1;
+                    updateQuantity(index, value);
+                }
+            });
+            
+            // Event listener for online/offline status
             window.addEventListener('online', function() {
                 if (localStorageEnabled) {
                     showToast('Anda kembali online. Menyinkronkan data...', 'success');
