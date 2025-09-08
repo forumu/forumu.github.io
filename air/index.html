@@ -153,7 +153,47 @@
         .cart-item {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
         }
+        
+        .cart-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-color: #134e4a;
+        }
+        
+        .cart-item-content {
+            transition: transform 0.3s ease;
+        }
+        
+        .cart-delete-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 80px;
+            background: #ef4444;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .cart-item.swipe-left .cart-item-content {
+            transform: translateX(-80px);
+        }
+        
+        .cart-item.swipe-left .cart-delete-btn {
+            transform: translateX(0);
+        }
+        
         .payment-method.active {
             background: var(--button-bg);
             color: white;
@@ -750,15 +790,6 @@
             overflow-y: auto;
         }
         
-        .cart-item {
-            padding: 12px 16px;
-            border-bottom: 1px solid #f1f5f9;
-        }
-        
-        .cart-item:last-child {
-            border-bottom: none;
-        }
-        
         .cart-empty {
             padding: 24px 16px;
             text-align: center;
@@ -1108,6 +1139,52 @@
             font-size: 12px;
             font-weight: 500;
         }
+        
+        /* Cart quantity input improvements */
+        .cart-quantity-input {
+            width: 60px !important;
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            padding: 8px 4px;
+            border: 2px solid #134e4a;
+            border-radius: 6px;
+            color: #134e4a;
+        }
+        
+        .cart-quantity-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(19, 78, 74, 0.3);
+        }
+        
+        /* Customer autocomplete improvements */
+        #customer-suggestions {
+            z-index: 50;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        #customer-suggestions div:hover {
+            background-color: rgba(19, 78, 74, 0.1);
+        }
+        
+        /* Cart item improvements */
+        .cart-product-name {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .cart-product-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .cart-product-price {
+            font-weight: bold;
+            color: #134e4a;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -1286,19 +1363,20 @@
                 
                 <div class="mb-4">
                     <label class="block text-sm font-medium mb-1">Pelanggan</label>
-                    <div class="flex space-x-2">
-                        <select id="customer-select" class="flex-1 input-field rounded-lg px-3 py-2">
-                            <option value="">Pilih Pelanggan</option>
-                        </select>
-                        <button onclick="showAddCustomerModal()" class="bg-gray-200 px-3 py-2 rounded-lg">
-                            <i class="fas fa-user-plus"></i>
-                        </button>
+                    <div class="relative">
+                        <input type="text" id="customer-input" class="flex-1 input-field rounded-lg px-3 py-2 w-full" placeholder="Ketik nama pelanggan..." autocomplete="off">
+                        <div id="customer-suggestions" class="absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-lg mt-1 max-h-60 overflow-y-auto hidden">
+                            <!-- Suggestions will be loaded here -->
+                        </div>
                     </div>
+                    <button onclick="showAddCustomerModal()" class="mt-2 bg-gray-200 px-3 py-2 rounded-lg">
+                        <i class="fas fa-user-plus"></i> Tambah Pelanggan
+                    </button>
                 </div>
                 
                 <div class="mb-6">
                     <h3 class="font-semibold mb-2">Keranjang Belanja</h3>
-                    <div id="cart-items" class="space-y-2 mb-3 max-h-60 overflow-y-auto">
+                    <div id="cart-items" class="space-y-3 mb-3 max-h-60 overflow-y-auto">
                         <p class="text-center text-gray-500 py-4">Keranjang belanja kosong</p>
                     </div>
                     <div class="flex justify-between items-center pt-2 border-t border-gray-200">
@@ -1951,6 +2029,9 @@
                 document.getElementById('local-storage-toggle').checked = true;
             }
             
+            // Initialize customer autocomplete
+            initializeCustomerAutocomplete();
+            
             showLoading();
             
             // Try to load data from local storage first if enabled
@@ -2033,6 +2114,58 @@
                     console.error(error);
                 });
         });
+        
+        // Initialize Customer Autocomplete
+        function initializeCustomerAutocomplete() {
+            const customerInput = document.getElementById('customer-input');
+            const customerSuggestions = document.getElementById('customer-suggestions');
+            
+            if (customerInput && customerSuggestions) {
+                customerInput.addEventListener('input', function(e) {
+                    const value = e.target.value.toLowerCase();
+                    
+                    if (value.length < 1) {
+                        customerSuggestions.classList.add('hidden');
+                        return;
+                    }
+                    
+                    // Filter customers based on input
+                    const filteredCustomers = customers.filter(customer => 
+                        customer['Nama'].toLowerCase().includes(value)
+                    );
+                    
+                    // Clear previous suggestions
+                    customerSuggestions.innerHTML = '';
+                    
+                    if (filteredCustomers.length === 0) {
+                        customerSuggestions.classList.add('hidden');
+                        return;
+                    }
+                    
+                    // Add filtered customers to suggestions
+                    filteredCustomers.forEach(customer => {
+                        const suggestion = document.createElement('div');
+                        suggestion.className = 'px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-b-0';
+                        suggestion.textContent = customer['Nama'];
+                        suggestion.onclick = function() {
+                            customerInput.value = customer['Nama'];
+                            customerInput.setAttribute('data-customer-id', customer['ID Pelanggan']);
+                            customerSuggestions.classList.add('hidden');
+                        };
+                        customerSuggestions.appendChild(suggestion);
+                    });
+                    
+                    customerSuggestions.classList.remove('hidden');
+                });
+                
+                // Close suggestions when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (customerInput && customerSuggestions && !customerInput.contains(e.target) && !customerSuggestions.contains(e.target)) {
+                        customerSuggestions.classList.add('hidden');
+                    }
+                });
+            }
+        }
         
         // Save data to local storage
         function saveDataToLocalStorage() {
@@ -2442,18 +2575,7 @@
                 case 'Pelanggan':
                     if (action === 'insert' || action === 'update' || action === 'delete') {
                         updateCustomersList();
-                        
-                        // Update customer select di halaman transaksi
-                        const customerSelect = document.getElementById('customer-select');
-                        if (customerSelect) {
-                            customerSelect.innerHTML = '<option value="">Pilih Pelanggan</option>';
-                            customers.forEach(customer => {
-                                const option = document.createElement('option');
-                                option.value = customer['ID Pelanggan'];
-                                option.textContent = customer['Nama'];
-                                customerSelect.appendChild(option);
-                            });
-                        }
+                        initializeCustomerAutocomplete();
                     }
                     break;
                     
@@ -3495,32 +3617,36 @@
                 total += itemTotal;
                 
                 const cartItem = document.createElement('div');
-                cartItem.className = 'cart-item rounded-lg p-3';
+                cartItem.className = 'cart-item rounded-lg shadow-sm';
+                cartItem.dataset.index = index;
                 cartItem.style.animationDelay = `${index * 0.05}s`;
                 cartItem.style.animation = 'slideUp 0.3s ease-out forwards';
+                
                 cartItem.innerHTML = `
-                    <div class="flex justify-between items-center">
-                        <div class="flex-1">
-                            <p class="font-medium">${item.name}</p>
-                            <div class="flex items-center mt-1">
-                                <button onclick="decreaseQuantity(${index})" class="bg-gray-200 text-gray-700 w-6 h-6 rounded-full flex items-center justify-center">
+                    <div class="cart-item-content">
+                        <div class="cart-product-name">${item.name}</div>
+                        <div class="cart-product-details">
+                            <div class="flex items-center bg-gray-100 rounded-lg p-1">
+                                <button onclick="decreaseQuantity(${index})" class="bg-white text-gray-700 w-8 h-8 rounded-full flex items-center justify-center shadow-sm">
                                     <i class="fas fa-minus text-xs"></i>
                                 </button>
-                                <input type="number" value="${item.quantity}" min="1" class="cart-quantity-input mx-2 input-field rounded px-2 py-1 text-sm" onchange="updateQuantity(${index}, this.value)">
-                                <button onclick="increaseQuantity(${index})" class="bg-gray-200 text-gray-700 w-6 h-6 rounded-full flex items-center justify-center">
+                                <input type="number" value="${item.quantity}" min="1" class="cart-quantity-input mx-2 input-field rounded px-2 py-1 text-sm w-16 text-center font-bold" onchange="updateQuantity(${index}, this.value)">
+                                <button onclick="increaseQuantity(${index})" class="bg-white text-gray-700 w-8 h-8 rounded-full flex items-center justify-center shadow-sm">
                                     <i class="fas fa-plus text-xs"></i>
                                 </button>
                             </div>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <p class="font-medium text-[#134e4a]">Rp ${itemTotal.toLocaleString('id-ID')}</p>
-                            <button onclick="removeFromCart(${index})" class="text-red-600 hover:text-red-800">
-                                <i class="fas fa-trash"></i>
-                            </button>
+                            <div class="cart-product-price">Rp ${itemTotal.toLocaleString('id-ID')}</div>
                         </div>
                     </div>
+                    <button class="cart-delete-btn" onclick="removeFromCart(${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
                 `;
+                
                 cartItems.appendChild(cartItem);
+                
+                // Setup swipe listener for this cart item
+                setupCartItemSwipeListener(cartItem);
             });
             
             cartTotal.textContent = total.toLocaleString('id-ID');
@@ -3538,6 +3664,47 @@
             }
         }
         
+        // Setup swipe listener for cart item
+        function setupCartItemSwipeListener(cartItem) {
+            let startX = 0;
+            let currentX = 0;
+            let isDragging = false;
+            
+            const content = cartItem.querySelector('.cart-item-content');
+            const deleteBtn = cartItem.querySelector('.cart-delete-btn');
+            
+            cartItem.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+                isDragging = true;
+                content.style.transition = 'none';
+                deleteBtn.style.transition = 'none';
+            });
+            
+            cartItem.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                currentX = e.touches[0].clientX;
+                const diffX = currentX - startX;
+                if (diffX < 0) { // swipe left
+                    const translateX = Math.max(diffX, -80); // maksimal geser 80px ke kiri
+                    content.style.transform = `translateX(${translateX}px)`;
+                    deleteBtn.style.transform = `translateX(${translateX + 80}px)`;
+                }
+            });
+            
+            cartItem.addEventListener('touchend', () => {
+                isDragging = false;
+                content.style.transition = 'transform 0.3s ease';
+                deleteBtn.style.transition = 'transform 0.3s ease';
+                const diffX = currentX - startX;
+                if (diffX < -50) { // threshold 50px
+                    cartItem.classList.add('swipe-left');
+                } else {
+                    content.style.transform = '';
+                    deleteBtn.style.transform = '';
+                }
+            });
+        }
+        
         // Update Quantity
         function updateQuantity(index, value) {
             const quantity = parseInt(value) || 1;
@@ -3550,18 +3717,18 @@
         
         // Increase Quantity
         function increaseQuantity(index) {
+            cart[index].quantity += 1;
+            updateCartDisplay();
+            updateCartPanel();
+        }
+        
+        // Decrease Quantity
+        function decreaseQuantity(index) {
             if (cart[index].quantity > 1) {
                 cart[index].quantity -= 1;
                 updateCartDisplay();
                 updateCartPanel();
             }
-        }
-        
-        // Decrease Quantity
-        function decreaseQuantity(index) {
-            cart[index].quantity += 1;
-            updateCartDisplay();
-            updateCartPanel();
         }
         
         // Remove from Cart
@@ -3614,14 +3781,11 @@
                 return;
             }
             
-            const customerSelect = document.getElementById('customer-select').value;
+            const customerInput = document.getElementById('customer-input');
+            const customerId = customerInput.getAttribute('data-customer-id') || '';
+            const customerName = customerInput.value || 'Pelanggan Baru';
             const paymentAmountInput = document.getElementById('payment-amount');
             const paymentAmount = parseInt(paymentAmountInput.value) || 0;
-            
-            // Use "Pelanggan Baru" if no customer is selected
-            const customerName = customerSelect 
-                ? customers.find(c => c['ID Pelanggan'] === customerSelect)['Nama']
-                : 'Pelanggan Baru';
             
             // Calculate totals
             let totalPrice = 0;
@@ -3689,7 +3853,8 @@
                     });
                     
                     // Reset form
-                    document.getElementById('customer-select').value = '';
+                    customerInput.value = '';
+                    customerInput.removeAttribute('data-customer-id');
                     paymentAmountInput.value = '';
                     
                     // Clear cart
@@ -5109,8 +5274,8 @@
                 // Reload page in background after refreshing data
                 reloadPageInBackground();
             } catch (error) {
-                console.error(error);
                 showToast('Gagal memperbarui data', 'error');
+                console.error(error);
             } finally {
                 hideLoading();
             }
