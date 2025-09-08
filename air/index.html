@@ -2162,11 +2162,23 @@
             
             // Find the clicked button and mark it as active
             const navButtons = document.querySelectorAll('.nav-btn');
+            let buttonFound = false;
+            
             navButtons.forEach(btn => {
                 if (btn.onclick && btn.onclick.toString().includes(`showPage('${pageId}')`)) {
                     btn.classList.add('active');
+                    buttonFound = true;
                 }
             });
+            
+            // If no button found for the page, activate the home button
+            if (!buttonFound) {
+                navButtons.forEach(btn => {
+                    if (btn.onclick && btn.onclick.toString().includes(`showPage('home')`)) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
             
             // Update header color based on page
             updateHeaderColor(pageId);
