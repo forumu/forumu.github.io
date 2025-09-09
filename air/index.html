@@ -79,7 +79,7 @@ body.light-theme {
 .content-container {
 padding-top: 70px; /* 60px (top-nav) + 50px (horizontal-menu) */
 padding-bottom: 70px; /* 70px (bottom-nav) */
-min-height: calc(100vh - 180px); /* 100vh - (110px + 70px) */
+min-height: calc(100vh - 850px); /* 100vh - (110px + 70px) */
 }
 .bottom-nav {
 height: 70px;
@@ -1064,7 +1064,6 @@ width: 100%;
 height: 100%;
 object-fit: cover;
 }
-
 .loading-spinner {
     width: 100px;
     height: 100px;
@@ -1309,6 +1308,99 @@ to { opacity: 1; transform: translateY(0); }
 50% { transform: scale(1.05); }
 100% { transform: scale(1); }
 }
+/* PERUBAHAN: Toggle switch untuk metode pembayaran */
+.payment-toggle-container {
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 20px;
+}
+.payment-toggle-label {
+font-weight: 500;
+color: var(--text-color);
+}
+.payment-toggle-switch {
+position: relative;
+display: inline-block;
+width: 120px;
+height: 40px;
+}
+.payment-toggle-switch input {
+opacity: 0;
+width: 0;
+height: 0;
+}
+.payment-toggle-slider {
+position: absolute;
+cursor: pointer;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background-color: #ccc;
+transition: .4s;
+border-radius: 40px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 0 10px;
+}
+.payment-toggle-slider:before {
+position: absolute;
+content: "";
+height: 32px;
+width: 32px;
+left: 4px;
+bottom: 4px;
+background-color: white;
+transition: .4s;
+border-radius: 50%;
+z-index: 1;
+}
+.payment-toggle-slider .payment-option {
+font-size: 12px;
+font-weight: 600;
+z-index: 0;
+color: #666;
+}
+input:checked + .payment-toggle-slider {
+background-color: var(--button-bg);
+background: #F44336;
+}
+input:checked + .payment-toggle-slider .payment-option.cash {
+color: white;
+}
+input:checked + .payment-toggle-slider .payment-option.debt {
+color: #ccc;
+}
+input:checked + .payment-toggle-slider:before {
+transform: translateX(80px);
+}
+input:not(:checked) + .payment-toggle-slider .payment-option.cash {
+color: #ccc;
+}
+input:not(:checked) + .payment-toggle-slider .payment-option.debt {
+color: white;
+}
+/* PERUBAHAN: Warna untuk tunai dan hutang */
+input:not(:checked) + .payment-toggle-slider .payment-option.debt {
+background-color: #ef4444;
+padding: 2px 6px;
+border-radius: 10px;
+}
+input:checked + .payment-toggle-slider .payment-option.cash {
+background-color: #10b981;
+padding: 2px 6px;
+border-radius: 10px;
+}
+/* PERUBAHAN: Tombol increaseQuantity diperkecil */
+button.bg-white.text-gray-700.w-8.h-8.rounded-full.flex.items-center.justify-center.shadow-sm {
+width: 28px;
+height: 28px;
+}
+button.bg-white.text-gray-700.w-8.h-8.rounded-full.flex.items-center.justify-center.shadow-sm i {
+font-size: 10px;
+}
 </style>
 </head>
 <body>
@@ -1379,11 +1471,11 @@ to { opacity: 1; transform: translateY(0); }
 <!-- Horizontal Menu Bar -->
 <div class="horizontal-menu">
 <div class="horizontal-menu-items">
-<div class="horizontal-menu-item customers" onclick="showPage('customers')">
+<div class="horizontal-menu-item customers ml-12 " onclick="showPage('customers')">
 <i class="fas fa-users"></i>
 <span>Pelanggan</span>
 </div>
-<div class="horizontal-menu-item ml-12 debts" onclick="showPage('debts')">
+<div class="horizontal-menu-item debts" onclick="showPage('debts')">
 <i class="fas fa-file-invoice-dollar"></i>
 <span>Kas Bon</span>
 </div>
@@ -1491,67 +1583,81 @@ to { opacity: 1; transform: translateY(0); }
 </div>
 <!-- Transaction Page -->
 <div id="transaction-page" class="page p-4 hidden">
-<div class="card rounded-xl shadow-md p-5 card-animate">
-<div class="flex justify-between items-center mb-4">
-<h2 class="text-xl font-bold">Transaksi Baru</h2>
-<div class="text-xl font-bold text-[#134e4a]">
-Rp <span id="cart-total-transaction">0</span>
+  <div class="card rounded-xl shadow-md p-5 card-animate">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-bold">Keranjang Belanja</h2>
+      <div class="text-xl font-bold text-[#134e4a]">
+        Rp <span id="cart-total-transaction">0</span>
+      </div>
+    </div>
+
+    <div class="mb-6">
+      <div id="cart-items" class="space-y-3 mb-3 max-h-60 overflow-y-auto">
+        <p class="text-center text-gray-500 py-4">Keranjang belanja kosong</p>
+      </div>
+    </div>
+
+    <div id="change-calculation" class="change-calculation mt-6 hidden">
+      <div class="flex justify-between items-center">
+        <span class="font-medium">Kembalian:</span>
+        <span id="change-text" class="change-amount">Rp 0</span>
+      </div>
+    </div>
+
+    <div id="short-calculation" class="change-calculation mt-3 hidden">
+      <div class="flex justify-between items-center">
+        <span class="font-medium">Kekurangan:</span>
+        <span id="short-text" class="short-amount">Rp 0</span>
+      </div>
+    </div>
+
+    <div id="exact-calculation" class="change-calculation mt-3 hidden">
+      <div class="flex justify-between items-center">
+        <span class="font-medium">Uang Pas:</span>
+        <span id="exact-text" class="exact-amount">Rp 0</span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4 mt-4">
+      <!-- Input Pelanggan -->
+      <div class="mb-4">
+        <label class="block text-sm font-medium mb-1">Pelanggan</label>
+        <div class="relative">
+          <input type="text" id="customer-input" class="flex-1 input-field rounded-lg px-3 py-2 w-full text-lg font-bold" placeholder="Ketik nama pelanggan..." autocomplete="off">
+          <div id="customer-suggestions" class="absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-lg mt-1 max-h-60 overflow-y-auto hidden">
+            <!-- Suggestions will be loaded here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Input Uang Bayar -->
+      <div id="cash-payment-section" class="mb-4">
+        <label class="block text-sm font-medium mb-1">Uang Bayar (Rp)</label>
+        <input type="number" id="payment-amount" class="w-full input-field rounded-lg px-3 py-2 text-lg font-bold" placeholder="Masukkan jumlah uang">
+      </div>
+
+      <!-- Toggle Metode Pembayaran -->
+      <div class="payment-toggle-container">
+        <div class="payment-toggle-label"></div>
+        <label class="payment-toggle-switch">
+          <input type="checkbox" id="payment-toggle" onchange="togglePaymentMethod()">
+          <div class="payment-toggle-slider">
+            <span class="payment-option cash">Tunai</span>
+            <span class="payment-option debt">Hutang</span>
+          </div>
+        </label>
+      </div>
+
+      <!-- Tombol Bayar -->
+      <div class="w-full">
+        <button onclick="processTransaction()" class="w-full btn-primary py-2 rounded-lg font-medium btn-animate">
+          <i class="w-full fas fa-shopping-cart"></i> Bayar
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
-</div>
-<div class="mb-6">
-<h3 class="font-semibold mb-2">Keranjang Belanja</h3>
-<div id="cart-items" class="space-y-3 mb-3 max-h-60 overflow-y-auto">
-<p class="text-center text-gray-500 py-4">Keranjang belanja kosong</p>
-</div>
-</div>
-<div class="mb-4">
-<label class="block text-sm font-medium mb-1">Pelanggan</label>
-<div class="relative">
-<input type="text" id="customer-input" class="flex-1 input-field rounded-lg px-3 py-2 w-full" placeholder="Ketik nama pelanggan..." autocomplete="off">
-<div id="customer-suggestions" class="absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-lg mt-1 max-h-60 overflow-y-auto hidden">
-<!-- Suggestions will be loaded here -->
-</div>
-</div>
-</div>
-<div id="cash-payment-section" class="mb-4">
-<div class="grid grid-cols-2 gap-4">
-<div>
-<label class="block text-sm font-medium mb-1">Uang Bayar (Rp)</label>
-<input type="number" id="payment-amount" class="w-full input-field rounded-lg px-3 py-2 text-lg font-bold" placeholder="Masukkan jumlah uang">
-</div>
-<div>
-<label class="block text-sm font-medium mb-1">Uang Kembalian (Rp)</label>
-<div id="change-amount" class="w-full input-field rounded-lg px-3 py-2 text-lg font-bold bg-gray-100">0</div>
-</div>
-</div>
-<div id="change-calculation" class="change-calculation mt-3 hidden">
-<div class="flex justify-between items-center">
-<span class="font-medium">Kembalian:</span>
-<span id="change-text" class="change-amount">Rp 0</span>
-</div>
-</div>
-<div id="short-calculation" class="change-calculation mt-3 hidden">
-<div class="flex justify-between items-center">
-<span class="font-medium">Kekurangan:</span>
-<span id="short-text" class="short-amount">Rp 0</span>
-</div>
-</div>
-<div id="exact-calculation" class="change-calculation mt-3 hidden">
-<div class="flex justify-between items-center">
-<span class="font-medium">Uang Pas:</span>
-<span id="exact-text" class="exact-amount">Rp 0</span>
-</div>
-</div>
-</div>
-<div class="grid grid-cols-3 gap-2">
-<button id="payment-cash" onclick="setPaymentMethod('cash')" class="payment-method active py-3 rounded-lg font-medium">Tunai</button>
-<button id="payment-debt" onclick="setPaymentMethod('debt')" class="payment-method bg-gray-200 py-3 rounded-lg font-medium">Hutang</button>
-<button onclick="processTransaction()" class="btn-primary py-3 rounded-lg font-medium flex items-center justify-center btn-animate">
-<i class="fas fa-shopping-cart mr-2"></i> Proses
-</button>
-</div>
-</div>
-</div>
+
 <!-- History Page -->
 <div id="history-page" class="page p-4 hidden">
 <div class="card rounded-xl shadow-md p-5 card-animate">
@@ -1989,7 +2095,7 @@ Tampilkan Laporan
 </div>
 <div class="flex space-x-3">
 <button onclick="closeModal('add-water-modal')" class="flex-1 bg-gray-200 py-2 rounded-lg font-medium btn-animate">Batal</button>
-<button onclick="addWaterStock()" class="flex-1 btn-primary py-3 rounded-lg font-medium btn-animate">
+<button onclick="addWaterStock()" class="flex-1 btn-primary py-3 rounded-lg font-medium flex items-center justify-center btn-animate">
 <i class="fas fa-plus-circle mr-2"></i> Tambah Stok
 </button>
 </div>
@@ -3614,21 +3720,21 @@ debtsList.appendChild(debtCard);
 });
 }
 }
+// PERUBAHAN: Toggle Payment Method
+function togglePaymentMethod() {
+const toggle = document.getElementById('payment-toggle');
+currentPaymentMethod = toggle.checked ? 'debt' : 'cash';
+setPaymentMethod(currentPaymentMethod);
+}
 // Set Payment Method
 function setPaymentMethod(method) {
 currentPaymentMethod = method;
+const toggle = document.getElementById('payment-toggle');
+toggle.checked = method === 'debt';
 // Update UI
-document.querySelectorAll('.payment-method').forEach(btn => {
-btn.classList.remove('active');
-btn.classList.add('bg-gray-200');
-});
 if (method === 'cash') {
-document.getElementById('payment-cash').classList.remove('bg-gray-200');
-document.getElementById('payment-cash').classList.add('active');
 document.getElementById('cash-payment-section').style.display = 'block';
 } else {
-document.getElementById('payment-debt').classList.remove('bg-gray-200');
-document.getElementById('payment-debt').classList.add('active');
 document.getElementById('cash-payment-section').style.display = 'none';
 }
 }
@@ -3767,11 +3873,9 @@ updateCartPanel();
 }
 // Increase Quantity
 function increaseQuantity(index) {
-if (cart[index].quantity > 1) {
 cart[index].quantity += 1;
 updateCartDisplay();
 updateCartPanel();
-}
 }
 // Decrease Quantity
 function decreaseQuantity(index) {
@@ -3803,27 +3907,21 @@ total += item.price * item.quantity;
 document.getElementById('change-calculation').classList.add('hidden');
 document.getElementById('short-calculation').classList.add('hidden');
 document.getElementById('exact-calculation').classList.add('hidden');
-// Update change amount display
-const changeAmountElement = document.getElementById('change-amount');
-changeAmountElement.textContent = '0';
 if (paymentAmount > 0) {
 if (paymentAmount > total) {
 // Show change calculation
 document.getElementById('change-calculation').classList.remove('hidden');
 const change = paymentAmount - total;
 document.getElementById('change-text').textContent = `Rp ${change.toLocaleString('id-ID')}`;
-changeAmountElement.textContent = change.toLocaleString('id-ID');
 } else if (paymentAmount < total) {
 // Show short calculation
 document.getElementById('short-calculation').classList.remove('hidden');
 const short = total - paymentAmount;
 document.getElementById('short-text').textContent = `Rp ${short.toLocaleString('id-ID')}`;
-changeAmountElement.textContent = `-${short.toLocaleString('id-ID')}`;
 } else {
 // Show exact calculation
 document.getElementById('exact-calculation').classList.remove('hidden');
 document.getElementById('exact-text').textContent = `Rp ${total.toLocaleString('id-ID')}`;
-changeAmountElement.textContent = total.toLocaleString('id-ID');
 }
 }
 }
