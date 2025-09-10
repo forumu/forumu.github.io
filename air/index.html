@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -5,8 +6,7 @@
 <title>Kasir Stok Air - Realtime Update</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://forumu.github.io/air/style.css">
-    
+<link rel="stylesheet" href="https://forumu.github.io/air/style.css">
 </head>
 <body>
 <!-- Initial Loading Overlay -->
@@ -817,6 +817,34 @@ const CACHE_EXPIRY = 5 * 60 * 1000; // 5 menit
 // Real-time update cooldown
 let lastUpdateTime = 0;
 const UPDATE_COOLDOWN = 2000; // 2 detik cooldown
+
+// Fungsi untuk menangani disable/enable tombol
+function disableButton(button) {
+    button.disabled = true;
+    button.classList.add('opacity-50', 'cursor-not-allowed');
+    
+    // Simpan teks asli tombol
+    const originalText = button.innerHTML;
+    button.setAttribute('data-original-text', originalText);
+    
+    // Tambahkan indikator loading
+    button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Memproses...';
+    
+    return originalText;
+}
+
+function enableButton(button, originalText = null) {
+    button.disabled = false;
+    button.classList.remove('opacity-50', 'cursor-not-allowed');
+    
+    // Kembalikan teks asli tombol
+    const text = originalText || button.getAttribute('data-original-text');
+    if (text) {
+        button.innerHTML = text;
+        button.removeAttribute('data-original-text');
+    }
+}
+
 // Initialize App with optimized loading
 document.addEventListener('DOMContentLoaded', function() {
 // Detect reduced motion preference
@@ -1414,73 +1442,99 @@ updateNotificationList();
 break;
 }
 }
-// Load Settings
+// Load Settings - PERBAIKAN
 async function loadSettings() {
-const response = await fetchData('Pengaturan', 'get-data');
-if (response.success && response.data.length > 0) {
-settings = response.data[0];
-// Update API key if available
-if (settings['API']) {
-API_KEY = settings['API'];
-}
-// Update UI with settings
-document.getElementById('business-name').textContent = settings['Nama Usaha'] || 'Kasir Stok Air';
-document.getElementById('business-address').textContent = settings['Alamat Usaha'] || 'Jl. Contoh No. 123';
-// Update logo if available with improved error handling
-if (settings['Logo'] && settings['Logo'].trim() !== '') {
-const logoImg = document.getElementById('business-logo');
-const logoIcon = document.getElementById('logo-icon');
-const logoContainer = document.getElementById('logo-container');
-const loadingLogoImg = document.getElementById('loading-logo-img');
-const loadingLogoIcon = document.getElementById('loading-logo-icon');
-// Reset classes
-logoImg.classList.add('hidden');
-logoIcon.classList.remove('hidden');
-loadingLogoImg.classList.add('hidden');
-loadingLogoIcon.classList.remove('hidden');
-// Add timestamp for cache busting
-const timestamp = new Date().getTime();
-const logoUrl = settings['Logo'] + (settings['Logo'].includes('?') ? '&' : '?') + 't=' + timestamp;
-// Set image source with proper error handling
-logoImg.onload = function() {
-// Image loaded successfully
-logoImg.classList.remove('hidden');
-logoIcon.classList.add('hidden');
-// Also update loading logo to match header logo
-loadingLogoImg.src = logoUrl;
-loadingLogoImg.onload = function() {
-loadingLogoImg.classList.remove('hidden');
-loadingLogoIcon.classList.add('hidden');
-};
-loadingLogoImg.onerror = function() {
-// If loading logo fails to load, keep the icon
-loadingLogoImg.classList.add('hidden');
-loadingLogoIcon.classList.remove('hidden');
-};
-console.log('Logo loaded successfully');
-};
-logoImg.onerror = function() {
-// Image failed to load
-logoImg.classList.add('hidden');
-logoIcon.classList.remove('hidden');
-console.error('Failed to load logo:', settings['Logo']);
-showToast('Gagal memuat logo. Menggunakan ikon default.', 'warning');
-};
-// Set the src attribute
-logoImg.src = logoUrl;
-logoImg.alt = settings['Nama Usaha'] || 'Logo';
-} else {
-// No logo URL, ensure icon is visible
-const logoImg = document.getElementById('business-logo');
-const logoIcon = document.getElementById('logo-icon');
-const loadingLogoImg = document.getElementById('loading-logo-img');
-const loadingLogoIcon = document.getElementById('loading-logo-icon');
-logoImg.classList.add('hidden');
-logoIcon.classList.remove('hidden');
-loadingLogoImg.classList.add('hidden');
-loadingLogoIcon.classList.remove('hidden');
-}
-}
+    const response = await fetchData('Pengaturan', 'get-data');
+    if (response.success && response.data.length > 0) {
+        settings = response.data[0];
+        
+        // Update API key if available
+        if (settings['API']) {
+            API_KEY = settings['API'];
+        }
+        
+        // Update UI with settings
+        document.getElementById('business-name').textContent = settings['Nama Usaha'] || 'Kasir Stok Air';
+        document.getElementById('business-address').textContent = settings['Alamat Usaha'] || 'Jl. Contoh No. 123';
+        
+        // Update logo if available with improved error handling
+        if (settings['Logo'] && settings['Logo'].trim() !== '') {
+            const logoImg = document.getElementById('business-logo');
+            const logoIcon = document.getElementById('logo-icon');
+            const logoContainer = document.getElementById('logo-container');
+            const loadingLogoImg = document.getElementById('loading-logo-img');
+            const loadingLogoIcon = document.getElementById('loading-logo-icon');
+            
+            // Reset classes
+            logoImg.classList.add('hidden');
+            logoIcon.classList.remove('hidden');
+            loadingLogoImg.classList.add('hidden');
+            loadingLogoIcon.classList.remove('hidden');
+            
+            // Add timestamp for cache busting
+            const timestamp = new Date().getTime();
+            const logoUrl = settings['Logo'] + (settings['Logo'].includes('?') ? '&' : '?') + 't=' + timestamp;
+            
+            // Set image source with proper error handling
+            logoImg.onload = function() {
+                // Image loaded successfully
+                logoImg.classList.remove('hidden');
+                logoIcon.classList.add('hidden');
+                
+                // Also update loading logo to match header logo
+                loadingLogoImg.src = logoUrl;
+                loadingLogoImg.onload = function() {
+                    loadingLogoImg.classList.remove('hidden');
+                    loadingLogoIcon.classList.add('hidden');
+                };
+                loadingLogoImg.onerror = function() {
+                    // If loading logo fails to load, keep the icon
+                    loadingLogoImg.classList.add('hidden');
+                    loadingLogoIcon.classList.remove('hidden');
+                };
+                console.log('Logo loaded successfully');
+            };
+            
+            logoImg.onerror = function() {
+                // Image failed to load
+                logoImg.classList.add('hidden');
+                logoIcon.classList.remove('hidden');
+                console.error('Failed to load logo:', settings['Logo']);
+                showToast('Gagal memuat logo. Menggunakan ikon default.', 'warning');
+            };
+            
+            // Set the src attribute
+            logoImg.src = logoUrl;
+            logoImg.alt = settings['Nama Usaha'] || 'Logo';
+        } else {
+            // No logo URL, ensure icon is visible
+            const logoImg = document.getElementById('business-logo');
+            const logoIcon = document.getElementById('logo-icon');
+            const loadingLogoImg = document.getElementById('loading-logo-img');
+            const loadingLogoIcon = document.getElementById('loading-logo-icon');
+            
+            logoImg.classList.add('hidden');
+            logoIcon.classList.remove('hidden');
+            loadingLogoImg.classList.add('hidden');
+            loadingLogoIcon.classList.remove('hidden');
+        }
+        
+        // TAMBAHKAN: Load theme from settings
+        if (settings['Tema']) {
+            setTheme(settings['Tema']);
+        }
+        
+        // TAMBAHKAN: Load notification settings from settings
+        if (settings['Posisi']) {
+            setToastPosition(settings['Posisi']);
+            localStorage.setItem('toastPosition', settings['Posisi']);
+        }
+        
+        if (settings['Gaya']) {
+            setToastStyle(settings['Gaya']);
+            localStorage.setItem('toastStyle', settings['Gaya']);
+        }
+    }
 }
 // Load Products
 async function loadProducts() {
@@ -2264,20 +2318,22 @@ updateCashBalance(cashBalance);
 // Update recent transactions
 updateRecentTransactions();
 }
-// Load Settings Form
+// Load Settings Form - PERBAIKAN
 function loadSettingsForm() {
-document.getElementById('business-name-input').value = settings['Nama Usaha'] || '';
-document.getElementById('business-address-input').value = settings['Alamat Usaha'] || '';
-document.getElementById('business-contact-input').value = settings['Kontak'] || '';
-document.getElementById('business-logo-input').value = settings['Logo'] || '';
-document.getElementById('settings-tank-capacity').value = settings['Kapasitas Toren (Liter)'] || '';
-document.getElementById('settings-supply-cost').value = settings['Biaya Suplai Air Tangki (Rp)'] || '';
-document.getElementById('api-script-input').value = settings['API'] || '';
-// Load toast settings
-const savedToastPosition = localStorage.getItem('toastPosition') || 'top-right';
-const savedToastStyle = localStorage.getItem('toastStyle') || 'modern';
-document.getElementById('toast-position').value = savedToastPosition;
-document.getElementById('toast-style').value = savedToastStyle;
+    document.getElementById('business-name-input').value = settings['Nama Usaha'] || '';
+    document.getElementById('business-address-input').value = settings['Alamat Usaha'] || '';
+    document.getElementById('business-contact-input').value = settings['Kontak'] || '';
+    document.getElementById('business-logo-input').value = settings['Logo'] || '';
+    document.getElementById('settings-tank-capacity').value = settings['Kapasitas Toren (Liter)'] || '';
+    document.getElementById('settings-supply-cost').value = settings['Biaya Suplai Air Tangki (Rp)'] || '';
+    document.getElementById('api-script-input').value = settings['API'] || '';
+    
+    // TAMBAHKAN: Load toast settings dari settings atau localStorage
+    const savedToastPosition = settings['Posisi'] || localStorage.getItem('toastPosition') || 'top-right';
+    const savedToastStyle = settings['Gaya'] || localStorage.getItem('toastStyle') || 'modern';
+    
+    document.getElementById('toast-position').value = savedToastPosition;
+    document.getElementById('toast-style').value = savedToastStyle;
 }
 // Load Debts
 async function loadDebts() {
@@ -2525,15 +2581,20 @@ document.getElementById('exact-text').textContent = `Rp ${total.toLocaleString('
 }
 // Process Transaction - PERBAIKAN UTAMA
 async function processTransaction() {
+    // Dapatkan tombol bayar
+    const payButton = event.target;
+    
+    // Disable tombol dan simpan teks asli
+    const originalText = disableButton(payButton);
+    
     if (cart.length === 0) {
+        enableButton(payButton, originalText);
         showToast('Keranjang belanja kosong', 'warning');
         return;
     }
-
     const customerInput = document.getElementById('customer-input');
     const customerId = customerInput.getAttribute('data-customer-id') || '';
     let customerName = customerInput.value.trim() || 'Pelanggan Baru';
-
     // Jika ada customerId, ambil nama pelanggan dari database untuk memastikan konsistensi
     if (customerId) {
         const customer = customers.find(c => c['ID Pelanggan'] === customerId);
@@ -2541,11 +2602,9 @@ async function processTransaction() {
             customerName = customer['Nama'];
         }
     }
-
     // Cek apakah pelanggan sudah ada di database (jika tidak ada customerId)
     if (!customerId) {
         let customerExists = customers.some(c => c['Nama'].toLowerCase() === customerName.toLowerCase());
-
         if (!customerExists && customerName !== 'Pelanggan Baru') {
             // Tambahkan pelanggan baru
             const newCustomerId = `CUST-${Date.now()}`;
@@ -2555,7 +2614,6 @@ async function processTransaction() {
                 'Kontak': '',
                 'Galon Titipan': 0
             };
-
             try {
                 const addCustomerResponse = await fetchData('Pelanggan', 'insert', customerData);
                 if (addCustomerResponse.success) {
@@ -2571,10 +2629,8 @@ async function processTransaction() {
             }
         }
     }
-
     const paymentAmountInput = document.getElementById('payment-amount');
     const paymentAmount = parseInt(paymentAmountInput.value) || 0;
-
     // Calculate totals
     let totalPrice = 0;
     let totalCost = 0;
@@ -2590,17 +2646,15 @@ async function processTransaction() {
         totalProfit += itemProfit;
         totalLiter += itemLiter;
     });
-
     // Validate payment amount for cash payment
     if (currentPaymentMethod === 'cash' && paymentAmount < totalPrice) {
+        enableButton(payButton, originalText);
         showToast('Uang bayar kurang dari total belanja', 'error');
         return;
     }
-
     // Generate transaction ID
     const date = new Date();
     const transactionId = `TRX-${date.getFullYear()}${(date.getMonth()+1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
-
     // Prepare transaction data
     const transactionData = {
         'ID Transaksi': transactionId,
@@ -2613,10 +2667,8 @@ async function processTransaction() {
         'Nama Pelanggan': customerName,
         'Status': currentPaymentMethod === 'cash' ? 'Lunas' : 'Hutang'
     };
-
     // Show loading
     showLoading();
-
     try {
         // Add transaction
         const response = await fetchData('Transaksi', 'insert', transactionData);
@@ -2634,46 +2686,36 @@ async function processTransaction() {
                 'Liter Terpakai': newUsed,
                 'Total Liter Terpakai': newTotalUsed
             });
-
             // Reset form
             customerInput.value = '';
             customerInput.removeAttribute('data-customer-id');
             paymentAmountInput.value = '';
-
             // Clear cart
             const cartItems = [...cart]; // Create a copy of cart for receipt
             cart = [];
             updateCartDisplay();
             updateCartSummary();
             updateCartPanel();
-
             // Hide cart badge after successful transaction
             const cartBadge = document.getElementById('cart-badge');
             cartBadge.classList.add('hidden');
-
             // Calculate change
             const change = currentPaymentMethod === 'cash' ? paymentAmount - totalPrice : 0;
-
             // Show receipt
             showReceipt(transactionData, cartItems, paymentAmount, change);
-
             // Add notification
             addNotification('success', `Transaksi berhasil! Total: Rp ${totalPrice.toLocaleString('id-ID')}`);
-
             // Refresh data
             await Promise.all([
                 loadTransactions(),
                 loadWaterStock(),
                 loadFinancialSummary()
             ]);
-
             // Update history page if active
             if (!document.getElementById('history-page').classList.contains('hidden')) {
                 updateTransactionsList();
             }
-
             showToast('Transaksi berhasil', 'success');
-
             // Reload page in background after processing transaction
             reloadPageInBackground();
         } else {
@@ -2684,6 +2726,7 @@ async function processTransaction() {
         showToast('Terjadi kesalahan saat memproses transaksi', 'error');
     } finally {
         hideLoading();
+        enableButton(payButton, originalText);
     }
 }
 // Show Receipt
@@ -3100,69 +3143,89 @@ document.getElementById('add-product-modal').classList.remove('hidden');
 }
 // Add Product
 async function addProduct() {
-const name = document.getElementById('new-product-name').value;
-const price = parseInt(document.getElementById('new-product-price').value) || 0;
-const cost = parseInt(document.getElementById('new-product-cost').value) || 0;
-const type = document.getElementById('new-product-type').value;
-const liter = parseFloat(document.getElementById('new-product-liter').value) || 0;
-if (!name) {
-showToast('Masukkan nama produk', 'error');
-return;
-}
-if (price <= 0) {
-showToast('Harga jual harus lebih dari 0', 'error');
-return;
-}
-if (!type) {
-showToast('Pilih jenis produk', 'error');
-return;
-}
-// Generate product ID
-const productId = `PRD-${Date.now()}`;
-// Calculate profit and margin
-const profit = price - cost;
-const margin = price > 0 ? (profit / price * 100).toFixed(2) : 0;
-// Prepare product data
-const productData = {
-'ID Produk': productId,
-'Nama Produk': name,
-'Harga Jual (Rp)': price,
-'Harga Pokok (Rp)': cost,
-'Laba per Item (Rp)': profit,
-'Margin (%)': margin,
-'Jenis': type,
-'Liter': liter
-};
-// Show loading
-showLoading();
-try {
-// Add product
-const response = await fetchData('Produk', 'insert', productData);
-if (response.success) {
-// Reset form
-document.getElementById('new-product-name').value = '';
-document.getElementById('new-product-price').value = '';
-document.getElementById('new-product-cost').value = '';
-document.getElementById('new-product-liter').value = '';
-document.getElementById('new-product-type').value = '';
-// Close modal
-closeModal('add-product-modal');
-// Refresh data
-await loadProducts();
-// Add notification
-addNotification('success', `Produk "${name}" berhasil ditambahkan`);
-showToast('Produk berhasil ditambahkan', 'success');
-// Reload page in background after adding product
-reloadPageInBackground();
-} else {
-showToast('Gagal menambah produk', 'error');
-}
-} catch (error) {
-console.error(error);
-showToast('Terjadi kesalahan saat menambah produk', 'error');
-} finally {
-hideLoading();
-}
+    // Dapatkan tombol simpan
+    const saveButton = event.target;
+    
+    // Disable tombol dan simpan teks asli
+    const originalText = disableButton(saveButton);
+    
+    const name = document.getElementById('new-product-name').value;
+    const price = parseInt(document.getElementById('new-product-price').value) || 0;
+    const cost = parseInt(document.getElementById('new-product-cost').value) || 0;
+    const type = document.getElementById('new-product-type').value;
+    const liter = parseFloat(document.getElementById('new-product-liter').value) || 0;
+    
+    if (!name) {
+        enableButton(saveButton, originalText);
+        showToast('Masukkan nama produk', 'error');
+        return;
+    }
+    if (price <= 0) {
+        enableButton(saveButton, originalText);
+        showToast('Harga jual harus lebih dari 0', 'error');
+        return;
+    }
+    if (!type) {
+        enableButton(saveButton, originalText);
+        showToast('Pilih jenis produk', 'error');
+        return;
+    }
+    
+    // Generate product ID
+    const productId = `PRD-${Date.now()}`;
+    
+    // Calculate profit and margin
+    const profit = price - cost;
+    const margin = price > 0 ? (profit / price * 100).toFixed(2) : 0;
+    
+    // Prepare product data
+    const productData = {
+        'ID Produk': productId,
+        'Nama Produk': name,
+        'Harga Jual (Rp)': price,
+        'Harga Pokok (Rp)': cost,
+        'Laba per Item (Rp)': profit,
+        'Margin (%)': margin,
+        'Jenis': type,
+        'Liter': liter
+    };
+    
+    // Show loading
+    showLoading();
+    
+    try {
+        // Add product
+        const response = await fetchData('Produk', 'insert', productData);
+        if (response.success) {
+            // Reset form
+            document.getElementById('new-product-name').value = '';
+            document.getElementById('new-product-price').value = '';
+            document.getElementById('new-product-cost').value = '';
+            document.getElementById('new-product-liter').value = '';
+            document.getElementById('new-product-type').value = '';
+            
+            // Close modal
+            closeModal('add-product-modal');
+            
+            // Refresh data
+            await loadProducts();
+            
+            // Add notification
+            addNotification('success', `Produk "${name}" berhasil ditambahkan`);
+            showToast('Produk berhasil ditambahkan', 'success');
+            
+            // Reload page in background after adding product
+            reloadPageInBackground();
+        } else {
+            showToast('Gagal menambah produk', 'error');
+        }
+    } catch (error) {
+        console.error(error);
+        showToast('Terjadi kesalahan saat menambah produk', 'error');
+    } finally {
+        hideLoading();
+        enableButton(saveButton, originalText);
+    }
 }
 // Edit Product
 function editProduct(productId) {
@@ -3180,65 +3243,87 @@ document.getElementById('edit-product-modal').classList.remove('hidden');
 }
 // Update Product
 async function updateProduct() {
-const productId = document.getElementById('edit-product-id').value;
-const name = document.getElementById('edit-product-name').value;
-const price = parseInt(document.getElementById('edit-product-price').value) || 0;
-const cost = parseInt(document.getElementById('edit-product-cost').value) || 0;
-const type = document.getElementById('edit-product-type').value;
-const liter = parseFloat(document.getElementById('edit-product-liter').value) || 0;
-if (!name) {
-showToast('Masukkan nama produk', 'error');
-return;
-}
-if (price <= 0) {
-showToast('Harga jual harus lebih dari 0', 'error');
-return;
-}
-if (!type) {
-showToast('Pilih jenis produk', 'error');
-return;
-}
-// Calculate profit and margin
-const profit = price - cost;
-const margin = price > 0 ? (profit / price * 100).toFixed(2) : 0;
-// Find product index
-const productIndex = products.findIndex(p => p['ID Produk'] === productId);
-if (productIndex === -1) return;
-// Prepare product data
-const productData = {
-row: productIndex + 2,
-'Nama Produk': name,
-'Harga Jual (Rp)': price,
-'Harga Pokok (Rp)': cost,
-'Laba per Item (Rp)': profit,
-'Margin (%)': margin,
-'Jenis': type,
-'Liter': liter
-};
-// Show loading
-showLoading();
-try {
-// Update product
-const response = await fetchData('Produk', 'update', productData);
-if (response.success) {
-// Close modal
-closeModal('edit-product-modal');
-// Refresh data
-await loadProducts();
-// Add notification
-addNotification('success', `Produk "${name}" berhasil diperbarui`);
-showToast('Produk berhasil diperbarui', 'success');
-// Reload page in background after updating product
-reloadPageInBackground();
-} else {
-showToast('Gagal memperbarui produk', 'error');
-}
-} catch (error) {
-console.error(error);
-showToast('Terjadi kesalahan saat memperbarui produk', 'error');
-} finally {
-hideLoading();
-}
+    // Dapatkan tombol update
+    const updateButton = event.target;
+    
+    // Disable tombol dan simpan teks asli
+    const originalText = disableButton(updateButton);
+    
+    const productId = document.getElementById('edit-product-id').value;
+    const name = document.getElementById('edit-product-name').value;
+    const price = parseInt(document.getElementById('edit-product-price').value) || 0;
+    const cost = parseInt(document.getElementById('edit-product-cost').value) || 0;
+    const type = document.getElementById('edit-product-type').value;
+    const liter = parseFloat(document.getElementById('edit-product-liter').value) || 0;
+    
+    if (!name) {
+        enableButton(updateButton, originalText);
+        showToast('Masukkan nama produk', 'error');
+        return;
+    }
+    if (price <= 0) {
+        enableButton(updateButton, originalText);
+        showToast('Harga jual harus lebih dari 0', 'error');
+        return;
+    }
+    if (!type) {
+        enableButton(updateButton, originalText);
+        showToast('Pilih jenis produk', 'error');
+        return;
+    }
+    
+    // Calculate profit and margin
+    const profit = price - cost;
+    const margin = price > 0 ? (profit / price * 100).toFixed(2) : 0;
+    
+    // Find product index
+    const productIndex = products.findIndex(p => p['ID Produk'] === productId);
+    if (productIndex === -1) {
+        enableButton(updateButton, originalText);
+        return;
+    }
+    
+    // Prepare product data
+    const productData = {
+        row: productIndex + 2,
+        'Nama Produk': name,
+        'Harga Jual (Rp)': price,
+        'Harga Pokok (Rp)': cost,
+        'Laba per Item (Rp)': profit,
+        'Margin (%)': margin,
+        'Jenis': type,
+        'Liter': liter
+    };
+    
+    // Show loading
+    showLoading();
+    
+    try {
+        // Update product
+        const response = await fetchData('Produk', 'update', productData);
+        if (response.success) {
+            // Close modal
+            closeModal('edit-product-modal');
+            
+            // Refresh data
+            await loadProducts();
+            
+            // Add notification
+            addNotification('success', `Produk "${name}" berhasil diperbarui`);
+            showToast('Produk berhasil diperbarui', 'success');
+            
+            // Reload page in background after updating product
+            reloadPageInBackground();
+        } else {
+            showToast('Gagal memperbarui produk', 'error');
+        }
+    } catch (error) {
+        console.error(error);
+        showToast('Terjadi kesalahan saat memperbarui produk', 'error');
+    } finally {
+        hideLoading();
+        enableButton(updateButton, originalText);
+    }
 }
 // Delete Product
 async function deleteProduct(productId) {
@@ -3278,50 +3363,67 @@ document.getElementById('add-customer-modal').classList.remove('hidden');
 }
 // Add Customer
 async function addCustomer() {
-const name = document.getElementById('new-customer-name').value;
-const contact = document.getElementById('new-customer-contact').value;
-const deposit = parseInt(document.getElementById('new-customer-deposit').value) || 0;
-if (!name) {
-showToast('Masukkan nama pelanggan', 'error');
-return;
-}
-// Generate customer ID
-const customerId = `CUST-${Date.now()}`;
-// Prepare customer data
-const customerData = {
-'ID Pelanggan': customerId,
-'Nama': name,
-'Kontak': contact,
-'Galon Titipan': deposit
-};
-// Show loading
-showLoading();
-try {
-// Add customer
-const response = await fetchData('Pelanggan', 'insert', customerData);
-if (response.success) {
-// Reset form
-document.getElementById('new-customer-name').value = '';
-document.getElementById('new-customer-contact').value = '';
-document.getElementById('new-customer-deposit').value = '0';
-// Close modal
-closeModal('add-customer-modal');
-// Refresh data
-await loadCustomers();
-// Add notification
-addNotification('success', `Pelanggan "${name}" berhasil ditambahkan`);
-showToast('Pelanggan berhasil ditambahkan', 'success');
-// Reload page in background after adding customer
-reloadPageInBackground();
-} else {
-showToast('Gagal menambah pelanggan', 'error');
-}
-} catch (error) {
-console.error(error);
-showToast('Terjadi kesalahan saat menambah pelanggan', 'error');
-} finally {
-hideLoading();
-}
+    // Dapatkan tombol simpan
+    const saveButton = event.target;
+    
+    // Disable tombol dan simpan teks asli
+    const originalText = disableButton(saveButton);
+    
+    const name = document.getElementById('new-customer-name').value;
+    const contact = document.getElementById('new-customer-contact').value;
+    const deposit = parseInt(document.getElementById('new-customer-deposit').value) || 0;
+    
+    if (!name) {
+        enableButton(saveButton, originalText);
+        showToast('Masukkan nama pelanggan', 'error');
+        return;
+    }
+    
+    // Generate customer ID
+    const customerId = `CUST-${Date.now()}`;
+    
+    // Prepare customer data
+    const customerData = {
+        'ID Pelanggan': customerId,
+        'Nama': name,
+        'Kontak': contact,
+        'Galon Titipan': deposit
+    };
+    
+    // Show loading
+    showLoading();
+    
+    try {
+        // Add customer
+        const response = await fetchData('Pelanggan', 'insert', customerData);
+        if (response.success) {
+            // Reset form
+            document.getElementById('new-customer-name').value = '';
+            document.getElementById('new-customer-contact').value = '';
+            document.getElementById('new-customer-deposit').value = '0';
+            
+            // Close modal
+            closeModal('add-customer-modal');
+            
+            // Refresh data
+            await loadCustomers();
+            
+            // Add notification
+            addNotification('success', `Pelanggan "${name}" berhasil ditambahkan`);
+            showToast('Pelanggan berhasil ditambahkan', 'success');
+            
+            // Reload page in background after adding customer
+            reloadPageInBackground();
+        } else {
+            showToast('Gagal menambah pelanggan', 'error');
+        }
+    } catch (error) {
+        console.error(error);
+        showToast('Terjadi kesalahan saat menambah pelanggan', 'error');
+    } finally {
+        hideLoading();
+        enableButton(saveButton, originalText);
+    }
 }
 // Edit Customer
 function editCustomer(customerId) {
@@ -3337,48 +3439,67 @@ document.getElementById('edit-customer-modal').classList.remove('hidden');
 }
 // Update Customer
 async function updateCustomer() {
-const customerId = document.getElementById('edit-customer-id').value;
-const name = document.getElementById('edit-customer-name').value;
-const contact = document.getElementById('edit-customer-contact').value;
-const deposit = parseInt(document.getElementById('edit-customer-deposit').value) || 0;
-if (!name) {
-showToast('Masukkan nama pelanggan', 'error');
-return;
-}
-// Find customer index
-const customerIndex = customers.findIndex(c => c['ID Pelanggan'] === customerId);
-if (customerIndex === -1) return;
-// Prepare customer data
-const customerData = {
-row: customerIndex + 2,
-'Nama': name,
-'Kontak': contact,
-'Galon Titipan': deposit
-};
-// Show loading
-showLoading();
-try {
-// Update customer
-const response = await fetchData('Pelanggan', 'update', customerData);
-if (response.success) {
-// Close modal
-closeModal('edit-customer-modal');
-// Refresh data
-await loadCustomers();
-// Add notification
-addNotification('success', `Pelanggan "${name}" berhasil diperbarui`);
-showToast('Pelanggan berhasil diperbarui', 'success');
-// Reload page in background after updating customer
-reloadPageInBackground();
-} else {
-showToast('Gagal memperbarui pelanggan', 'error');
-}
-} catch (error) {
-console.error(error);
-showToast('Terjadi kesalahan saat memperbarui pelanggan', 'error');
-} finally {
-hideLoading();
-}
+    // Dapatkan tombol update
+    const updateButton = event.target;
+    
+    // Disable tombol dan simpan teks asli
+    const originalText = disableButton(updateButton);
+    
+    const customerId = document.getElementById('edit-customer-id').value;
+    const name = document.getElementById('edit-customer-name').value;
+    const contact = document.getElementById('edit-customer-contact').value;
+    const deposit = parseInt(document.getElementById('edit-customer-deposit').value) || 0;
+    
+    if (!name) {
+        enableButton(updateButton, originalText);
+        showToast('Masukkan nama pelanggan', 'error');
+        return;
+    }
+    
+    // Find customer index
+    const customerIndex = customers.findIndex(c => c['ID Pelanggan'] === customerId);
+    if (customerIndex === -1) {
+        enableButton(updateButton, originalText);
+        return;
+    }
+    
+    // Prepare customer data
+    const customerData = {
+        row: customerIndex + 2,
+        'Nama': name,
+        'Kontak': contact,
+        'Galon Titipan': deposit
+    };
+    
+    // Show loading
+    showLoading();
+    
+    try {
+        // Update customer
+        const response = await fetchData('Pelanggan', 'update', customerData);
+        if (response.success) {
+            // Close modal
+            closeModal('edit-customer-modal');
+            
+            // Refresh data
+            await loadCustomers();
+            
+            // Add notification
+            addNotification('success', `Pelanggan "${name}" berhasil diperbarui`);
+            showToast('Pelanggan berhasil diperbarui', 'success');
+            
+            // Reload page in background after updating customer
+            reloadPageInBackground();
+        } else {
+            showToast('Gagal memperbarui pelanggan', 'error');
+        }
+    } catch (error) {
+        console.error(error);
+        showToast('Terjadi kesalahan saat memperbarui pelanggan', 'error');
+    } finally {
+        hideLoading();
+        enableButton(updateButton, originalText);
+    }
 }
 // Delete Customer
 async function deleteCustomer(customerId) {
@@ -3423,72 +3544,93 @@ document.getElementById('add-water-modal').classList.remove('hidden');
 }
 // Add Water Stock
 async function addWaterStock() {
-// Get values from settings
-const tankCapacity = parseInt(settings['Kapasitas Toren (Liter)'] || 1000);
-const supplyCost = parseInt(settings['Biaya Suplai Air Tangki (Rp)'] || 0);
-// Get current water stock
-const currentRemaining = parseInt(waterStock['Sisa Liter'] || 0);
-const currentUsed = parseInt(waterStock['Liter Terpakai'] || 0);
-const currentTotalUsed = parseInt(waterStock['Total Liter Terpakai'] || 0);
-const currentTotalCost = parseInt(waterStock['Total Biaya Suplai (Rp)'] || 0);
-// Calculate new values
-const newRemaining = tankCapacity;
-const newUsed = 0;
-const newTotalUsed = currentTotalUsed;
-const newTotalCost = currentTotalCost + supplyCost;
-// Show loading
-showLoading();
-try {
-// Update water stock
-const response = await fetchData('Stok Air', 'update', {
-row: 2,
-'Sisa Liter': newRemaining,
-'Liter Terpakai': newUsed,
-'Total Liter Terpakai': newTotalUsed,
-'Total Biaya Suplai (Rp)': newTotalCost
-});
-if (response.success) {
-// Hitung total pemasukan saat ini
-const totalIncome = transactions
-.filter(t => t['Status'] === 'Lunas')
-.reduce((sum, t) => sum + parseInt(t['Harga Jual (Rp)'] || 0), 0);
-// Hitung total pengeluaran saat ini
-const currentTotalExpenses = expenses.reduce((sum, e) => sum + parseInt(e['Jumlah'] || 0), 0);
-// Hitung saldo setelah pengeluaran baru
-const newBalance = totalIncome - (currentTotalExpenses + supplyCost);
-// Add expense dengan format yang sesuai
-const date = new Date();
-const expenseData = {
-'Tanggal': date.toISOString().split('T')[0],
-'Keterangan': `Penambahan stok air ${tankCapacity} liter`,
-'Jenis': 'Stok Air',
-'Jumlah': supplyCost,
-'Saldo': newBalance
-};
-await fetchData('Pengeluaran', 'insert', expenseData);
-// Close modal
-closeModal('add-water-modal');
-// Add notification
-addNotification('success', `Stok air berhasil ditambahkan! Kapasitas: ${tankCapacity} liter`);
-// Refresh data
-await Promise.all([
-loadWaterStock(),
-loadWaterStockHistory(),
-loadExpenses(),
-loadFinancialSummary()
-]);
-showToast('Stok air berhasil ditambahkan', 'success');
-// Reload page in background after adding water stock
-reloadPageInBackground();
-} else {
-showToast('Gagal menambah stok air', 'error');
-}
-} catch (error) {
-console.error(error);
-showToast('Terjadi kesalahan saat menambah stok air', 'error');
-} finally {
-hideLoading();
-}
+    // Dapatkan tombol tambah stok
+    const addButton = event.target;
+    
+    // Disable tombol dan simpan teks asli
+    const originalText = disableButton(addButton);
+    
+    // Get values from settings
+    const tankCapacity = parseInt(settings['Kapasitas Toren (Liter)'] || 1000);
+    const supplyCost = parseInt(settings['Biaya Suplai Air Tangki (Rp)'] || 0);
+    
+    // Get current water stock
+    const currentRemaining = parseInt(waterStock['Sisa Liter'] || 0);
+    const currentUsed = parseInt(waterStock['Liter Terpakai'] || 0);
+    const currentTotalUsed = parseInt(waterStock['Total Liter Terpakai'] || 0);
+    const currentTotalCost = parseInt(waterStock['Total Biaya Suplai (Rp)'] || 0);
+    
+    // Calculate new values
+    const newRemaining = tankCapacity;
+    const newUsed = 0;
+    const newTotalUsed = currentTotalUsed;
+    const newTotalCost = currentTotalCost + supplyCost;
+    
+    // Show loading
+    showLoading();
+    
+    try {
+        // Update water stock
+        const response = await fetchData('Stok Air', 'update', {
+            row: 2,
+            'Sisa Liter': newRemaining,
+            'Liter Terpakai': newUsed,
+            'Total Liter Terpakai': newTotalUsed,
+            'Total Biaya Suplai (Rp)': newTotalCost
+        });
+        
+        if (response.success) {
+            // Hitung total pemasukan saat ini
+            const totalIncome = transactions
+                .filter(t => t['Status'] === 'Lunas')
+                .reduce((sum, t) => sum + parseInt(t['Harga Jual (Rp)'] || 0), 0);
+            
+            // Hitung total pengeluaran saat ini
+            const currentTotalExpenses = expenses.reduce((sum, e) => sum + parseInt(e['Jumlah'] || 0), 0);
+            
+            // Hitung saldo setelah pengeluaran baru
+            const newBalance = totalIncome - (currentTotalExpenses + supplyCost);
+            
+            // Add expense dengan format yang sesuai
+            const date = new Date();
+            const expenseData = {
+                'Tanggal': date.toISOString().split('T')[0],
+                'Keterangan': `Penambahan stok air ${tankCapacity} liter`,
+                'Jenis': 'Stok Air',
+                'Jumlah': supplyCost,
+                'Saldo': newBalance
+            };
+            
+            await fetchData('Pengeluaran', 'insert', expenseData);
+            
+            // Close modal
+            closeModal('add-water-modal');
+            
+            // Add notification
+            addNotification('success', `Stok air berhasil ditambahkan! Kapasitas: ${tankCapacity} liter`);
+            
+            // Refresh data
+            await Promise.all([
+                loadWaterStock(),
+                loadWaterStockHistory(),
+                loadExpenses(),
+                loadFinancialSummary()
+            ]);
+            
+            showToast('Stok air berhasil ditambahkan', 'success');
+            
+            // Reload page in background after adding water stock
+            reloadPageInBackground();
+        } else {
+            showToast('Gagal menambah stok air', 'error');
+        }
+    } catch (error) {
+        console.error(error);
+        showToast('Terjadi kesalahan saat menambah stok air', 'error');
+    } finally {
+        hideLoading();
+        enableButton(addButton, originalText);
+    }
 }
 // Show Add Expense Modal
 function showAddExpenseModal() {
@@ -3496,61 +3638,81 @@ document.getElementById('add-expense-modal').classList.remove('hidden');
 }
 // Add Expense
 async function addExpense() {
-const type = document.getElementById('expense-type').value;
-const amount = parseInt(document.getElementById('expense-amount').value) || 0;
-const description = document.getElementById('expense-description').value;
-if (amount <= 0) {
-showToast('Jumlah harus lebih dari 0', 'error');
-return;
-}
-// Hitung total pemasukan saat ini
-const totalIncome = transactions
-.filter(t => t['Status'] === 'Lunas')
-.reduce((sum, t) => sum + parseInt(t['Harga Jual (Rp)'] || 0), 0);
-// Hitung total pengeluaran saat ini
-const currentTotalExpenses = expenses.reduce((sum, e) => sum + parseInt(e['Jumlah'] || 0), 0);
-// Hitung saldo setelah pengeluaran baru
-const newBalance = totalIncome - (currentTotalExpenses + amount);
-// Generate expense data
-const date = new Date();
-const expenseData = {
-'Tanggal': date.toISOString().split('T')[0],
-'Keterangan': description,
-'Jenis': type,
-'Jumlah': amount,
-'Saldo': newBalance
-};
-// Show loading
-showLoading();
-try {
-// Add expense
-const response = await fetchData('Pengeluaran', 'insert', expenseData);
-if (response.success) {
-// Reset form
-document.getElementById('expense-type').value = 'Stok Air';
-document.getElementById('expense-amount').value = '';
-document.getElementById('expense-description').value = '';
-// Close modal
-closeModal('add-expense-modal');
-// Add notification
-addNotification('warning', `Pengeluaran berhasil ditambahkan! Jumlah: Rp ${amount.toLocaleString('id-ID')}`);
-// Refresh data
-await Promise.all([
-loadExpenses(),
-loadFinancialSummary()
-]);
-showToast('Pengeluaran berhasil ditambahkan', 'success');
-// Reload page in background after adding expense
-reloadPageInBackground();
-} else {
-showToast('Gagal menambah pengeluaran', 'error');
-}
-} catch (error) {
-console.error(error);
-showToast('Terjadi kesalahan saat menambah pengeluaran', 'error');
-} finally {
-hideLoading();
-}
+    // Dapatkan tombol simpan
+    const saveButton = event.target;
+    
+    // Disable tombol dan simpan teks asli
+    const originalText = disableButton(saveButton);
+    
+    const type = document.getElementById('expense-type').value;
+    const amount = parseInt(document.getElementById('expense-amount').value) || 0;
+    const description = document.getElementById('expense-description').value;
+    
+    if (amount <= 0) {
+        enableButton(saveButton, originalText);
+        showToast('Jumlah harus lebih dari 0', 'error');
+        return;
+    }
+    
+    // Hitung total pemasukan saat ini
+    const totalIncome = transactions
+        .filter(t => t['Status'] === 'Lunas')
+        .reduce((sum, t) => sum + parseInt(t['Harga Jual (Rp)'] || 0), 0);
+    
+    // Hitung total pengeluaran saat ini
+    const currentTotalExpenses = expenses.reduce((sum, e) => sum + parseInt(e['Jumlah'] || 0), 0);
+    
+    // Hitung saldo setelah pengeluaran baru
+    const newBalance = totalIncome - (currentTotalExpenses + amount);
+    
+    // Generate expense data
+    const date = new Date();
+    const expenseData = {
+        'Tanggal': date.toISOString().split('T')[0],
+        'Keterangan': description,
+        'Jenis': type,
+        'Jumlah': amount,
+        'Saldo': newBalance
+    };
+    
+    // Show loading
+    showLoading();
+    
+    try {
+        // Add expense
+        const response = await fetchData('Pengeluaran', 'insert', expenseData);
+        if (response.success) {
+            // Reset form
+            document.getElementById('expense-type').value = 'Stok Air';
+            document.getElementById('expense-amount').value = '';
+            document.getElementById('expense-description').value = '';
+            
+            // Close modal
+            closeModal('add-expense-modal');
+            
+            // Add notification
+            addNotification('warning', `Pengeluaran berhasil ditambahkan! Jumlah: Rp ${amount.toLocaleString('id-ID')}`);
+            
+            // Refresh data
+            await Promise.all([
+                loadExpenses(),
+                loadFinancialSummary()
+            ]);
+            
+            showToast('Pengeluaran berhasil ditambahkan', 'success');
+            
+            // Reload page in background after adding expense
+            reloadPageInBackground();
+        } else {
+            showToast('Gagal menambah pengeluaran', 'error');
+        }
+    } catch (error) {
+        console.error(error);
+        showToast('Terjadi kesalahan saat menambah pengeluaran', 'error');
+    } finally {
+        hideLoading();
+        enableButton(saveButton, originalText);
+    }
 }
 // Clear Local Storage
 function clearLocalStorage() {
@@ -3564,80 +3726,100 @@ showToast('Data local storage berhasil dihapus', 'success');
 reloadPageInBackground();
 }
 }
-// Save Settings
+// Save Settings - PERBAIKAN
 async function saveSettings() {
-const businessName = document.getElementById('business-name-input').value;
-const businessAddress = document.getElementById('business-address-input').value;
-const businessContact = document.getElementById('business-contact-input').value;
-const businessLogo = document.getElementById('business-logo-input').value;
-const tankCapacity = document.getElementById('settings-tank-capacity').value;
-const supplyCost = document.getElementById('settings-supply-cost').value;
-const apiKey = document.getElementById('api-script-input').value;
-// Validate logo URL if provided
-if (businessLogo && businessLogo.trim() !== '') {
-try {
-new URL(businessLogo);
-} catch (e) {
-showToast('URL logo tidak valid', 'error');
-return;
-}
-}
-// Prepare settings data
-const settingsData = {
-'Nama Usaha': businessName,
-'Alamat Usaha': businessAddress,
-'Kontak': businessContact,
-'Logo': businessLogo,
-'Kapasitas Toren (Liter)': tankCapacity,
-'Biaya Suplai Air Tangki (Rp)': supplyCost,
-'API': apiKey
-};
-// Update API key if provided
-if (apiKey) {
-API_KEY = apiKey;
-}
-// Show loading
-showLoading();
-try {
-// Update settings
-const response = await fetchData('Pengaturan', 'update', {
-row: 2,
-...settingsData
-});
-if (response.success) {
-// Update water stock capacity
-await fetchData('Stok Air', 'update', {
-row: 2,
-'Kapasitas Toren': tankCapacity
-});
-// Save toast settings
-const toastPosition = document.getElementById('toast-position').value;
-const toastStyle = document.getElementById('toast-style').value;
-// Update global toast settings
-setToastPosition(toastPosition);
-setToastStyle(toastStyle);
-// Save to localStorage
-localStorage.setItem('toastPosition', toastPosition);
-localStorage.setItem('toastStyle', toastStyle);
-// Refresh data
-await Promise.all([
-loadSettings(),
-loadWaterStock()
-]);
-// Add notification
-addNotification('success', 'Pengaturan berhasil disimpan');
-showToast('Pengaturan berhasil disimpan', 'success');
-// Reload page in background after saving settings
-reloadPageInBackground();
-} else {
-showToast('Gagal menyimpan pengaturan', 'error');
-}
-} catch (error) {
-console.error(error);
-showToast('Terjadi kesalahan saat menyimpan pengaturan', 'error');
-} finally {
-hideLoading();
-}
+    // Dapatkan tombol simpan
+    const saveButton = event.target;
+    
+    // Disable tombol dan simpan teks asli
+    const originalText = disableButton(saveButton);
+    
+    const businessName = document.getElementById('business-name-input').value;
+    const businessAddress = document.getElementById('business-address-input').value;
+    const businessContact = document.getElementById('business-contact-input').value;
+    const businessLogo = document.getElementById('business-logo-input').value;
+    const tankCapacity = document.getElementById('settings-tank-capacity').value;
+    const supplyCost = document.getElementById('settings-supply-cost').value;
+    const apiKey = document.getElementById('api-script-input').value;
+    
+    // Tambahkan pengaturan tema dan notifikasi
+    const theme = currentTheme; // Ambil dari variabel global currentTheme
+    const toastPosition = document.getElementById('toast-position').value;
+    const toastStyle = document.getElementById('toast-style').value;
+    
+    // Validate logo URL if provided
+    if (businessLogo && businessLogo.trim() !== '') {
+        try {
+            new URL(businessLogo);
+        } catch (e) {
+            enableButton(saveButton, originalText);
+            showToast('URL logo tidak valid', 'error');
+            return;
+        }
+    }
+    
+    // Prepare settings data - TAMBAHKAN tema dan notifikasi
+    const settingsData = {
+        'Nama Usaha': businessName,
+        'Alamat Usaha': businessAddress,
+        'Kontak': businessContact,
+        'Logo': businessLogo,
+        'Kapasitas Toren (Liter)': tankCapacity,
+        'Biaya Suplai Air Tangki (Rp)': supplyCost,
+        'API': apiKey,
+        'Tema': theme,  // Simpan tema ke kolom "Tema"
+        'Posisi': toastPosition,  // Simpan posisi notifikasi ke kolom "Posisi"
+        'Gaya': toastStyle  // Simpan gaya notifikasi ke kolom "Gaya"
+    };
+    
+    // Update API key if provided
+    if (apiKey) {
+        API_KEY = apiKey;
+    }
+    
+    // Show loading
+    showLoading();
+    
+    try {
+        // Update settings
+        const response = await fetchData('Pengaturan', 'update', {
+            row: 2,
+            ...settingsData
+        });
+        
+        if (response.success) {
+            // Update water stock capacity
+            await fetchData('Stok Air', 'update', {
+                row: 2,
+                'Kapasitas Toren': tankCapacity
+            });
+            
+            // Save toast settings to localStorage (tetap pertahankan)
+            localStorage.setItem('toastPosition', toastPosition);
+            localStorage.setItem('toastStyle', toastStyle);
+            
+            // Refresh data
+            await Promise.all([
+                loadSettings(),
+                loadWaterStock()
+            ]);
+            
+            // Add notification
+            addNotification('success', 'Pengaturan berhasil disimpan');
+            showToast('Pengaturan berhasil disimpan', 'success');
+            
+            // Reload page in background after saving settings
+            reloadPageInBackground();
+        } else {
+            showToast('Gagal menyimpan pengaturan', 'error');
+        }
+    } catch (error) {
+        console.error(error);
+        showToast('Terjadi kesalahan saat menyimpan pengaturan', 'error');
+    } finally {
+        hideLoading();
+        enableButton(saveButton, originalText);
+    }
 }
 // Show Payment Debt Modal
 function showPaymentDebtModal(transactionId) {
@@ -3662,69 +3844,97 @@ document.getElementById('remaining-debt').textContent = remainingDebt.toLocaleSt
 document.getElementById('payment-amount')?.addEventListener('input', updateRemainingDebt);
 // Pay Debt
 async function payDebt() {
-if (!currentDebtId) return;
-const paymentAmount = parseInt(document.getElementById('payment-amount').value) || 0;
-const debtAmount = parseInt(document.getElementById('debt-amount').value) || 0;
-if (paymentAmount <= 0) {
-showToast('Jumlah pembayaran harus lebih dari 0', 'error');
-return;
-}
-if (paymentAmount > debtAmount) {
-showToast('Jumlah pembayaran melebihi hutang', 'error');
-return;
-}
-// Find transaction
-const transactionIndex = transactions.findIndex(t => t['ID Transaksi'] === currentDebtId);
-if (transactionIndex === -1) return;
-// Update transaction status
-const status = paymentAmount === debtAmount ? 'Lunas' : 'Hutang';
-// Show loading
-showLoading();
-try {
-const response = await fetchData('Transaksi', 'update', {
-row: transactionIndex + 2,
-'Status': status
-});
-if (response.success) {
-// Create a new transaction for the payment if partial payment
-if (paymentAmount < debtAmount) {
-const date = new Date();
-const paymentTransactionId = `PAY-${date.getFullYear()}${(date.getMonth()+1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
-const paymentData = {
-'ID Transaksi': paymentTransactionId,
-'Tanggal': date.toISOString(),
-'Produk': 'Pembayaran Hutang',
-'Jumlah': 1,
-'Harga Jual (Rp)': paymentAmount,
-'Harga Pokok (Rp)': 0,
-'Laba Kotor (Rp)': paymentAmount,
-'Nama Pelanggan': document.getElementById('debt-customer-name').value,
-'Status': 'Lunas'
-};
-await fetchData('Transaksi', 'insert', paymentData);
-}
-// Close modal
-closeModal('payment-debt-modal');
-// Add notification
-addNotification('success', `Pembayaran hutang sebesar Rp ${paymentAmount.toLocaleString('id-ID')} berhasil`);
-// Refresh data
-await Promise.all([
-loadTransactions(),
-loadDebts(),
-loadFinancialSummary()
-]);
-showToast('Pembayaran berhasil', 'success');
-// Reload page in background after paying debt
-reloadPageInBackground();
-} else {
-showToast('Gagal memproses pembayaran', 'error');
-}
-} catch (error) {
-console.error(error);
-showToast('Terjadi kesalahan saat memproses pembayaran', 'error');
-} finally {
-hideLoading();
-}
+    // Dapatkan tombol bayar
+    const payButton = event.target;
+    
+    // Disable tombol dan simpan teks asli
+    const originalText = disableButton(payButton);
+    
+    if (!currentDebtId) {
+        enableButton(payButton, originalText);
+        return;
+    }
+    
+    const paymentAmount = parseInt(document.getElementById('payment-amount').value) || 0;
+    const debtAmount = parseInt(document.getElementById('debt-amount').value) || 0;
+    
+    if (paymentAmount <= 0) {
+        enableButton(payButton, originalText);
+        showToast('Jumlah pembayaran harus lebih dari 0', 'error');
+        return;
+    }
+    
+    if (paymentAmount > debtAmount) {
+        enableButton(payButton, originalText);
+        showToast('Jumlah pembayaran melebihi hutang', 'error');
+        return;
+    }
+    
+    // Find transaction
+    const transactionIndex = transactions.findIndex(t => t['ID Transaksi'] === currentDebtId);
+    if (transactionIndex === -1) {
+        enableButton(payButton, originalText);
+        return;
+    }
+    
+    // Update transaction status
+    const status = paymentAmount === debtAmount ? 'Lunas' : 'Hutang';
+    
+    // Show loading
+    showLoading();
+    
+    try {
+        const response = await fetchData('Transaksi', 'update', {
+            row: transactionIndex + 2,
+            'Status': status
+        });
+        
+        if (response.success) {
+            // Create a new transaction for the payment if partial payment
+            if (paymentAmount < debtAmount) {
+                const date = new Date();
+                const paymentTransactionId = `PAY-${date.getFullYear()}${(date.getMonth()+1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+                const paymentData = {
+                    'ID Transaksi': paymentTransactionId,
+                    'Tanggal': date.toISOString(),
+                    'Produk': 'Pembayaran Hutang',
+                    'Jumlah': 1,
+                    'Harga Jual (Rp)': paymentAmount,
+                    'Harga Pokok (Rp)': 0,
+                    'Laba Kotor (Rp)': paymentAmount,
+                    'Nama Pelanggan': document.getElementById('debt-customer-name').value,
+                    'Status': 'Lunas'
+                };
+                await fetchData('Transaksi', 'insert', paymentData);
+            }
+            
+            // Close modal
+            closeModal('payment-debt-modal');
+            
+            // Add notification
+            addNotification('success', `Pembayaran hutang sebesar Rp ${paymentAmount.toLocaleString('id-ID')} berhasil`);
+            
+            // Refresh data
+            await Promise.all([
+                loadTransactions(),
+                loadDebts(),
+                loadFinancialSummary()
+            ]);
+            
+            showToast('Pembayaran berhasil', 'success');
+            
+            // Reload page in background after paying debt
+            reloadPageInBackground();
+        } else {
+            showToast('Gagal memproses pembayaran', 'error');
+        }
+    } catch (error) {
+        console.error(error);
+        showToast('Terjadi kesalahan saat memproses pembayaran', 'error');
+    } finally {
+        hideLoading();
+        enableButton(payButton, originalText);
+    }
 }
 // Generate Report
 async function generateReport() {
