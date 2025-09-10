@@ -1,4 +1,4 @@
-/* style.css */
+<style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 body {
 font-family: 'Poppins', sans-serif;
@@ -1396,3 +1396,4 @@ height: 28px;
 button.bg-white.text-gray-700.w-8.h-8.rounded-full.flex.items-center.justify-center.shadow-sm i {
 font-size: 10px;
 }
+</style>
