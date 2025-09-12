@@ -1552,6 +1552,51 @@
         input:checked + .toggle-slider:before {
             transform: translateX(20px);
         }
+        /* Menu Settings Styles */
+        .menu-settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .menu-settings-item:last-child {
+            border-bottom: none;
+        }
+        .menu-settings-info {
+            flex: 1;
+        }
+        .menu-settings-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--dark-color);
+            margin-bottom: 2px;
+        }
+        .menu-settings-description {
+            font-size: 12px;
+            color: #64748b;
+        }
+        .menu-settings-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .menu-position-selector {
+            display: flex;
+            background-color: #f1f5f9;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .menu-position-option {
+            padding: 6px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .menu-position-option.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
         .modal-content {
             border-radius: 12px;
             border: none;
@@ -1636,7 +1681,7 @@
 </head>
 <body>
     <!-- Header -->
-    <div class="app-header">
+    <div class="app-header" id="app-header">
         <div class="header-logo">
             <i class="bi bi-droplet-fill"></i>
         </div>
@@ -1686,14 +1731,14 @@
         </div>
     </div>
     <!-- Search Bar -->
-    <div class="search-container">
+    <div class="search-container" id="search-container">
         <div class="search-box">
             <i class="bi bi-search"></i>
             <input type="text" placeholder="Cari produk, pelanggan, atau transaksi..." id="search-input">
         </div>
     </div>
     <!-- Banner -->
-    <div class="banner-container">
+    <div class="banner-container" id="banner-container">
         <div class="banner">
             <div>
                 <div class="banner-title" id="monthly-revenue">Rp. 0</div>
@@ -2167,6 +2212,138 @@
             </div>
             
             <div class="settings-group">
+                <div class="settings-group-title">Pengaturan Menu</div>
+                <div class="menu-settings-item">
+                    <div class="menu-settings-info">
+                        <div class="menu-settings-label">Menu Beranda</div>
+                        <div class="menu-settings-description">Tampilkan menu beranda di navigasi</div>
+                    </div>
+                    <div class="menu-settings-controls">
+                        <label class="settings-toggle">
+                            <input type="checkbox" class="menu-toggle" data-menu="dashboard-tab" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <div class="menu-position-selector">
+                            <div class="menu-position-option active" data-position="bottom">Bawah</div>
+                            <div class="menu-position-option" data-position="header">Atas</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-settings-item">
+                    <div class="menu-settings-info">
+                        <div class="menu-settings-label">Menu Transaksi</div>
+                        <div class="menu-settings-description">Tampilkan menu transaksi di navigasi</div>
+                    </div>
+                    <div class="menu-settings-controls">
+                        <label class="settings-toggle">
+                            <input type="checkbox" class="menu-toggle" data-menu="transaksi-tab" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <div class="menu-position-selector">
+                            <div class="menu-position-option active" data-position="bottom">Bawah</div>
+                            <div class="menu-position-option" data-position="header">Atas</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-settings-item">
+                    <div class="menu-settings-info">
+                        <div class="menu-settings-label">Menu Riwayat</div>
+                        <div class="menu-settings-description">Tampilkan menu riwayat di navigasi</div>
+                    </div>
+                    <div class="menu-settings-controls">
+                        <label class="settings-toggle">
+                            <input type="checkbox" class="menu-toggle" data-menu="riwayat-tab" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <div class="menu-position-selector">
+                            <div class="menu-position-option active" data-position="bottom">Bawah</div>
+                            <div class="menu-position-option" data-position="header">Atas</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-settings-item">
+                    <div class="menu-settings-info">
+                        <div class="menu-settings-label">Menu Produk</div>
+                        <div class="menu-settings-description">Tampilkan menu produk di navigasi</div>
+                    </div>
+                    <div class="menu-settings-controls">
+                        <label class="settings-toggle">
+                            <input type="checkbox" class="menu-toggle" data-menu="produk-tab" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <div class="menu-position-selector">
+                            <div class="menu-position-option active" data-position="bottom">Bawah</div>
+                            <div class="menu-position-option" data-position="header">Atas</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-settings-item">
+                    <div class="menu-settings-info">
+                        <div class="menu-settings-label">Menu Pelanggan</div>
+                        <div class="menu-settings-description">Tampilkan menu pelanggan di navigasi</div>
+                    </div>
+                    <div class="menu-settings-controls">
+                        <label class="settings-toggle">
+                            <input type="checkbox" class="menu-toggle" data-menu="pelanggan-tab" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <div class="menu-position-selector">
+                            <div class="menu-position-option active" data-position="bottom">Bawah</div>
+                            <div class="menu-position-option" data-position="header">Atas</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-settings-item">
+                    <div class="menu-settings-info">
+                        <div class="menu-settings-label">Menu Stok Air</div>
+                        <div class="menu-settings-description">Tampilkan menu stok air di navigasi</div>
+                    </div>
+                    <div class="menu-settings-controls">
+                        <label class="settings-toggle">
+                            <input type="checkbox" class="menu-toggle" data-menu="stok-tab" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <div class="menu-position-selector">
+                            <div class="menu-position-option active" data-position="bottom">Bawah</div>
+                            <div class="menu-position-option" data-position="header">Atas</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-settings-item">
+                    <div class="menu-settings-info">
+                        <div class="menu-settings-label">Menu Pengeluaran</div>
+                        <div class="menu-settings-description">Tampilkan menu pengeluaran di navigasi</div>
+                    </div>
+                    <div class="menu-settings-controls">
+                        <label class="settings-toggle">
+                            <input type="checkbox" class="menu-toggle" data-menu="pengeluaran-tab" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <div class="menu-position-selector">
+                            <div class="menu-position-option active" data-position="bottom">Bawah</div>
+                            <div class="menu-position-option" data-position="header">Atas</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-settings-item">
+                    <div class="menu-settings-info">
+                        <div class="menu-settings-label">Menu Pengaturan</div>
+                        <div class="menu-settings-description">Tampilkan menu pengaturan di navigasi</div>
+                    </div>
+                    <div class="menu-settings-controls">
+                        <label class="settings-toggle">
+                            <input type="checkbox" class="menu-toggle" data-menu="pengaturan-tab" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <div class="menu-position-selector">
+                            <div class="menu-position-option active" data-position="bottom">Bawah</div>
+                            <div class="menu-position-option" data-position="header">Atas</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="settings-group">
                 <div class="settings-group-title">Tampilan</div>
                 <div class="settings-item">
                     <div class="settings-label">Tema</div>
@@ -2223,7 +2400,7 @@
         </div>
     </div>
     <!-- Bottom Navigation -->
-    <div class="bottom-nav">
+    <div class="bottom-nav" id="bottom-nav">
         <a href="#" class="nav-item active" data-tab="dashboard-tab">
             <div class="nav-icon"><i class="bi bi-house-door"></i></div>
             <div class="nav-label">Beranda</div>
@@ -2530,7 +2707,17 @@
             dailySales: {}, // To store daily sales data for chart
             selectedCustomer: null,
             selectedProducts: {}, // Track selected products with quantities
-            processing: false // Track if any process is running
+            processing: false, // Track if any process is running
+            menuSettings: {
+                'dashboard-tab': { visible: true, position: 'bottom' },
+                'transaksi-tab': { visible: true, position: 'bottom' },
+                'riwayat-tab': { visible: true, position: 'bottom' },
+                'produk-tab': { visible: true, position: 'bottom' },
+                'pelanggan-tab': { visible: true, position: 'bottom' },
+                'stok-tab': { visible: true, position: 'bottom' },
+                'pengeluaran-tab': { visible: true, position: 'bottom' },
+                'pengaturan-tab': { visible: true, position: 'bottom' }
+            }
         };
         
         // Initialize App
@@ -2565,6 +2752,9 @@
             
             // Set up FAB button based on active tab
             updateFabButton();
+            
+            // Initialize menu settings
+            initializeMenuSettings();
         });
         
         // Setup Event Listeners
@@ -2659,6 +2849,49 @@
                     
                     const modal = new bootstrap.Modal(document.getElementById('editSettingModal'));
                     modal.show();
+                });
+            });
+            
+            // Menu settings toggles
+            document.querySelectorAll('.menu-toggle').forEach(toggle => {
+                toggle.addEventListener('change', function() {
+                    const menuId = this.getAttribute('data-menu');
+                    const isVisible = this.checked;
+                    
+                    // Update menu settings
+                    appData.menuSettings[menuId].visible = isVisible;
+                    
+                    // Apply menu visibility
+                    updateMenuVisibility();
+                    
+                    // Save menu settings to local storage
+                    saveMenuSettings();
+                });
+            });
+            
+            // Menu position selectors
+            document.querySelectorAll('.menu-position-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const menuSettingsItem = this.closest('.menu-settings-item');
+                    const menuToggle = menuSettingsItem.querySelector('.menu-toggle');
+                    const menuId = menuToggle.getAttribute('data-menu');
+                    const position = this.getAttribute('data-position');
+                    
+                    // Update active position option
+                    const positionSelector = this.closest('.menu-position-selector');
+                    positionSelector.querySelectorAll('.menu-position-option').forEach(opt => {
+                        opt.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Update menu settings
+                    appData.menuSettings[menuId].position = position;
+                    
+                    // Apply menu position
+                    updateMenuPosition();
+                    
+                    // Save menu settings to local storage
+                    saveMenuSettings();
                 });
             });
             
@@ -2852,6 +3085,149 @@
                 document.getElementById('cart-dropdown').classList.remove('show');
                 document.getElementById('customer-search-results').classList.remove('show');
             });
+        }
+        
+        // Initialize Menu Settings
+        function initializeMenuSettings() {
+            // Try to load menu settings from local storage
+            const savedMenuSettings = localStorage.getItem('menuSettings');
+            
+            if (savedMenuSettings) {
+                try {
+                    appData.menuSettings = JSON.parse(savedMenuSettings);
+                } catch (e) {
+                    console.error('Error parsing menu settings from local storage:', e);
+                }
+            }
+            
+            // Apply menu settings
+            updateMenuVisibility();
+            updateMenuPosition();
+            
+            // Update UI toggles and position selectors
+            document.querySelectorAll('.menu-toggle').forEach(toggle => {
+                const menuId = toggle.getAttribute('data-menu');
+                toggle.checked = appData.menuSettings[menuId].visible;
+            });
+            
+            document.querySelectorAll('.menu-settings-item').forEach(item => {
+                const menuToggle = item.querySelector('.menu-toggle');
+                const menuId = menuToggle.getAttribute('data-menu');
+                const position = appData.menuSettings[menuId].position;
+                
+                const positionSelector = item.querySelector('.menu-position-selector');
+                positionSelector.querySelectorAll('.menu-position-option').forEach(opt => {
+                    opt.classList.remove('active');
+                    if (opt.getAttribute('data-position') === position) {
+                        opt.classList.add('active');
+                    }
+                });
+            });
+        }
+        
+        // Save Menu Settings to Local Storage
+        function saveMenuSettings() {
+            localStorage.setItem('menuSettings', JSON.stringify(appData.menuSettings));
+        }
+        
+        // Update Menu Visibility
+        function updateMenuVisibility() {
+            // Update bottom navigation visibility
+            document.querySelectorAll('.nav-item').forEach(item => {
+                const tabId = item.getAttribute('data-tab');
+                if (appData.menuSettings[tabId].visible) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+        
+        // Update Menu Position
+        function updateMenuPosition() {
+            // Create header navigation if it doesn't exist
+            let headerNav = document.getElementById('header-nav');
+            if (!headerNav) {
+                headerNav = document.createElement('div');
+                headerNav.id = 'header-nav';
+                headerNav.className = 'header-nav';
+                headerNav.style.display = 'flex';
+                headerNav.style.gap = '15px';
+                headerNav.style.marginLeft = 'auto';
+                
+                // Insert before header actions
+                const headerActions = document.querySelector('.header-actions');
+                headerActions.parentNode.insertBefore(headerNav, headerActions);
+            }
+            
+            // Clear header navigation
+            headerNav.innerHTML = '';
+            
+            // Move menu items to header or bottom based on settings
+            const bottomNav = document.getElementById('bottom-nav');
+            
+            // Get all nav items
+            const navItems = Array.from(document.querySelectorAll('.nav-item'));
+            
+            // Sort nav items by original order
+            navItems.sort((a, b) => {
+                const order = ['dashboard-tab', 'transaksi-tab', 'riwayat-tab', 'produk-tab', 'pelanggan-tab', 'stok-tab', 'pengeluaran-tab', 'pengaturan-tab'];
+                return order.indexOf(a.getAttribute('data-tab')) - order.indexOf(b.getAttribute('data-tab'));
+            });
+            
+            // Process each nav item
+            navItems.forEach(item => {
+                const tabId = item.getAttribute('data-tab');
+                const position = appData.menuSettings[tabId].position;
+                
+                if (position === 'header' && appData.menuSettings[tabId].visible) {
+                    // Clone the item for header navigation
+                    const headerItem = item.cloneNode(true);
+                    headerItem.classList.remove('nav-item');
+                    headerItem.classList.add('header-nav-item');
+                    headerItem.style.color = 'var(--white)';
+                    headerItem.style.textDecoration = 'none';
+                    headerItem.style.display = 'flex';
+                    headerItem.style.flexDirection = 'column';
+                    headerItem.style.alignItems = 'center';
+                    headerItem.style.fontSize = '12px';
+                    
+                    // Add event listener to header item
+                    headerItem.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        // Trigger click on original item
+                        item.click();
+                    });
+                    
+                    // Add to header navigation
+                    headerNav.appendChild(headerItem);
+                }
+            });
+            
+            // Update bottom nav items visibility
+            navItems.forEach(item => {
+                const tabId = item.getAttribute('data-tab');
+                const position = appData.menuSettings[tabId].position;
+                
+                if (position === 'header' && appData.menuSettings[tabId].visible) {
+                    item.style.display = 'none';
+                } else if (appData.menuSettings[tabId].visible) {
+                    item.style.display = 'flex';
+                }
+            });
+            
+            // Update active state in header nav
+            const activeTab = document.querySelector('.nav-item.active');
+            if (activeTab) {
+                const activeTabId = activeTab.getAttribute('data-tab');
+                const activeHeaderItem = headerNav.querySelector(`[data-tab="${activeTabId}"]`);
+                if (activeHeaderItem) {
+                    // Add active class to header item
+                    activeHeaderItem.style.color = 'var(--white)';
+                    activeHeaderItem.style.fontWeight = 'bold';
+                }
+            }
         }
         
         // Update FAB Button based on active tab
@@ -3249,6 +3625,43 @@
                     }
                 }
             });
+            
+            // Update water stock details when settings change
+            updateWaterStockDetails();
+        }
+        
+        function updateWaterStockDetails() {
+            const settings = appData.settings;
+            const waterStock = appData.waterStock;
+            
+            // Get values from settings
+            const capacity = parseInt(settings['Kapasitas Toren (Liter)'] || 8000);
+            const totalCost = parseInt(settings['Total Biaya Suplai (Rp)'] || 300000);
+            const remaining = parseInt(waterStock['Sisa Liter'] || 7981);
+            const used = parseInt(waterStock['Liter Terpakai'] || 19);
+            const totalUsed = parseInt(waterStock['Total Liter Terpakai'] || 19);
+            
+            // Calculate percentage
+            const percentage = Math.round((remaining / capacity) * 100);
+            
+            // Update water level UI
+            document.getElementById('water-level').style.height = `${percentage}%`;
+            document.getElementById('water-percentage').textContent = `${percentage}%`;
+            
+            // Update water info
+            document.getElementById('remaining-water').textContent = `${remaining} L`;
+            document.getElementById('used-water').textContent = `${used} L`;
+            document.getElementById('tank-capacity').textContent = `${capacity} L`;
+            
+            // Update water stock details
+            document.getElementById('detail-remaining-water').textContent = `${remaining} L`;
+            document.getElementById('detail-used-water').textContent = `${used} L`;
+            document.getElementById('detail-total-used-water').textContent = `${totalUsed} L`;
+            document.getElementById('detail-tank-capacity').textContent = `${capacity} L`;
+            document.getElementById('detail-total-cost').textContent = `Rp ${totalCost.toLocaleString('id-ID')}`;
+            
+            // Update dashboard stats
+            document.getElementById('water-stock').textContent = `${remaining} L`;
         }
         
         function updateProductsUI() {
@@ -3410,7 +3823,7 @@
                     // Extract the place ID from the URL
                     const match = mapsUrl.match(/!1s([^!]+)/);
                     if (match && match[1]) {
-                        embedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d${match[1]}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1`;
+                        embedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d387190.2799160891!2d-122.42067955555556!3d37.7749295!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1`;
                     } else {
                         // Fallback to a simple embed
                         embedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d387190.2799160891!2d-122.42067955555556!3d37.7749295!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1`;
@@ -3562,11 +3975,12 @@
         
         function updateWaterStockUI() {
             const waterStock = appData.waterStock;
-            const capacity = parseInt(waterStock['Kapasitas Toren'] || 8000);
+            const settings = appData.settings;
+            const capacity = parseInt(settings['Kapasitas Toren (Liter)'] || 8000);
             const remaining = parseInt(waterStock['Sisa Liter'] || 7981);
             const used = parseInt(waterStock['Liter Terpakai'] || 19);
             const totalUsed = parseInt(waterStock['Total Liter Terpakai'] || 19);
-            const totalCost = parseInt(waterStock['Total Biaya Suplai (Rp)'] || 300000);
+            const totalCost = parseInt(settings['Total Biaya Suplai (Rp)'] || 300000);
             
             // Update water level
             const percentage = Math.round((remaining / capacity) * 100);
@@ -3902,7 +4316,8 @@
         function updateWaterLevel() {
             // Update water level visualization
             const waterStock = appData.waterStock;
-            const capacity = parseInt(waterStock['Kapasitas Toren'] || 8000);
+            const settings = appData.settings;
+            const capacity = parseInt(settings['Kapasitas Toren (Liter)'] || 8000);
             const remaining = parseInt(waterStock['Sisa Liter'] || 7981);
             const percentage = Math.round((remaining / capacity) * 100);
             
@@ -4170,7 +4585,8 @@
         // Update water level threshold for refill button
         function updateWaterLevelThreshold() {
             const waterStock = appData.waterStock;
-            const capacity = parseInt(waterStock['Kapasitas Toren'] || 8000);
+            const settings = appData.settings;
+            const capacity = parseInt(settings['Kapasitas Toren (Liter)'] || 8000);
             const remaining = parseInt(waterStock['Sisa Liter'] || 7981);
             
             // Enable refill button if water is below 50 liters
@@ -4509,7 +4925,8 @@
             if (allTransactionsSaved) {
                 // Update water stock
                 const waterStock = appData.waterStock;
-                const currentCapacity = parseInt(waterStock['Kapasitas Toren'] || 8000);
+                const settings = appData.settings;
+                const currentCapacity = parseInt(settings['Kapasitas Toren (Liter)'] || 8000);
                 const currentRemaining = parseInt(waterStock['Sisa Liter'] || 7981);
                 const currentUsed = parseInt(waterStock['Liter Terpakai'] || 19);
                 const currentTotalUsed = parseInt(waterStock['Total Liter Terpakai'] || 19);
@@ -4671,7 +5088,8 @@
             if (success) {
                 // Update water stock
                 const waterStock = appData.waterStock;
-                const currentCapacity = parseInt(waterStock['Kapasitas Toren'] || 8000);
+                const settings = appData.settings;
+                const currentCapacity = parseInt(settings['Kapasitas Toren (Liter)'] || 8000);
                 const currentRemaining = parseInt(waterStock['Sisa Liter'] || 7981);
                 const currentUsed = parseInt(waterStock['Liter Terpakai'] || 19);
                 const currentTotalUsed = parseInt(waterStock['Total Liter Terpakai'] || 19);
@@ -5052,7 +5470,8 @@
             if (expenseSuccess) {
                 // Update water stock
                 const waterStock = appData.waterStock;
-                const currentCapacity = parseInt(waterStock['Kapasitas Toren'] || 8000);
+                const settings = appData.settings;
+                const currentCapacity = parseInt(settings['Kapasitas Toren (Liter)'] || 8000);
                 const currentRemaining = parseInt(waterStock['Sisa Liter'] || 7981);
                 const currentUsed = parseInt(waterStock['Liter Terpakai'] || 19);
                 const currentTotalUsed = parseInt(waterStock['Total Liter Terpakai'] || 19);
