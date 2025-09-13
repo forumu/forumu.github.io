@@ -34,6 +34,53 @@
             overflow-x: hidden;
             padding-bottom: 60px;
         }
+        
+        /* Processing Overlay - Baru */
+        .processing-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        
+        .processing-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .processing-content {
+            text-align: center;
+            color: white;
+        }
+        
+        .processing-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto 20px;
+        }
+        
+        .processing-text {
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
         /* Header */
         .app-header {
             background-color: var(--primary-color);
@@ -1901,9 +1948,26 @@
                 grid-template-columns: 1fr;
             }
         }
+        
+        /* Animasi rotasi untuk ikon refresh */
+        .rotating {
+            animation: rotate 1s linear infinite;
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
+    <!-- Processing Overlay - Baru -->
+    <div class="processing-overlay" id="processing-overlay">
+        <div class="processing-content">
+            <div class="processing-spinner"></div>
+            <div class="processing-text">Sedang Diproses</div>
+        </div>
+    </div>
+
     <!-- Header -->
     <div class="app-header" id="app-header">
         <div class="header-logo" id="header-logo">
@@ -2958,7 +3022,7 @@
             </div>
         </div>
     </div>
-    <!-- Payment Modal -->
+    <!-- Payment Modal - Diperbaiki, menghapus input keterangan -->
     <div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -2984,10 +3048,7 @@
                         <label class="form-label">Tanggal Pembayaran</label>
                         <input type="date" class="form-control" id="payment-date">
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Keterangan</label>
-                        <textarea class="form-control" id="payment-description" rows="2" placeholder="Keterangan pembayaran"></textarea>
-                    </div>
+                    <!-- Input keterangan dihapus sesuai permintaan -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -3340,6 +3401,9 @@
                 
                 switch(activeTab) {
                     case 'dashboard-tab':
+                        // Tampilkan animasi refresh
+                        showRefreshAnimation();
+                        
                         // Refresh data
                         loadSettings();
                         loadProducts();
@@ -3356,7 +3420,7 @@
                         updateTopProducts();
                         updateActiveCustomers();
                         updateMonthlyExpense();
-                        showToast('Data berhasil diperbarui', 'success');
+                        // Hapus notifikasi "Data berhasil diperbarui"
                         break;
                         
                     case 'produk-tab':
@@ -3388,17 +3452,23 @@
                         break;
                         
                     case 'pengaturan-tab':
+                        // Tampilkan animasi refresh
+                        showRefreshAnimation();
+                        
                         // Refresh settings
                         loadSettings();
-                        showToast('Pengaturan berhasil diperbarui', 'success');
+                        // Hapus notifikasi "Pengaturan berhasil diperbarui"
                         break;
                         
                     case 'riwayat-tab':
+                        // Tampilkan animasi refresh
+                        showRefreshAnimation();
+                        
                         // Refresh transaction history
                         loadTransactions();
                         updateTransactionHistoryUI();
                         updateDebtUI();
-                        showToast('Riwayat transaksi berhasil diperbarui', 'success');
+                        // Hapus notifikasi "Riwayat transaksi berhasil diperbarui"
                         break;
                 }
             });
@@ -3721,6 +3791,9 @@
                 
                 switch(activeTab) {
                     case 'dashboard-tab':
+                        // Tampilkan animasi refresh
+                        showRefreshAnimation();
+                        
                         // Refresh data
                         loadSettings();
                         loadProducts();
@@ -3737,7 +3810,7 @@
                         updateTopProducts();
                         updateActiveCustomers();
                         updateMonthlyExpense();
-                        showToast('Data berhasil diperbarui', 'success');
+                        // Hapus notifikasi "Data berhasil diperbarui"
                         break;
                         
                     case 'produk-tab':
@@ -3769,17 +3842,23 @@
                         break;
                         
                     case 'pengaturan-tab':
+                        // Tampilkan animasi refresh
+                        showRefreshAnimation();
+                        
                         // Refresh settings
                         loadSettings();
-                        showToast('Pengaturan berhasil diperbarui', 'success');
+                        // Hapus notifikasi "Pengaturan berhasil diperbarui"
                         break;
                         
                     case 'riwayat-tab':
+                        // Tampilkan animasi refresh
+                        showRefreshAnimation();
+                        
                         // Refresh transaction history
                         loadTransactions();
                         updateTransactionHistoryUI();
                         updateDebtUI();
-                        showToast('Riwayat transaksi berhasil diperbarui', 'success');
+                        // Hapus notifikasi "Riwayat transaksi berhasil diperbarui"
                         break;
                 }
             });
@@ -3927,7 +4006,7 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    showToast('Data berhasil disimpan', 'success');
+                    // Menghapus notifikasi "Data berhasil disimpan" sesuai permintaan
                     return true;
                 } else {
                     throw new Error(result.message);
@@ -3955,7 +4034,7 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    showToast('Data berhasil diperbarui', 'success');
+                    // Menghapus notifikasi "Data berhasil diperbarui" sesuai permintaan
                     return true;
                 } else {
                     throw new Error(result.message);
@@ -4042,6 +4121,9 @@
                 updateTransactionHistoryUI();
                 updateDebtUI();
                 calculateDailySales();
+                
+                // Perbaiki ketidaksesuaian data hutang
+                await fixDebtInconsistencies();
             }
         }
         
@@ -4610,12 +4692,18 @@
                     year: 'numeric' 
                 });
                 
-                // Calculate total amount and remaining debt for this transaction group
+                // Calculate total amount for this transaction group
                 const totalAmount = transactionGroup.reduce((sum, t) => {
                     return sum + (parseInt(t['Harga Jual (Rp)']) || 0) * (parseInt(t['Jumlah']) || 1);
                 }, 0);
                 
+                // Ambil sisa hutang (seharusnya sama untuk semua transaksi dalam grup)
                 const remainingDebt = parseInt(transaction['Sisa Hutang']) || 0;
+                
+                // Validasi konsistensi
+                if (!validateDebtConsistency(transaction['ID Transaksi'])) {
+                    console.warn(`Debt inconsistency detected for transaction ${transaction['ID Transaksi']}`);
+                }
                 
                 // Format due date if available
                 let dueDateHtml = '';
@@ -5441,6 +5529,7 @@
             updateCartBadge();
         }
         
+        // PERBAIKAN: Fungsi checkout() yang diperbaiki untuk memastikan konsistensi data hutang
         async function checkout() {
             // Check if already processing
             if (appData.processing) {
@@ -5493,8 +5582,23 @@
                 return sum + (item.price * item.quantity);
             }, 0);
             
+            // PERBAIKAN: Hitung sisa hutang dengan benar berdasarkan metode pembayaran
+            let remainingDebt = 0;
+            if (appData.selectedPaymentMethod === 'Lunas') {
+                remainingDebt = 0;
+            } else if (appData.selectedPaymentMethod === 'Manual') {
+                // Pastikan manualPaymentAmount tidak melebihi subtotal
+                manualPaymentAmount = Math.min(manualPaymentAmount, subtotal);
+                remainingDebt = subtotal - manualPaymentAmount;
+            } else { // Hutang
+                remainingDebt = subtotal;
+            }
+            
             // Set processing state
             setProcessingState(true);
+            
+            // Show processing overlay
+            showProcessingOverlay();
             
             // Create transactions for each item in cart
             const now = new Date();
@@ -5537,14 +5641,14 @@
                     'Harga Pokok (Rp)': cost,
                     'Laba Kotor (Rp)': profit,
                     'Status': appData.selectedPaymentMethod,
-                    'Sisa Hutang': appData.selectedPaymentMethod === 'Lunas' ? 0 : 
-                                 appData.selectedPaymentMethod === 'Manual' ? Math.max(0, subtotal - manualPaymentAmount) : totalPrice,
+                    // PERBAIKAN: Gunakan nilai remainingDebt yang sudah dihitung dengan benar
+                    'Sisa Hutang': remainingDebt,
                     'Jatuh Tempo': dueDate,
                     'Jumlah': item.quantity,
                     'Jenis Transaksi': 'Penjualan',
                     'ID Transaksi Induk': transactionId,
-                    'Total Hutang Awal': appData.selectedPaymentMethod === 'Lunas' ? 0 : 
-                                        appData.selectedPaymentMethod === 'Manual' ? Math.max(0, subtotal - manualPaymentAmount) : totalPrice,
+                    // PERBAIKAN: Gunakan nilai yang konsisten
+                    'Total Hutang Awal': remainingDebt,
                     'Jumlah Bayar Manual': appData.selectedPaymentMethod === 'Manual' ? manualPaymentAmount : 0
                 };
                 
@@ -5579,51 +5683,48 @@
                 };
                 
                 // Update water stock
-                await updateData('Stok Air', 2, waterStockData);
+                const waterStockSuccess = await updateData('Stok Air', 2, waterStockData);
                 
-                // Clear cart
-                clearCart();
-                
-                // Refresh data
-                loadTransactions();
-                loadWaterStock();
-                updateDashboardStats();
-                updateFinancialSummary();
-                updateTopProducts();
-                updateActiveCustomers();
-                updateWaterStockUI();
-                updateStockHistory();
-                updateWaterLevelThreshold();
-                calculateDailySales();
-                updateSalesChart();
-                updateDebtUI();
-                
-                // Show success notification
-                showToast('Transaksi berhasil disimpan', 'success');
-                
-                // Add notification
-                const notificationData = {
-                    'Tanggal': new Date().toISOString(),
-                    'Notifikasi': `Transaksi berhasil! Total: Rp ${subtotal.toLocaleString('id-ID')}`,
-                    'Status': 'enable'
-                };
-                insertData('Notifikasi', notificationData);
-                
-                // Switch to riwayat tab
-                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                
-                const riwayatTab = document.querySelector('.nav-item[data-tab="riwayat-tab"]');
-                const riwayatContent = document.getElementById('riwayat-tab');
-                
-                riwayatTab.classList.add('active');
-                riwayatContent.classList.add('active');
-                
-                // Update FAB button
-                updateFabButton();
+                if (waterStockSuccess) {
+                    // Clear cart
+                    clearCart();
+                    
+                    // Refresh data
+                    loadTransactions();
+                    loadWaterStock();
+                    updateDashboardStats();
+                    updateFinancialSummary();
+                    updateTopProducts();
+                    updateActiveCustomers();
+                    updateWaterStockUI();
+                    updateStockHistory();
+                    updateWaterLevelThreshold();
+                    calculateDailySales();
+                    updateSalesChart();
+                    updateDebtUI();
+                    
+                    // Add notification
+                    const notificationData = {
+                        'Tanggal': new Date().toISOString(),
+                        'Notifikasi': `Transaksi berhasil! Total: Rp ${subtotal.toLocaleString('id-ID')}`,
+                        'Status': 'enable'
+                    };
+                    insertData('Notifikasi', notificationData);
+                    
+                    // Switch to riwayat tab
+                    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                    
+                    const riwayatTab = document.querySelector('.nav-item[data-tab="riwayat-tab"]');
+                    const riwayatContent = document.getElementById('riwayat-tab');
+                    
+                    riwayatTab.classList.add('active');
+                    riwayatContent.classList.add('active');
+                    
+                    // Update FAB button
+                    updateFabButton();
+                }
             } else {
-                showToast('Terjadi kesalahan saat menyimpan transaksi', 'danger');
-                
                 // Add notification for failed transaction
                 const notificationData = {
                     'Tanggal': new Date().toISOString(),
@@ -5632,6 +5733,9 @@
                 };
                 insertData('Notifikasi', notificationData);
             }
+            
+            // Hide processing overlay
+            hideProcessingOverlay();
             
             // Reset processing state
             setProcessingState(false);
@@ -5695,8 +5799,19 @@
             const randomStr = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
             const transactionId = `TRX-${dateStr}-${randomStr}`;
             
+            // PERBAIKAN: Hitung sisa hutang dengan benar
+            let remainingDebt = 0;
+            if (paymentStatus === 'Lunas') {
+                remainingDebt = 0;
+            } else { // Hutang atau Manual
+                remainingDebt = totalPrice;
+            }
+            
             // Set processing state
             setProcessingState(true);
+            
+            // Show processing overlay
+            showProcessingOverlay();
             
             // Prepare transaction data
             const transactionData = {
@@ -5709,12 +5824,15 @@
                 'Harga Pokok (Rp)': cost,
                 'Laba Kotor (Rp)': profit,
                 'Status': paymentStatus,
-                'Sisa Hutang': paymentStatus === 'Lunas' ? 0 : totalPrice,
+                // PERBAIKAN: Gunakan nilai remainingDebt yang konsisten
+                'Sisa Hutang': remainingDebt,
                 'Jatuh Tempo': dueDate || '',
                 'Jumlah': quantity,
                 'Jenis Transaksi': 'Penjualan',
                 'ID Transaksi Induk': transactionId,
-                'Total Hutang Awal': paymentStatus === 'Lunas' ? 0 : totalPrice
+                // PERBAIKAN: Gunakan nilai yang konsisten
+                'Total Hutang Awal': remainingDebt,
+                'Jumlah Bayar Manual': 0
             };
             
             // Save transaction
@@ -5743,52 +5861,54 @@
                 };
                 
                 // Update water stock
-                await updateData('Stok Air', 2, waterStockData);
+                const waterStockSuccess = await updateData('Stok Air', 2, waterStockData);
                 
-                // Close modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('addTransactionModal'));
-                modal.hide();
-                
-                // Reset form
-                document.getElementById('transaction-customer-select').value = 'Pilih pelanggan';
-                document.getElementById('transaction-product-select').value = 'Pilih produk';
-                document.getElementById('transaction-quantity').value = 1;
-                document.getElementById('transaction-payment-status').value = 'Lunas';
-                document.getElementById('transaction-due-date').value = '';
-                
-                // Refresh data
-                loadTransactions();
-                loadWaterStock();
-                updateDashboardStats();
-                updateFinancialSummary();
-                updateTopProducts();
-                updateActiveCustomers();
-                updateWaterStockUI();
-                updateStockHistory();
-                updateWaterLevelThreshold();
-                calculateDailySales();
-                updateSalesChart();
-                updateDebtUI();
-                
-                // Show success notification
-                showToast('Transaksi berhasil disimpan', 'success');
-                
-                // Add notification
-                const notificationData = {
-                    'Tanggal': new Date().toISOString(),
-                    'Notifikasi': `Transaksi berhasil! Total: Rp ${totalPrice.toLocaleString('id-ID')}`,
-                    'Status': 'enable'
-                };
-                insertData('Notifikasi', notificationData);
+                if (waterStockSuccess) {
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addTransactionModal'));
+                    modal.hide();
+                    
+                    // Reset form
+                    document.getElementById('transaction-customer-select').value = 'Pilih pelanggan';
+                    document.getElementById('transaction-product-select').value = 'Pilih produk';
+                    document.getElementById('transaction-quantity').value = 1;
+                    document.getElementById('transaction-payment-status').value = 'Lunas';
+                    document.getElementById('transaction-due-date').value = '';
+                    
+                    // Refresh data
+                    loadTransactions();
+                    loadWaterStock();
+                    updateDashboardStats();
+                    updateFinancialSummary();
+                    updateTopProducts();
+                    updateActiveCustomers();
+                    updateWaterStockUI();
+                    updateStockHistory();
+                    updateWaterLevelThreshold();
+                    calculateDailySales();
+                    updateSalesChart();
+                    updateDebtUI();
+                    
+                    // Add notification
+                    const notificationData = {
+                        'Tanggal': new Date().toISOString(),
+                        'Notifikasi': `Transaksi berhasil! Total: Rp ${totalPrice.toLocaleString('id-ID')}`,
+                        'Status': 'enable'
+                    };
+                    insertData('Notifikasi', notificationData);
+                }
             } else {
-                // Add notification for failed transaction
+                // Add notification for failed transaction addition
                 const notificationData = {
                     'Tanggal': new Date().toISOString(),
-                    'Notifikasi': `Transaksi gagal! Total: Rp ${totalPrice.toLocaleString('id-ID')}`,
+                    'Notifikasi': `Gagal menambahkan transaksi: ${product['Nama Produk']}`,
                     'Status': 'enable'
                 };
                 insertData('Notifikasi', notificationData);
             }
+            
+            // Hide processing overlay
+            hideProcessingOverlay();
             
             // Reset processing state
             setProcessingState(false);
@@ -5837,6 +5957,9 @@
             // Set processing state
             setProcessingState(true);
             
+            // Show processing overlay
+            showProcessingOverlay();
+            
             // Prepare product data
             const productData = {
                 'ID Produk': productId,
@@ -5863,9 +5986,6 @@
                 // Refresh data
                 loadProducts();
                 
-                // Show success notification
-                showToast('Produk berhasil ditambahkan', 'success');
-                
                 // Add notification
                 const notificationData = {
                     'Tanggal': new Date().toISOString(),
@@ -5882,6 +6002,9 @@
                 };
                 insertData('Notifikasi', notificationData);
             }
+            
+            // Hide processing overlay
+            hideProcessingOverlay();
             
             // Reset processing state
             setProcessingState(false);
@@ -5921,6 +6044,9 @@
             // Set processing state
             setProcessingState(true);
             
+            // Show processing overlay
+            showProcessingOverlay();
+            
             // Prepare customer data
             const customerData = {
                 'ID Pelanggan': customerId,
@@ -5949,9 +6075,6 @@
                 // Refresh data
                 loadCustomers();
                 
-                // Show success notification
-                showToast('Pelanggan berhasil ditambahkan', 'success');
-                
                 // Add notification
                 const notificationData = {
                     'Tanggal': new Date().toISOString(),
@@ -5968,6 +6091,9 @@
                 };
                 insertData('Notifikasi', notificationData);
             }
+            
+            // Hide processing overlay
+            hideProcessingOverlay();
             
             // Reset processing state
             setProcessingState(false);
@@ -6084,6 +6210,9 @@
             // Set processing state
             setProcessingState(true);
             
+            // Show processing overlay
+            showProcessingOverlay();
+            
             // Prepare expense data
             const expenseData = {
                 'Tanggal': expenseDate,
@@ -6112,9 +6241,6 @@
                 updateFinancialSummary();
                 updateMonthlyExpense();
                 
-                // Show success notification
-                showToast('Pengeluaran berhasil ditambahkan', 'success');
-                
                 // Add notification
                 const notificationData = {
                     'Tanggal': new Date().toISOString(),
@@ -6131,6 +6257,9 @@
                 };
                 insertData('Notifikasi', notificationData);
             }
+            
+            // Hide processing overlay
+            hideProcessingOverlay();
             
             // Reset processing state
             setProcessingState(false);
@@ -6169,6 +6298,9 @@
             
             // Set processing state
             setProcessingState(true);
+            
+            // Show processing overlay
+            showProcessingOverlay();
             
             // Prepare expense data
             const expenseData = {
@@ -6227,9 +6359,6 @@
                     updateWaterLevelThreshold();
                     updateFinancialSummary();
                     
-                    // Show success notification
-                    showToast('Pengisian ulang air berhasil disimpan', 'success');
-                    
                     // Add notification
                     const notificationData = {
                         'Tanggal': new Date().toISOString(),
@@ -6247,6 +6376,9 @@
                 };
                 insertData('Notifikasi', notificationData);
             }
+            
+            // Hide processing overlay
+            hideProcessingOverlay();
             
             // Reset processing state
             setProcessingState(false);
@@ -6270,6 +6402,9 @@
             // Set processing state
             setProcessingState(true);
             
+            // Show processing overlay
+            showProcessingOverlay();
+            
             // Update setting in app data
             appData.settings[field] = value;
             
@@ -6290,16 +6425,6 @@
                     updateWaterStockUI();
                     updateWaterLevelThreshold();
                 }
-                
-                showToast('Pengaturan berhasil diperbarui', 'success');
-                
-                // Add notification
-                const notificationData = {
-                    'Tanggal': new Date().toISOString(),
-                    'Notifikasi': `Pengaturan berhasil diperbarui: ${field}`,
-                    'Status': 'enable'
-                };
-                insertData('Notifikasi', notificationData);
             } else {
                 // Add notification for failed setting update
                 const notificationData = {
@@ -6309,6 +6434,9 @@
                 };
                 insertData('Notifikasi', notificationData);
             }
+            
+            // Hide processing overlay
+            hideProcessingOverlay();
             
             // Reset processing state
             setProcessingState(false);
@@ -6563,7 +6691,7 @@
                 customerItem.innerHTML = `
                     <div class="customer-avatar">${initials}</div>
                     <div class="customer-info">
-                        <div class="customer-name" style="cursor: pointer;" data-id="${customer['ID Pelanggan']}" data-name="${name}">${name}</div>
+                        <div class="customer-name" style="cursor: pointer;" data-id="${customer['ID Pelanggan']}" data-name="${name}" data-contact="${customer['Kontak'] || ''}" data-address="${customer['Alamat'] || ''}" data-deposit="${customer['Galon Titipan'] || 0}" data-maps="${customer['Maps'] || ''}">${name}</div>
                     </div>
                     <div class="customer-actions">
                         ${whatsappNumber ? `<a href="https://wa.me/${whatsappNumber.replace(/\+/g, '')}" target="_blank" class="customer-action whatsapp" title="WhatsApp">
@@ -6717,9 +6845,6 @@
                     loadSettings();
                     break;
             }
-            
-            // NOTIFIKASI DIHAPUS - Tidak menampilkan notifikasi "Halaman diperbarui"
-            // showToast('Halaman diperbarui', 'success');
         }
         
         // Payment Functions
@@ -6739,6 +6864,7 @@
             modal.show();
         }
         
+        // PERBAIKAN: Fungsi savePayment() yang diperbaiki untuk memastikan konsistensi data hutang
         async function savePayment() {
             // Check if already processing
             if (appData.processing) {
@@ -6750,7 +6876,6 @@
             const transactionId = document.getElementById('payment-transaction-id').value;
             const paymentAmount = parseInt(document.getElementById('payment-amount').value) || 0;
             const paymentDate = document.getElementById('payment-date').value;
-            const paymentDescription = document.getElementById('payment-description').value;
             
             // Validate inputs
             if (!transactionId) {
@@ -6780,17 +6905,17 @@
             const mainTransaction = transactionGroup[0];
             const remainingDebt = parseInt(mainTransaction['Sisa Hutang']) || 0;
             
-            // Check if payment amount is valid
-            if (paymentAmount > remainingDebt) {
-                showToast('Jumlah pembayaran melebihi sisa hutang', 'warning');
-                return;
-            }
+            // PERBAIKAN: Pastikan paymentAmount tidak melebihi sisa hutang
+            const validPaymentAmount = Math.min(paymentAmount, remainingDebt);
             
             // Set processing state
             setProcessingState(true);
             
+            // Show processing overlay
+            showProcessingOverlay();
+            
             // Calculate new remaining debt
-            const newRemainingDebt = remainingDebt - paymentAmount;
+            const newRemainingDebt = remainingDebt - validPaymentAmount;
             
             // Determine new status
             const newStatus = newRemainingDebt === 0 ? 'Lunas' : 'Hutang';
@@ -6834,8 +6959,8 @@
                     'ID Transaksi': transactionId,
                     'ID Pelanggan': mainTransaction['ID Pelanggan'],
                     'Nama Pelanggan': mainTransaction['Nama Pelanggan'],
-                    'Jumlah': paymentAmount,
-                    'Keterangan': paymentDescription || `Pembayaran hutang untuk transaksi ${transactionId}`,
+                    'Jumlah': validPaymentAmount,
+                    'Keterangan': `Pembayaran hutang untuk transaksi ${transactionId}`,
                     'Jenis': 'Pembayaran Hutang'
                 };
                 
@@ -6843,18 +6968,6 @@
                 const paymentSuccess = await insertData('Pembayaran', paymentData);
                 
                 if (paymentSuccess) {
-                    // Close modal
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('paymentModal'));
-                    modal.hide();
-                    
-                    // Reset form
-                    document.getElementById('payment-transaction-id').value = '';
-                    document.getElementById('payment-customer-name').value = '';
-                    document.getElementById('payment-total-debt').value = '';
-                    document.getElementById('payment-amount').value = '';
-                    document.getElementById('payment-date').value = '';
-                    document.getElementById('payment-description').value = '';
-                    
                     // Refresh data
                     loadTransactions();
                     updateDashboardStats();
@@ -6868,10 +6981,14 @@
                     // Add notification
                     const notificationData = {
                         'Tanggal': new Date().toISOString(),
-                        'Notifikasi': `Pembayaran hutang berhasil! Transaksi: ${transactionId}, Jumlah: Rp ${paymentAmount.toLocaleString('id-ID')}`,
+                        'Notifikasi': `Pembayaran hutang berhasil! Transaksi: ${transactionId}, Jumlah: Rp ${validPaymentAmount.toLocaleString('id-ID')}`,
                         'Status': 'enable'
                     };
                     insertData('Notifikasi', notificationData);
+                    
+                    // Close modal automatically after successful payment
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('paymentModal'));
+                    modal.hide();
                 } else {
                     showToast('Terjadi kesalahan saat menyimpan pembayaran', 'danger');
                 }
@@ -6879,8 +6996,135 @@
                 showToast('Terjadi kesalahan saat memperbarui transaksi', 'danger');
             }
             
+            // Hide processing overlay
+            hideProcessingOverlay();
+            
             // Reset processing state
             setProcessingState(false);
+        }
+        
+        // PERBAIKAN: Fungsi untuk memvalidasi konsistensi data hutang
+        function validateDebtConsistency(transactionId) {
+            const transactionGroup = appData.transactions.filter(t => t['ID Transaksi'] === transactionId);
+            
+            if (transactionGroup.length === 0) return false;
+            
+            // Hitung total nilai transaksi
+            const totalValue = transactionGroup.reduce((sum, t) => {
+                return sum + (parseInt(t['Harga Jual (Rp)']) || 0) * (parseInt(t['Jumlah']) || 1);
+            }, 0);
+            
+            // Ambil sisa hutang dari transaksi pertama (seharusnya sama untuk semua)
+            const remainingDebt = parseInt(transactionGroup[0]['Sisa Hutang']) || 0;
+            
+            // Hitung total pembayaran manual
+            const manualPayment = parseInt(transactionGroup[0]['Jumlah Bayar Manual']) || 0;
+            
+            // Validasi: totalValue - manualPayment harus sama dengan remainingDebt
+            const expectedDebt = totalValue - manualPayment;
+            
+            if (expectedDebt !== remainingDebt) {
+                console.error(`Inconsistency detected for transaction ${transactionId}:`, {
+                    totalValue,
+                    manualPayment,
+                    expectedDebt,
+                    actualDebt: remainingDebt
+                });
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // PERBAIKAN: Fungsi untuk memperbaiki data yang tidak konsisten
+        async function fixDebtInconsistencies() {
+            // Group transactions by ID Transaksi
+            const groupedTransactions = {};
+            appData.transactions.forEach(transaction => {
+                const id = transaction['ID Transaksi'];
+                if (!groupedTransactions[id]) {
+                    groupedTransactions[id] = [];
+                }
+                groupedTransactions[id].push(transaction);
+            });
+            
+            // Periksa setiap grup transaksi
+            for (const [transactionId, transactions] of Object.entries(groupedTransactions)) {
+                // Hitung total nilai transaksi
+                const totalValue = transactions.reduce((sum, t) => {
+                    return sum + (parseInt(t['Harga Jual (Rp)']) || 0) * (parseInt(t['Jumlah']) || 1);
+                }, 0);
+                
+                // Ambil sisa hutang dari transaksi pertama
+                const remainingDebt = parseInt(transactions[0]['Sisa Hutang']) || 0;
+                
+                // Hitung total pembayaran manual
+                const manualPayment = parseInt(transactions[0]['Jumlah Bayar Manual']) || 0;
+                
+                // Hitung sisa hutang yang diharapkan
+                const expectedDebt = totalValue - manualPayment;
+                
+                // Jika ada ketidaksesuaian, perbaiki
+                if (expectedDebt !== remainingDebt) {
+                    console.log(`Fixing debt inconsistency for transaction ${transactionId}:`, {
+                        totalValue,
+                        manualPayment,
+                        oldDebt: remainingDebt,
+                        newDebt: expectedDebt
+                    });
+                    
+                    // Update semua transaksi dalam grup
+                    for (const transaction of transactions) {
+                        const transactionIndex = appData.transactions.findIndex(t => 
+                            t['ID Transaksi'] === transaction['ID Transaksi'] && 
+                            t['Produk'] === transaction['Produk']
+                        );
+                        
+                        if (transactionIndex !== -1) {
+                            // Update di app data
+                            appData.transactions[transactionIndex]['Sisa Hutang'] = expectedDebt;
+                            
+                            // Update di spreadsheet
+                            await updateData('Transaksi', transactionIndex + 2, {
+                                'Sisa Hutang': expectedDebt
+                            });
+                        }
+                    }
+                }
+            }
+            
+            // Refresh UI tanpa menampilkan notifikasi
+            updateDebtUI();
+            updateDashboardStats();
+            updateFinancialSummary();
+        }
+        
+        // Fungsi untuk menampilkan animasi loading pada FAB button
+        function showRefreshAnimation() {
+            const fabButton = document.getElementById('fab-button');
+            const originalContent = fabButton.innerHTML;
+            
+            // Tampilkan animasi refresh
+            fabButton.innerHTML = '<i class="bi bi-arrow-clockwise rotating"></i>';
+            fabButton.style.pointerEvents = 'none';
+            
+            // Kembalikan ke kondisi semula setelah 2 detik
+            setTimeout(() => {
+                fabButton.innerHTML = originalContent;
+                fabButton.style.pointerEvents = 'auto';
+            }, 2000);
+        }
+        
+        // Fungsi untuk menampilkan overlay pemrosesan
+        function showProcessingOverlay() {
+            const overlay = document.getElementById('processing-overlay');
+            overlay.classList.add('active');
+        }
+        
+        // Fungsi untuk menyembunyikan overlay pemrosesan
+        function hideProcessingOverlay() {
+            const overlay = document.getElementById('processing-overlay');
+            overlay.classList.remove('active');
         }
         
         // Toast notification function
