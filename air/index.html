@@ -113,7 +113,7 @@
         .header-nav {
             display: flex;
             gap: 15px;
-            margin-left: auto;
+            margin-right: 10px;
         }
         .header-nav-item {
             color: var(--white);
@@ -1776,7 +1776,7 @@
             border: none;
         }
         /* Responsive */
-        @media (max-width: 576px) {
+        @media (max-width: 410px) {
             .stat-row {
                 flex-direction: column;
             }
@@ -1804,6 +1804,10 @@
         <div class="header-title">
             <h1 id="app-title">YOUSHE</h1>
             <div class="header-subtitle" id="app-subtitle">Depot Air Minum Isi Ulang</div>
+        </div>
+         <!-- Header Navigation - Only Icons -->
+        <div class="header-nav" id="header-nav">
+            <!-- Header nav items will be added dynamically -->
         </div>
         <div class="header-actions">
             <div class="header-action" id="notification-bell">
@@ -1845,10 +1849,7 @@
                 <i class="bi bi-gear"></i>
             </div>
         </div>
-        <!-- Header Navigation - Only Icons -->
-        <div class="header-nav" id="header-nav">
-            <!-- Header nav items will be added dynamically -->
-        </div>
+       
     </div>
     <!-- Search Bar -->
     <div class="search-container" id="search-container">
