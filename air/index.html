@@ -109,6 +109,28 @@
             align-items: center;
             justify-content: center;
         }
+        /* Header Navigation - Only Icons */
+        .header-nav {
+            display: flex;
+            gap: 15px;
+            margin-left: auto;
+        }
+        .header-nav-item {
+            color: var(--white);
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        .header-nav-item.active {
+            font-weight: bold;
+        }
+        .header-nav-item i {
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
         /* Search Bar */
         .search-container {
             padding: 10px 15px;
@@ -456,6 +478,11 @@
             font-size: 14px;
             font-weight: 500;
             margin-bottom: 2px;
+            cursor: pointer;
+        }
+        .customer-name:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
         }
         .customer-stats {
             font-size: 12px;
@@ -578,7 +605,7 @@
             font-size: 12px;
             color: var(--primary-color);
         }
-        /* Bottom Navigation */
+        /* Bottom Navigation - Icons above and titles below */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -597,6 +624,9 @@
             color: #64748b;
             text-decoration: none;
             transition: color 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .nav-item.active {
             color: var(--primary-color);
@@ -1234,56 +1264,101 @@
         .toast-body {
             padding: 12px;
         }
-        /* Other Tabs (unchanged) */
-        .card-container {
+        /* Product List/Grid Toggle */
+        .view-toggle {
+            display: flex;
+            justify-content: flex-end;
+            padding: 0 15px 10px;
+        }
+        .view-toggle-btn {
+            background: none;
+            border: none;
+            color: #64748b;
+            font-size: 18px;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .view-toggle-btn.active {
+            color: var(--primary-color);
+        }
+        /* Product List View */
+        .product-list {
+            padding: 0 15px;
+        }
+        .product-list-item {
             background-color: var(--white);
             border-radius: 12px;
             box-shadow: var(--card-shadow);
-            overflow: hidden;
-        }
-        .card-list {
-            padding: 0;
-            margin: 0;
-            list-style: none;
-        }
-        .card-item {
+            padding: 15px;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
-            padding: 12px 15px;
-            border-bottom: 1px solid #f1f5f9;
+            transition: all 0.3s ease;
+            position: relative;
         }
-        .card-item:last-child {
-            border-bottom: none;
+        .product-list-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-hover-shadow);
         }
-        .card-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
+        .product-list-item.selected {
+            background-color: rgba(19, 78, 74, 0.1);
+            border-left: 4px solid var(--primary-color);
+        }
+        .product-list-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            background-color: #f8fafc;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 12px;
+            margin-right: 15px;
             flex-shrink: 0;
-            background-color: rgba(19, 78, 74, 0.1);
+        }
+        .product-list-icon i {
+            font-size: 24px;
             color: var(--primary-color);
         }
-        .card-content {
+        .product-list-info {
             flex: 1;
         }
-        .card-title {
-            font-size: 14px;
+        .product-list-name {
+            font-size: 16px;
             font-weight: 500;
-            margin-bottom: 2px;
+            margin-bottom: 4px;
         }
-        .card-subtitle {
+        .product-list-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .product-list-stock {
             font-size: 12px;
             color: #64748b;
         }
-        .card-value {
+        .product-list-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        .product-list-quantity {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background-color: var(--warning-color);
+            color: var(--white);
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
             font-size: 14px;
             font-weight: 700;
-            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
+        /* Product Grid View */
         .product-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -1334,14 +1409,55 @@
             font-size: 11px;
             color: #64748b;
         }
-        .customer-item {
+        /* Other Tabs (unchanged) */
+        .card-container {
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+        .card-list {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        .card-item {
             display: flex;
             align-items: center;
             padding: 12px 15px;
             border-bottom: 1px solid #f1f5f9;
         }
-        .customer-item:last-child {
+        .card-item:last-child {
             border-bottom: none;
+        }
+        .card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+            background-color: rgba(19, 78, 74, 0.1);
+            color: var(--primary-color);
+        }
+        .card-content {
+            flex: 1;
+        }
+        .card-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+        .card-subtitle {
+            font-size: 12px;
+            color: #64748b;
+        }
+        .card-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--dark-color);
         }
         .customer-actions {
             display: flex;
@@ -1729,6 +1845,10 @@
                 <i class="bi bi-gear"></i>
             </div>
         </div>
+        <!-- Header Navigation - Only Icons -->
+        <div class="header-nav" id="header-nav">
+            <!-- Header nav items will be added dynamically -->
+        </div>
     </div>
     <!-- Search Bar -->
     <div class="search-container" id="search-container">
@@ -1991,7 +2111,26 @@
                 <div class="section-title">Daftar Produk</div>
                 <a href="#" class="section-action">Filter</a>
             </div>
-            <div class="product-grid" id="products-grid">
+            <!-- Product List/Grid Toggle -->
+            <div class="view-toggle">
+                <button class="view-toggle-btn active" id="list-view-btn" title="Tampilan List">
+                    <i class="bi bi-list"></i>
+                </button>
+                <button class="view-toggle-btn" id="grid-view-btn" title="Tampilan Grid">
+                    <i class="bi bi-grid-3x3-gap"></i>
+                </button>
+            </div>
+            <!-- Product List View (Default) -->
+            <div class="product-list" id="product-list-container">
+                <!-- Products will be loaded dynamically -->
+                <div class="spinner-container">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Product Grid View (Hidden by default) -->
+            <div class="product-grid" id="product-grid-container" style="display: none;">
                 <!-- Products will be loaded dynamically -->
                 <div class="spinner-container">
                     <div class="spinner-border text-primary" role="status">
@@ -2399,7 +2538,7 @@
             </div>
         </div>
     </div>
-    <!-- Bottom Navigation -->
+    <!-- Bottom Navigation - Icons above and titles below -->
     <div class="bottom-nav" id="bottom-nav">
         <a href="#" class="nav-item active" data-tab="dashboard-tab">
             <div class="nav-icon"><i class="bi bi-house-door"></i></div>
@@ -2555,6 +2694,29 @@
             </div>
         </div>
     </div>
+    <!-- Edit Customer Modal -->
+    <div class="modal fade" id="editCustomerModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Pelanggan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="edit-customer-id">
+                    <div class="mb-3">
+                        <label class="form-label">Nama Pelanggan</label>
+                        <input type="text" class="form-control" id="edit-customer-name" placeholder="Nama pelanggan">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="delete-customer-btn">Hapus</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="save-customer-name-btn">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Add Expense Modal -->
     <div class="modal fade" id="addExpenseModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
@@ -2674,7 +2836,7 @@
                 </div>
                 <div class="modal-body maps-modal-body">
                     <div class="maps-container" id="maps-container">
-                        <!-- Maps will be loaded dynamically -->
+                        <!-- Maps will be loaded dynamically as iframe -->
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -2717,7 +2879,8 @@
                 'stok-tab': { visible: true, position: 'bottom' },
                 'pengeluaran-tab': { visible: true, position: 'bottom' },
                 'pengaturan-tab': { visible: true, position: 'bottom' }
-            }
+            },
+            productView: 'list' // Track current product view (list or grid)
         };
         
         // Initialize App
@@ -2755,6 +2918,9 @@
             
             // Initialize menu settings
             initializeMenuSettings();
+            
+            // Initialize product view toggle
+            initializeProductViewToggle();
         });
         
         // Setup Event Listeners
@@ -2775,9 +2941,21 @@
                     const tabId = this.getAttribute('data-tab');
                     document.getElementById(tabId).classList.add('active');
                     
+                    // Auto refresh based on active tab
+                    refreshTabData(tabId);
+                    
                     // Update FAB button based on active tab
                     updateFabButton();
                 });
+            });
+            
+            // Product view toggle
+            document.getElementById('list-view-btn').addEventListener('click', function() {
+                setProductView('list');
+            });
+            
+            document.getElementById('grid-view-btn').addEventListener('click', function() {
+                setProductView('grid');
             });
             
             // Save Transaction Button
@@ -2788,6 +2966,12 @@
             
             // Save Customer Button
             document.getElementById('save-customer-btn').addEventListener('click', saveCustomer);
+            
+            // Save Customer Name Button
+            document.getElementById('save-customer-name-btn').addEventListener('click', saveCustomerName);
+            
+            // Delete Customer Button
+            document.getElementById('delete-customer-btn').addEventListener('click', deleteCustomer);
             
             // Save Expense Button
             document.getElementById('save-expense-btn').addEventListener('click', saveExpense);
@@ -3087,6 +3271,32 @@
             });
         }
         
+        // Initialize Product View Toggle
+        function initializeProductViewToggle() {
+            // Set initial view based on appData.productView
+            setProductView(appData.productView);
+        }
+        
+        // Set Product View
+        function setProductView(view) {
+            appData.productView = view;
+            
+            // Update toggle buttons
+            document.getElementById('list-view-btn').classList.toggle('active', view === 'list');
+            document.getElementById('grid-view-btn').classList.toggle('active', view === 'grid');
+            
+            // Update view containers
+            document.getElementById('product-list-container').style.display = view === 'list' ? 'block' : 'none';
+            document.getElementById('product-grid-container').style.display = view === 'grid' ? 'grid' : 'none';
+            
+            // Update product display based on current view
+            if (view === 'list') {
+                updateProductsListView();
+            } else {
+                updateProductsGridView();
+            }
+        }
+        
         // Initialize Menu Settings
         function initializeMenuSettings() {
             // Try to load menu settings from local storage
@@ -3191,6 +3401,13 @@
                     headerItem.style.flexDirection = 'column';
                     headerItem.style.alignItems = 'center';
                     headerItem.style.fontSize = '12px';
+                    
+                    // Only show icon in header navigation (no text)
+                    const icon = headerItem.querySelector('.nav-icon');
+                    const label = headerItem.querySelector('.nav-label');
+                    if (label) {
+                        label.style.display = 'none';
+                    }
                     
                     // Add event listener to header item
                     headerItem.addEventListener('click', function(e) {
@@ -3665,7 +3882,64 @@
         }
         
         function updateProductsUI() {
-            const container = document.getElementById('products-grid');
+            // Update based on current view
+            if (appData.productView === 'list') {
+                updateProductsListView();
+            } else {
+                updateProductsGridView();
+            }
+        }
+        
+        function updateProductsListView() {
+            const container = document.getElementById('product-list-container');
+            container.innerHTML = '';
+            
+            if (appData.products.length === 0) {
+                container.innerHTML = '<div class="text-center p-4">Tidak ada produk</div>';
+                return;
+            }
+            
+            appData.products.forEach(product => {
+                const productItem = document.createElement('div');
+                productItem.className = 'product-list-item';
+                productItem.setAttribute('data-id', product['ID Produk']);
+                
+                // Check if product is selected
+                const isSelected = appData.selectedProducts[product['ID Produk']] || 0;
+                
+                // Add selected class if product is in cart
+                if (isSelected > 0) {
+                    productItem.classList.add('selected');
+                }
+                
+                productItem.innerHTML = `
+                    <div class="product-list-icon">
+                        <i class="bi bi-droplet"></i>
+                    </div>
+                    <div class="product-list-info">
+                        <div class="product-list-name">${product['Nama Produk'] || 'Unknown Product'}</div>
+                        <div class="product-list-details">
+                            <div class="product-list-stock">Stok: ${product['Liter'] || 0} L</div>
+                            <div class="product-list-price">Rp ${parseInt(product['Harga Jual (Rp)'] || 0).toLocaleString('id-ID')}</div>
+                        </div>
+                    </div>
+                    ${isSelected > 0 ? `<div class="product-list-quantity">${isSelected}</div>` : ''}
+                `;
+                
+                productItem.addEventListener('click', function() {
+                    selectProduct(product);
+                });
+                
+                container.appendChild(productItem);
+            });
+            
+            // Show/hide checkout button based on selected products
+            const hasSelectedProducts = Object.keys(appData.selectedProducts).length > 0;
+            document.getElementById('checkout-products-btn').style.display = hasSelectedProducts ? 'block' : 'none';
+        }
+        
+        function updateProductsGridView() {
+            const container = document.getElementById('product-grid-container');
             container.innerHTML = '';
             
             if (appData.products.length === 0) {
@@ -3715,8 +3989,12 @@
                 appData.selectedProducts[productId] = 1;
             }
             
-            // Update UI
-            updateProductsUI();
+            // Update UI based on current view
+            if (appData.productView === 'list') {
+                updateProductsListView();
+            } else {
+                updateProductsGridView();
+            }
             
             // Add to cart
             addToCart(product);
@@ -3788,7 +4066,7 @@
                 customerItem.innerHTML = `
                     <div class="customer-avatar">${initials}</div>
                     <div class="customer-info">
-                        <div class="customer-name">${name}</div>
+                        <div class="customer-name" style="cursor: pointer;" data-id="${customer['ID Pelanggan']}" data-name="${name}">${name}</div>
                     </div>
                     <div class="customer-actions">
                         ${whatsappNumber ? `<a href="https://wa.me/${whatsappNumber.replace(/\+/g, '')}" target="_blank" class="customer-action whatsapp" title="WhatsApp">
@@ -3802,6 +4080,15 @@
                 container.appendChild(customerItem);
             });
             
+            // Add event listeners to customer names
+            document.querySelectorAll('.customer-name').forEach(nameElement => {
+                nameElement.addEventListener('click', function() {
+                    const customerId = this.getAttribute('data-id');
+                    const customerName = this.getAttribute('data-name');
+                    showEditCustomerModal(customerId, customerName);
+                });
+            });
+            
             // Add event listeners to location buttons
             document.querySelectorAll('.customer-action.location').forEach(btn => {
                 btn.addEventListener('click', function(e) {
@@ -3810,6 +4097,16 @@
                     showMapsModal(mapsUrl);
                 });
             });
+        }
+        
+        function showEditCustomerModal(customerId, currentName) {
+            // Isi modal dengan data pelanggan
+            document.getElementById('edit-customer-id').value = customerId;
+            document.getElementById('edit-customer-name').value = currentName;
+            
+            // Tampilkan modal
+            const modal = new bootstrap.Modal(document.getElementById('editCustomerModal'));
+            modal.show();
         }
         
         function showMapsModal(mapsUrl) {
@@ -3830,11 +4127,11 @@
                     }
                 }
                 
+                // Create iframe for maps
                 mapsContainer.innerHTML = `<iframe src="${embedUrl}" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
             } else {
-                // If it's not a Google Maps URL, open in a new tab
-                window.open(mapsUrl, '_blank');
-                return;
+                // If it's not a Google Maps URL, create a simple iframe with the URL
+                mapsContainer.innerHTML = `<iframe src="${mapsUrl}" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
             }
             
             // Show modal
@@ -4658,11 +4955,12 @@
                 appData.selectedProducts[product['ID Produk']] = 1;
             }
             
-            // Highlight selected product
-            document.querySelectorAll('.product-item').forEach(item => {
-                item.classList.remove('selected');
-            });
-            document.querySelector(`.product-item[data-id="${product['ID Produk']}"]`).classList.add('selected');
+            // Update product view based on current view
+            if (appData.productView === 'list') {
+                updateProductsListView();
+            } else {
+                updateProductsGridView();
+            }
         }
         
         function updateCartUI() {
@@ -4767,15 +5065,18 @@
                             delete appData.selectedProducts[productId];
                         }
                     }
-                    
-                    // Unhighlight product
-                    document.querySelector(`.product-item[data-id="${productId}"]`).classList.remove('selected');
                 }
                 
                 updateCartUI();
                 updateCartDropdown();
                 updateCartBadge();
-                updateProductsUI();
+                
+                // Update product view based on current view
+                if (appData.productView === 'list') {
+                    updateProductsListView();
+                } else {
+                    updateProductsGridView();
+                }
             }
         }
         
@@ -4796,15 +5097,16 @@
             appData.cart = [];
             appData.selectedProducts = {};
             
-            // Unhighlight all products
-            document.querySelectorAll('.product-item').forEach(item => {
-                item.classList.remove('selected');
-            });
+            // Update product view based on current view
+            if (appData.productView === 'list') {
+                updateProductsListView();
+            } else {
+                updateProductsGridView();
+            }
             
             updateCartUI();
             updateCartDropdown();
             updateCartBadge();
-            updateProductsUI();
         }
         
         async function checkout() {
@@ -5337,6 +5639,71 @@
             setProcessingState(false);
         }
         
+        async function saveCustomerName() {
+            const customerId = document.getElementById('edit-customer-id').value;
+            const newName = document.getElementById('edit-customer-name').value;
+            
+            if (!newName) {
+                showToast('Nama pelanggan tidak boleh kosong', 'warning');
+                return;
+            }
+            
+            // Cari pelanggan di appData
+            const customerIndex = appData.customers.findIndex(c => c['ID Pelanggan'] === customerId);
+            
+            if (customerIndex === -1) {
+                showToast('Pelanggan tidak ditemukan', 'danger');
+                return;
+            }
+            
+            // Update nama pelanggan di appData
+            appData.customers[customerIndex]['Nama'] = newName;
+            
+            // Update di spreadsheet
+            const success = await updateData('Pelanggan', customerIndex + 2, {'Nama': newName});
+            
+            if (success) {
+                // Update UI
+                updateCustomersUI();
+                
+                // Tutup modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('editCustomerModal'));
+                modal.hide();
+                
+                showToast('Nama pelanggan berhasil diperbarui', 'success');
+            } else {
+                showToast('Gagal memperbarui nama pelanggan', 'danger');
+            }
+        }
+        
+        async function deleteCustomer() {
+            const customerId = document.getElementById('edit-customer-id').value;
+            
+            if (!confirm('Apakah Anda yakin ingin menghapus pelanggan ini?')) {
+                return;
+            }
+            
+            // Cari pelanggan di appData
+            const customerIndex = appData.customers.findIndex(c => c['ID Pelanggan'] === customerId);
+            
+            if (customerIndex === -1) {
+                showToast('Pelanggan tidak ditemukan', 'danger');
+                return;
+            }
+            
+            // Hapus pelanggan dari appData
+            appData.customers.splice(customerIndex, 1);
+            
+            // Update UI
+            updateCustomersUI();
+            
+            // Tutup modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editCustomerModal'));
+            modal.hide();
+            
+            showToast('Pelanggan berhasil dihapus', 'success');
+        }
+        
         async function saveExpense() {
             // Check if already processing
             if (appData.processing) {
@@ -5697,7 +6064,11 @@
             
             if (!searchTerm) {
                 // If search is empty, show all items
-                updateProductsUI();
+                if (appData.productView === 'list') {
+                    updateProductsListView();
+                } else {
+                    updateProductsGridView();
+                }
                 updateCustomersUI();
                 updateTransactionHistoryUI();
                 return;
@@ -5722,13 +6093,61 @@
             );
             
             // Update UI with filtered results
-            updateFilteredProductsUI(filteredProducts);
+            if (appData.productView === 'list') {
+                updateFilteredProductsListView(filteredProducts);
+            } else {
+                updateFilteredProductsGridView(filteredProducts);
+            }
             updateFilteredCustomersUI(filteredCustomers);
             updateFilteredTransactionsUI(filteredTransactions);
         }
         
-        function updateFilteredProductsUI(products) {
-            const container = document.getElementById('products-grid');
+        function updateFilteredProductsListView(products) {
+            const container = document.getElementById('product-list-container');
+            container.innerHTML = '';
+            
+            if (products.length === 0) {
+                container.innerHTML = '<div class="text-center p-4">Tidak ada produk yang cocok</div>';
+                return;
+            }
+            
+            products.forEach(product => {
+                const productItem = document.createElement('div');
+                productItem.className = 'product-list-item';
+                productItem.setAttribute('data-id', product['ID Produk']);
+                
+                // Check if product is selected
+                const isSelected = appData.selectedProducts[product['ID Produk']] || 0;
+                
+                // Add selected class if product is in cart
+                if (isSelected > 0) {
+                    productItem.classList.add('selected');
+                }
+                
+                productItem.innerHTML = `
+                    <div class="product-list-icon">
+                        <i class="bi bi-droplet"></i>
+                    </div>
+                    <div class="product-list-info">
+                        <div class="product-list-name">${product['Nama Produk'] || 'Unknown Product'}</div>
+                        <div class="product-list-details">
+                            <div class="product-list-stock">Stok: ${product['Liter'] || 0} L</div>
+                            <div class="product-list-price">Rp ${parseInt(product['Harga Jual (Rp)'] || 0).toLocaleString('id-ID')}</div>
+                        </div>
+                    </div>
+                    ${isSelected > 0 ? `<div class="product-list-quantity">${isSelected}</div>` : ''}
+                `;
+                
+                productItem.addEventListener('click', function() {
+                    selectProduct(product);
+                });
+                
+                container.appendChild(productItem);
+            });
+        }
+        
+        function updateFilteredProductsGridView(products) {
+            const container = document.getElementById('product-grid-container');
             container.innerHTML = '';
             
             if (products.length === 0) {
@@ -5795,7 +6214,7 @@
                 customerItem.innerHTML = `
                     <div class="customer-avatar">${initials}</div>
                     <div class="customer-info">
-                        <div class="customer-name">${name}</div>
+                        <div class="customer-name" style="cursor: pointer;" data-id="${customer['ID Pelanggan']}" data-name="${name}">${name}</div>
                     </div>
                     <div class="customer-actions">
                         ${whatsappNumber ? `<a href="https://wa.me/${whatsappNumber.replace(/\+/g, '')}" target="_blank" class="customer-action whatsapp" title="WhatsApp">
@@ -5807,6 +6226,15 @@
                     </div>
                 `;
                 container.appendChild(customerItem);
+            });
+            
+            // Add event listeners to customer names
+            document.querySelectorAll('.customer-name').forEach(nameElement => {
+                nameElement.addEventListener('click', function() {
+                    const customerId = this.getAttribute('data-id');
+                    const customerName = this.getAttribute('data-name');
+                    showEditCustomerModal(customerId, customerName);
+                });
             });
             
             // Add event listeners to location buttons
@@ -5881,6 +6309,66 @@
                 `;
                 container.appendChild(transactionItem);
             });
+        }
+        
+        // Fungsi untuk refresh data berdasarkan tab yang aktif
+        function refreshTabData(tabId) {
+            switch(tabId) {
+                case 'dashboard-tab':
+                    loadSettings();
+                    loadProducts();
+                    loadCustomers();
+                    loadTransactions();
+                    loadWaterStock();
+                    loadExpenses();
+                    loadNotifications();
+                    updateDashboardStats();
+                    updateFinancialSummary();
+                    updateSalesChart();
+                    updateWaterLevel();
+                    updateTransactionDate();
+                    updateTopProducts();
+                    updateActiveCustomers();
+                    updateMonthlyExpense();
+                    break;
+                    
+                case 'transaksi-tab':
+                    loadProducts();
+                    loadCustomers();
+                    break;
+                    
+                case 'riwayat-tab':
+                    loadTransactions();
+                    updateTransactionHistoryUI();
+                    break;
+                    
+                case 'produk-tab':
+                    loadProducts();
+                    break;
+                    
+                case 'pelanggan-tab':
+                    loadCustomers();
+                    break;
+                    
+                case 'stok-tab':
+                    loadWaterStock();
+                    updateWaterStockUI();
+                    updateStockHistory();
+                    updateWaterLevelThreshold();
+                    break;
+                    
+                case 'pengeluaran-tab':
+                    loadExpenses();
+                    updateExpensesUI();
+                    updateMonthlyExpense();
+                    break;
+                    
+                case 'pengaturan-tab':
+                    loadSettings();
+                    break;
+            }
+            
+            showToast('Halaman diperbarui', 'success');
         }
         
         // Toast notification function
