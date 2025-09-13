@@ -225,15 +225,7 @@
         .stat-card.growth::before {
             background-color: var(--success-color);
         }
-        .stat-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 10px;
-        }
+        .stat-icon { width: 140px; height: 140px; border-radius: 50%; display: flex ; align-items: center; justify-content: center; margin-bottom: 10px; position: absolute; right: -40px; top: -5px; }
         .stat-icon.water {
             background-color: rgba(6, 182, 212, 0.1);
             color: var(--secondary-color);
@@ -633,7 +625,7 @@
         }
         .nav-icon {
             font-size: 20px;
-            margin-bottom: 4px;
+            margin-bottom: 0px;
         }
         .nav-label {
             font-size: 10px;
@@ -949,11 +941,6 @@
         }
         .stock-history-amount.negative {
             color: var(--danger-color);
-        }
-        .stock-chart {
-            height: 150px;
-            position: relative;
-            margin-bottom: 10px;
         }
         /* Settings Edit */
         .settings-item {
@@ -1415,6 +1402,7 @@
             border-radius: 12px;
             box-shadow: var(--card-shadow);
             overflow: hidden;
+            margin: 0 15px 15px;
         }
         .card-list {
             padding: 0;
@@ -1487,7 +1475,7 @@
             padding: 15px;
         }
         .water-tank {
-            height: 200px;
+            height: 400px;
             background-color: var(--white);
             border-radius: 12px;
             padding: 15px;
@@ -1502,8 +1490,8 @@
             text-align: center;
         }
         .tank-container {
-            height: 140px;
-            background-color: #f1f5f9;
+            height: 230px;
+            background-color: #000;
             border-radius: 8px;
             position: relative;
             overflow: hidden;
@@ -2155,7 +2143,7 @@
                 <div class="section-title">Daftar Pelanggan</div>
                 <a href="#" class="section-action">Filter</a>
             </div>
-            <div class="card-container" id="customers-container">
+            <div class="card-container" id="customers-container" style="margin: 0 15px 15px; padding: 0 10px;">
                 <!-- Customers will be loaded dynamically -->
                 <div class="spinner-container">
                     <div class="spinner-border text-primary" role="status">
@@ -2228,15 +2216,6 @@
                         Riwayat Penambahan Stok Air
                         <span class="report-period">30 Hari Terakhir</span>
                     </div>
-                    <div class="stock-chart">
-                        <canvas id="stock-chart"></canvas>
-                    </div>
-                </div>
-                
-                <div class="report-card">
-                    <div class="report-title">
-                        Riwayat Penambahan Stok Air
-                    </div>
                     <div class="stock-history" id="stock-history-container">
                         <!-- Stock history will be loaded dynamically -->
                         <div class="spinner-container">
@@ -2250,10 +2229,7 @@
             
             <div class="d-grid gap-2 mt-3">
                 <button class="btn btn-primary" id="refill-water-btn" data-bs-toggle="modal" data-bs-target="#refillModal" disabled>
-                    <i class="bi bi-arrow-repeat"></i> Isi Ulang Air
-                </button>
-                <button class="btn btn-success">
-                    <i class="bi bi-file-earmark-text"></i> Laporan Stok
+                    <i class="bi bi-arrow-repeat"></i> Tambah Stok Air
                 </button>
             </div>
         </div>
@@ -2484,37 +2460,6 @@
             </div>
             
             <div class="settings-group">
-                <div class="settings-group-title">Tampilan</div>
-                <div class="settings-item">
-                    <div class="settings-label">Tema</div>
-                    <div class="settings-value-container">
-                        <div class="settings-value" id="theme-setting">Default</div>
-                        <button class="settings-edit-btn" data-field="Tema" data-value="default">
-                            <i class="bi bi-pencil"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="settings-item">
-                    <div class="settings-label">Posisi Notifikasi</div>
-                    <div class="settings-value-container">
-                        <div class="settings-value" id="notification-position">top-right</div>
-                        <button class="settings-edit-btn" data-field="Posisi" data-value="top-right">
-                            <i class="bi bi-pencil"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="settings-item">
-                    <div class="settings-label">Gaya Notifikasi</div>
-                    <div class="settings-value-container">
-                        <div class="settings-value" id="notification-style">minimal</div>
-                        <button class="settings-edit-btn" data-field="Gaya" data-value="minimal">
-                            <i class="bi bi-pencil"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="settings-group">
                 <div class="settings-group-title">Notifikasi</div>
                 <div class="settings-item">
                     <div class="settings-label">Notifikasi Sistem</div>
@@ -2709,11 +2654,27 @@
                         <label class="form-label">Nama Pelanggan</label>
                         <input type="text" class="form-control" id="edit-customer-name" placeholder="Nama pelanggan">
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label">Kontak</label>
+                        <input type="text" class="form-control" id="edit-customer-contact" placeholder="Nomor telepon">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Alamat</label>
+                        <textarea class="form-control" id="edit-customer-address" rows="2" placeholder="Alamat lengkap"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Galon Titipan</label>
+                        <input type="number" class="form-control" id="edit-customer-deposit" placeholder="Jumlah galon titipan" value="0">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Google Maps Link</label>
+                        <input type="text" class="form-control" id="edit-customer-maps" placeholder="Link Google Maps">
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" id="delete-customer-btn">Hapus</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-primary" id="save-customer-name-btn">Simpan</button>
+                    <button type="button" class="btn btn-primary" id="save-customer-btn">Simpan</button>
                 </div>
             </div>
         </div>
@@ -2909,7 +2870,7 @@
             updateMonthlyExpense();
             
             // Initialize stock chart
-            initializeStockChart();
+            // initializeStockChart(); // Removed as requested
             
             // Calculate daily sales for chart
             calculateDailySales();
@@ -2969,7 +2930,7 @@
             document.getElementById('save-customer-btn').addEventListener('click', saveCustomer);
             
             // Save Customer Name Button
-            document.getElementById('save-customer-name-btn').addEventListener('click', saveCustomerName);
+            document.getElementById('save-customer-btn').addEventListener('click', saveCustomerName);
             
             // Delete Customer Button
             document.getElementById('delete-customer-btn').addEventListener('click', deleteCustomer);
@@ -3817,11 +3778,6 @@
             document.getElementById('tank-capacity-setting').textContent = (settings['Kapasitas Toren (Liter)'] || '8000') + ' Liter';
             document.getElementById('water-supply-cost').textContent = 'Rp ' + (settings['Biaya Suplai Air Tangki (Rp)'] || '300000');
             
-            // Update display settings
-            document.getElementById('theme-setting').textContent = settings['Tema'] || 'default';
-            document.getElementById('notification-position').textContent = settings['Posisi'] || 'top-right';
-            document.getElementById('notification-style').textContent = settings['Gaya'] || 'minimal';
-            
             // Update API key
             document.getElementById('api-key-setting').textContent = settings['API'] || API_KEY;
             
@@ -3855,9 +3811,9 @@
             // Get values from settings
             const capacity = parseInt(settings['Kapasitas Toren (Liter)'] || 8000);
             const totalCost = parseInt(settings['Total Biaya Suplai (Rp)'] || 300000);
-            const remaining = parseInt(waterStock['Sisa Liter'] || 7981);
-            const used = parseInt(waterStock['Liter Terpakai'] || 19);
-            const totalUsed = parseInt(waterStock['Total Liter Terpakai'] || 19);
+            const remaining = parseInt(waterStock['Sisa Liter'] || 0);
+            const used = parseInt(waterStock['Liter Terpakai'] || 0);
+            const totalUsed = parseInt(waterStock['Total Liter Terpakai'] || 0);
             
             // Calculate percentage
             const percentage = Math.round((remaining / capacity) * 100);
@@ -3980,6 +3936,7 @@
             document.getElementById('checkout-products-btn').style.display = hasSelectedProducts ? 'block' : 'none';
         }
         
+        // PERBAIKAN: Fungsi selectProduct yang diperbaiki
         function selectProduct(product) {
             const productId = product['ID Produk'];
             
@@ -4067,7 +4024,7 @@
                 customerItem.innerHTML = `
                     <div class="customer-avatar">${initials}</div>
                     <div class="customer-info">
-                        <div class="customer-name" style="cursor: pointer;" data-id="${customer['ID Pelanggan']}" data-name="${name}">${name}</div>
+                        <div class="customer-name" style="cursor: pointer;" data-id="${customer['ID Pelanggan']}" data-name="${name}" data-contact="${customer['Kontak'] || ''}" data-address="${customer['Alamat'] || ''}" data-deposit="${customer['Galon Titipan'] || 0}" data-maps="${customer['Maps'] || ''}">${name}</div>
                     </div>
                     <div class="customer-actions">
                         ${whatsappNumber ? `<a href="https://wa.me/${whatsappNumber.replace(/\+/g, '')}" target="_blank" class="customer-action whatsapp" title="WhatsApp">
@@ -4086,7 +4043,11 @@
                 nameElement.addEventListener('click', function() {
                     const customerId = this.getAttribute('data-id');
                     const customerName = this.getAttribute('data-name');
-                    showEditCustomerModal(customerId, customerName);
+                    const customerContact = this.getAttribute('data-contact');
+                    const customerAddress = this.getAttribute('data-address');
+                    const customerDeposit = this.getAttribute('data-deposit');
+                    const customerMaps = this.getAttribute('data-maps');
+                    showEditCustomerModal(customerId, customerName, customerContact, customerAddress, customerDeposit, customerMaps);
                 });
             });
             
@@ -4100,10 +4061,14 @@
             });
         }
         
-        function showEditCustomerModal(customerId, currentName) {
+        function showEditCustomerModal(customerId, customerName, customerContact, customerAddress, customerDeposit, customerMaps) {
             // Isi modal dengan data pelanggan
             document.getElementById('edit-customer-id').value = customerId;
-            document.getElementById('edit-customer-name').value = currentName;
+            document.getElementById('edit-customer-name').value = customerName;
+            document.getElementById('edit-customer-contact').value = customerContact;
+            document.getElementById('edit-customer-address').value = customerAddress;
+            document.getElementById('edit-customer-deposit').value = customerDeposit;
+            document.getElementById('edit-customer-maps').value = customerMaps;
             
             // Tampilkan modal
             const modal = new bootstrap.Modal(document.getElementById('editCustomerModal'));
@@ -4275,9 +4240,9 @@
             const waterStock = appData.waterStock;
             const settings = appData.settings;
             const capacity = parseInt(settings['Kapasitas Toren (Liter)'] || 8000);
-            const remaining = parseInt(waterStock['Sisa Liter'] || 7981);
-            const used = parseInt(waterStock['Liter Terpakai'] || 19);
-            const totalUsed = parseInt(waterStock['Total Liter Terpakai'] || 19);
+            const remaining = parseInt(waterStock['Sisa Liter'] || 0);
+            const used = parseInt(waterStock['Liter Terpakai'] || 0);
+            const totalUsed = parseInt(waterStock['Total Liter Terpakai'] || 0);
             const totalCost = parseInt(settings['Total Biaya Suplai (Rp)'] || 300000);
             
             // Update water level
@@ -4491,11 +4456,11 @@
             
             // Water stock from waterStock data
             const waterStock = appData.waterStock;
-            const remainingWater = parseInt(waterStock['Sisa Liter'] || 7981);
+            const remainingWater = parseInt(waterStock['Sisa Liter'] || 0);
             document.getElementById('water-stock').textContent = `${remainingWater} L`;
             
             // Growth rate (placeholder - would need historical data)
-            document.getElementById('growth-rate').textContent = '+12%';
+            document.getElementById('growth-rate').textContent = '0%';
             
             // Monthly revenue (placeholder - would need to filter by month)
             document.getElementById('monthly-revenue').textContent = `Rp ${todaySales.toLocaleString('id-ID')}`;
@@ -4616,7 +4581,7 @@
             const waterStock = appData.waterStock;
             const settings = appData.settings;
             const capacity = parseInt(settings['Kapasitas Toren (Liter)'] || 8000);
-            const remaining = parseInt(waterStock['Sisa Liter'] || 7981);
+            const remaining = parseInt(waterStock['Sisa Liter'] || 0);
             const percentage = Math.round((remaining / capacity) * 100);
             
             document.getElementById('water-level').style.height = `${percentage}%`;
@@ -4631,55 +4596,6 @@
                 year: 'numeric' 
             });
             document.getElementById('transaction-date').textContent = formattedDate;
-        }
-        
-        function initializeStockChart() {
-            const ctx = document.getElementById('stock-chart');
-            if (!ctx) return;
-            
-            // Generate sample data for the last 30 days
-            const labels = [];
-            const data = [];
-            
-            for (let i = 29; i >= 0; i--) {
-                const date = new Date();
-                date.setDate(date.getDate() - i);
-                labels.push(date.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' }));
-                
-                // Generate random data between 7000 and 8000
-                data.push(Math.floor(Math.random() * 1000) + 7000);
-            }
-            
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Stok Air (Liter)',
-                        data: data,
-                        borderColor: '#06b6d4',
-                        backgroundColor: 'rgba(6, 182, 212, 0.1)',
-                        tension: 0.3,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: false,
-                            min: 6000,
-                            max: 8000
-                        }
-                    }
-                }
-            });
         }
         
         function updateStockHistory() {
@@ -4885,7 +4801,7 @@
             const waterStock = appData.waterStock;
             const settings = appData.settings;
             const capacity = parseInt(settings['Kapasitas Toren (Liter)'] || 8000);
-            const remaining = parseInt(waterStock['Sisa Liter'] || 7981);
+            const remaining = parseInt(waterStock['Sisa Liter'] || 0);
             
             // Enable refill button if water is below 50 liters
             const refillButton = document.getElementById('refill-water-btn');
@@ -4909,7 +4825,7 @@
                     // Only enable buttons that should be enabled
                     if (!button.id.includes('refill-water-btn') || 
                           (button.id.includes('refill-water-btn') && 
-                           parseInt(appData.waterStock['Sisa Liter'] || 7981) < 50)) {
+                           parseInt(appData.waterStock['Sisa Liter'] || 0) < 50)) {
                         button.disabled = false;
                     }
                 }
@@ -4927,15 +4843,16 @@
         }
         
         // Cashier Functions
+        // PERBAIKAN: Fungsi addToCart yang diperbaiki
         function addToCart(product) {
             // Check if product already in cart
             const existingItem = appData.cart.find(item => item.id === product['ID Produk']);
             
             if (existingItem) {
-                // Increase quantity
+                // Increase quantity by 1
                 existingItem.quantity += 1;
             } else {
-                // Add new item to cart
+                // Add new item to cart with quantity 1
                 appData.cart.push({
                     id: product['ID Produk'],
                     name: product['Nama Produk'],
@@ -4948,13 +4865,6 @@
             updateCartUI();
             updateCartDropdown();
             updateCartBadge();
-            
-            // Update selected products for product page
-            if (appData.selectedProducts[product['ID Produk']]) {
-                appData.selectedProducts[product['ID Produk']]++;
-            } else {
-                appData.selectedProducts[product['ID Produk']] = 1;
-            }
             
             // Update product view based on current view
             if (appData.productView === 'list') {
@@ -5230,9 +5140,9 @@
                 const waterStock = appData.waterStock;
                 const settings = appData.settings;
                 const currentCapacity = parseInt(settings['Kapasitas Toren (Liter)'] || 8000);
-                const currentRemaining = parseInt(waterStock['Sisa Liter'] || 7981);
-                const currentUsed = parseInt(waterStock['Liter Terpakai'] || 19);
-                const currentTotalUsed = parseInt(waterStock['Total Liter Terpakai'] || 19);
+                const currentRemaining = parseInt(waterStock['Sisa Liter'] || 0);
+                const currentUsed = parseInt(waterStock['Liter Terpakai'] || 0);
+                const currentTotalUsed = parseInt(waterStock['Total Liter Terpakai'] || 0);
                 
                 const newRemaining = Math.max(0, currentRemaining - totalWaterUsed);
                 const newUsed = currentUsed + totalWaterUsed;
@@ -5393,9 +5303,9 @@
                 const waterStock = appData.waterStock;
                 const settings = appData.settings;
                 const currentCapacity = parseInt(settings['Kapasitas Toren (Liter)'] || 8000);
-                const currentRemaining = parseInt(waterStock['Sisa Liter'] || 7981);
-                const currentUsed = parseInt(waterStock['Liter Terpakai'] || 19);
-                const currentTotalUsed = parseInt(waterStock['Total Liter Terpakai'] || 19);
+                const currentRemaining = parseInt(waterStock['Sisa Liter'] || 0);
+                const currentUsed = parseInt(waterStock['Liter Terpakai'] || 0);
+                const currentTotalUsed = parseInt(waterStock['Total Liter Terpakai'] || 0);
                 
                 const newRemaining = Math.max(0, currentRemaining - totalWaterUsed);
                 const newUsed = currentUsed + totalWaterUsed;
@@ -5643,6 +5553,10 @@
         async function saveCustomerName() {
             const customerId = document.getElementById('edit-customer-id').value;
             const newName = document.getElementById('edit-customer-name').value;
+            const newContact = document.getElementById('edit-customer-contact').value;
+            const newAddress = document.getElementById('edit-customer-address').value;
+            const newDeposit = document.getElementById('edit-customer-deposit').value;
+            const newMaps = document.getElementById('edit-customer-maps').value;
             
             if (!newName) {
                 showToast('Nama pelanggan tidak boleh kosong', 'warning');
@@ -5659,9 +5573,19 @@
             
             // Update nama pelanggan di appData
             appData.customers[customerIndex]['Nama'] = newName;
+            appData.customers[customerIndex]['Kontak'] = newContact;
+            appData.customers[customerIndex]['Alamat'] = newAddress;
+            appData.customers[customerIndex]['Galon Titipan'] = newDeposit;
+            appData.customers[customerIndex]['Maps'] = newMaps;
             
             // Update di spreadsheet
-            const success = await updateData('Pelanggan', customerIndex + 2, {'Nama': newName});
+            const success = await updateData('Pelanggan', customerIndex + 2, {
+                'Nama': newName,
+                'Kontak': newContact,
+                'Alamat': newAddress,
+                'Galon Titipan': newDeposit,
+                'Maps': newMaps
+            });
             
             if (success) {
                 // Update UI
@@ -5671,9 +5595,9 @@
                 const modal = bootstrap.Modal.getInstance(document.getElementById('editCustomerModal'));
                 modal.hide();
                 
-                showToast('Nama pelanggan berhasil diperbarui', 'success');
+                showToast('Data pelanggan berhasil diperbarui', 'success');
             } else {
-                showToast('Gagal memperbarui nama pelanggan', 'danger');
+                showToast('Gagal memperbarui data pelanggan', 'danger');
             }
         }
         
@@ -5840,9 +5764,9 @@
                 const waterStock = appData.waterStock;
                 const settings = appData.settings;
                 const currentCapacity = parseInt(settings['Kapasitas Toren (Liter)'] || 8000);
-                const currentRemaining = parseInt(waterStock['Sisa Liter'] || 7981);
-                const currentUsed = parseInt(waterStock['Liter Terpakai'] || 19);
-                const currentTotalUsed = parseInt(waterStock['Total Liter Terpakai'] || 19);
+                const currentRemaining = parseInt(waterStock['Sisa Liter'] || 0);
+                const currentUsed = parseInt(waterStock['Liter Terpakai'] || 0);
+                const currentTotalUsed = parseInt(waterStock['Total Liter Terpakai'] || 0);
                 const currentTotalCost = parseInt(waterStock['Total Biaya Suplai (Rp)'] || 300000);
                 
                 const newRemaining = Math.min(currentCapacity, currentRemaining + parseInt(amount));
@@ -6369,7 +6293,8 @@
                     break;
             }
             
-            showToast('Halaman diperbarui', 'success');
+            // NOTIFIKASI DIHAPUS - Tidak menampilkan notifikasi "Halaman diperbarui"
+            // showToast('Halaman diperbarui', 'success');
         }
         
         // Toast notification function
@@ -6389,7 +6314,7 @@
             toast.innerHTML = `
                 <div class="toast-header ${headerClass}">
                     <strong class="me-auto">Notifikasi</strong>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
                 <div class="toast-body">
                     ${message}
