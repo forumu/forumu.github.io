@@ -55,6 +55,7 @@
             align-items: center;
             justify-content: center;
             margin-right: 10px;
+            overflow: hidden;
         }
         .header-logo i {
             color: var(--primary-color);
@@ -1786,7 +1787,7 @@
 <body>
     <!-- Header -->
     <div class="app-header" id="app-header">
-        <div class="header-logo">
+        <div class="header-logo" id="header-logo">
             <i class="bi bi-droplet-fill"></i>
         </div>
         <div class="header-title">
@@ -3269,7 +3270,12 @@
                     appData.menuSettings = JSON.parse(savedMenuSettings);
                 } catch (e) {
                     console.error('Error parsing menu settings from local storage:', e);
+                    // Load from spreadsheet as fallback
+                    loadMenuSettingsFromSpreadsheet();
                 }
+            } else {
+                // Load from spreadsheet
+                loadMenuSettingsFromSpreadsheet();
             }
             
             // Apply menu settings
@@ -3300,6 +3306,67 @@
         // Save Menu Settings to Local Storage
         function saveMenuSettings() {
             localStorage.setItem('menuSettings', JSON.stringify(appData.menuSettings));
+            
+            // Simpan juga ke spreadsheet
+            const menuAtas = Object.keys(appData.menuSettings)
+                .filter(key => appData.menuSettings[key].position === 'header' && appData.menuSettings[key].visible)
+                .map(key => key.replace('-tab', ''))
+                .join(',');
+            
+            const menuBawah = Object.keys(appData.menuSettings)
+                .filter(key => appData.menuSettings[key].position === 'bottom' && appData.menuSettings[key].visible)
+                .map(key => key.replace('-tab', ''))
+                .join(',');
+            
+            // Update settings in spreadsheet
+            updateData('Pengaturan', 2, { 
+                'Menu Atas': menuAtas, 
+                'Menu Bawah': menuBawah 
+            });
+        }
+        
+        // Load Menu Settings from Spreadsheet
+        async function loadMenuSettingsFromSpreadsheet() {
+            try {
+                const settings = await fetchData('Pengaturan');
+                if (settings && settings[0]) {
+                    const menuAtas = settings[0]['Menu Atas'] || '';
+                    const menuBawah = settings[0]['Menu Bawah'] || '';
+                    
+                    // Parse menu atas
+                    if (menuAtas) {
+                        const atasItems = menuAtas.split(',');
+                        atasItems.forEach(item => {
+                            const tabId = item.trim() + '-tab';
+                            if (appData.menuSettings[tabId]) {
+                                appData.menuSettings[tabId].position = 'header';
+                                appData.menuSettings[tabId].visible = true;
+                            }
+                        });
+                    }
+                    
+                    // Parse menu bawah
+                    if (menuBawah) {
+                        const bawahItems = menuBawah.split(',');
+                        bawahItems.forEach(item => {
+                            const tabId = item.trim() + '-tab';
+                            if (appData.menuSettings[tabId]) {
+                                appData.menuSettings[tabId].position = 'bottom';
+                                appData.menuSettings[tabId].visible = true;
+                            }
+                        });
+                    }
+                    
+                    // Update UI
+                    updateMenuVisibility();
+                    updateMenuPosition();
+                    
+                    // Save to localStorage
+                    localStorage.setItem('menuSettings', JSON.stringify(appData.menuSettings));
+                }
+            } catch (error) {
+                console.error('Error loading menu settings from spreadsheet:', error);
+            }
         }
         
         // Update Menu Visibility
@@ -3703,6 +3770,18 @@
                 appData.settings = settings[0] || {};
                 updateSettingsUI();
                 updateWaterLevelThreshold();
+                
+                // Load menu settings from localStorage
+                const savedMenuSettings = localStorage.getItem('menuSettings');
+                if (savedMenuSettings) {
+                    try {
+                        appData.menuSettings = JSON.parse(savedMenuSettings);
+                        updateMenuVisibility();
+                        updateMenuPosition();
+                    } catch (e) {
+                        console.error('Error parsing menu settings from local storage:', e);
+                    }
+                }
             }
         }
         
@@ -3800,8 +3879,34 @@
                 }
             });
             
+            // Update header logo and subtitle
+            updateHeaderLogo();
+            updateHeaderSubtitle();
+            
             // Update water stock details when settings change
             updateWaterStockDetails();
+        }
+        
+        // Fungsi untuk memperbarui logo header
+        function updateHeaderLogo() {
+            const headerLogo = document.getElementById('header-logo');
+            const logoUrl = appData.settings['Logo'] || '';
+            
+            if (logoUrl) {
+                // Jika ada URL logo, ganti icon dengan gambar
+                headerLogo.innerHTML = `<img src="${logoUrl}" alt="Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+            } else {
+                // Jika tidak ada URL, gunakan icon default
+                headerLogo.innerHTML = '<i class="bi bi-droplet-fill"></i>';
+            }
+        }
+        
+        // Fungsi untuk memperbarui subtitle (alamat usaha)
+        function updateHeaderSubtitle() {
+            const appSubtitle = document.getElementById('app-subtitle');
+            const businessAddress = appData.settings['Alamat Usaha'] || 'Depot Air Minum Isi Ulang';
+            
+            appSubtitle.textContent = businessAddress;
         }
         
         function updateWaterStockDetails() {
