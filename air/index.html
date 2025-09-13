@@ -1764,6 +1764,125 @@
             height: 100%;
             border: none;
         }
+        /* Debt Payment Styles */
+        .debt-container {
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            margin: 0 15px 15px;
+        }
+        .debt-header {
+            background-color: var(--warning-color);
+            color: var(--white);
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .debt-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .debt-body {
+            padding: 15px;
+        }
+        .debt-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .debt-item:last-child {
+            border-bottom: none;
+        }
+        .debt-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+        .debt-info {
+            flex: 1;
+        }
+        .debt-title-text {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+        .debt-date {
+            font-size: 12px;
+            color: #64748b;
+        }
+        .debt-amount {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--warning-color);
+        }
+        .debt-due-date {
+            font-size: 12px;
+            color: var(--danger-color);
+            margin-top: 4px;
+        }
+        .debt-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .debt-action {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background-color: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .debt-action:hover {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+        .debt-action.pay {
+            color: var(--success-color);
+        }
+        .debt-action.pay:hover {
+            background-color: var(--success-color);
+            color: var(--white);
+        }
+        /* Tab Navigation */
+        .tab-navigation {
+            display: flex;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 15px;
+        }
+        .tab-navigation-item {
+            flex: 1;
+            text-align: center;
+            padding: 12px 0;
+            color: #64748b;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+        .tab-navigation-item.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+        .tab-content-container {
+            display: none;
+        }
+        .tab-content-container.active {
+            display: block;
+        }
         /* Responsive */
         @media (max-width: 410px) {
             .stat-row {
@@ -2082,15 +2201,46 @@
                 <div class="section-title">Riwayat Transaksi</div>
                 <a href="#" class="section-action">Filter</a>
             </div>
-            <div class="card-container">
-                <ul class="card-list" id="transaction-history-list">
-                    <!-- Transaction history will be loaded dynamically -->
-                    <div class="spinner-container">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
+            
+            <!-- Tab Navigation -->
+            <div class="tab-navigation">
+                <div class="tab-navigation-item active" data-tab="transaction-history-tab">
+                    Riwayat Transaksi
+                </div>
+                <div class="tab-navigation-item" data-tab="debt-tab">
+                    Hutang
+                </div>
+            </div>
+            
+            <!-- Transaction History Tab Content -->
+            <div id="transaction-history-tab" class="tab-content-container active">
+                <div class="card-container">
+                    <ul class="card-list" id="transaction-history-list">
+                        <!-- Transaction history will be loaded dynamically -->
+                        <div class="spinner-container">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Debt Tab Content -->
+            <div id="debt-tab" class="tab-content-container">
+                <div class="debt-container">
+                    <div class="debt-header">
+                        <div class="debt-title">Daftar Hutang</div>
+                    </div>
+                    <div class="debt-body" id="debt-list-container">
+                        <!-- Debt list will be loaded dynamically -->
+                        <div class="spinner-container">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
                         </div>
                     </div>
-                </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -2675,7 +2825,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" id="delete-customer-btn">Hapus</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-primary" id="save-customer-btn">Simpan</button>
+                    <button type="button" class="btn btn-primary" id="save-customer-name-btn">Simpan</button>
                 </div>
             </div>
         </div>
@@ -2808,6 +2958,44 @@
             </div>
         </div>
     </div>
+    <!-- Payment Modal -->
+    <div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Pembayaran Hutang</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="payment-transaction-id">
+                    <div class="mb-3">
+                        <label class="form-label">Pelanggan</label>
+                        <input type="text" class="form-control" id="payment-customer-name" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Total Hutang</label>
+                        <input type="text" class="form-control" id="payment-total-debt" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Jumlah Bayar (Rp)</label>
+                        <input type="number" class="form-control" id="payment-amount" placeholder="Masukkan jumlah pembayaran">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tanggal Pembayaran</label>
+                        <input type="date" class="form-control" id="payment-date">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Keterangan</label>
+                        <textarea class="form-control" id="payment-description" rows="2" placeholder="Keterangan pembayaran"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="save-payment-btn">Bayar</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Toast Container -->
     <div class="toast-container"></div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -2843,7 +3031,8 @@
                 'pengeluaran-tab': { visible: true, position: 'bottom' },
                 'pengaturan-tab': { visible: true, position: 'bottom' }
             },
-            productView: 'list' // Track current product view (list or grid)
+            productView: 'list', // Track current product view (list or grid)
+            activeTab: 'transaction-history-tab' // Track active tab in riwayat section
         };
         
         // Initialize App
@@ -2884,6 +3073,9 @@
             
             // Initialize product view toggle
             initializeProductViewToggle();
+            
+            // Initialize tab navigation in riwayat section
+            initializeTabNavigation();
         });
         
         // Setup Event Listeners
@@ -2931,7 +3123,7 @@
             document.getElementById('save-customer-btn').addEventListener('click', saveCustomer);
             
             // Save Customer Name Button
-            document.getElementById('save-customer-btn').addEventListener('click', saveCustomerName);
+            document.getElementById('save-customer-name-btn').addEventListener('click', saveCustomerName);
             
             // Delete Customer Button
             document.getElementById('delete-customer-btn').addEventListener('click', deleteCustomer);
@@ -3205,6 +3397,7 @@
                         // Refresh transaction history
                         loadTransactions();
                         updateTransactionHistoryUI();
+                        updateDebtUI();
                         showToast('Riwayat transaksi berhasil diperbarui', 'success');
                         break;
                 }
@@ -3225,6 +3418,9 @@
                 // Update FAB button
                 updateFabButton();
             });
+            
+            // Payment button
+            document.getElementById('save-payment-btn').addEventListener('click', savePayment);
             
             // Close dropdowns when clicking outside
             document.addEventListener('click', function() {
@@ -3582,9 +3778,43 @@
                         // Refresh transaction history
                         loadTransactions();
                         updateTransactionHistoryUI();
+                        updateDebtUI();
                         showToast('Riwayat transaksi berhasil diperbarui', 'success');
                         break;
                 }
+            });
+        }
+        
+        // Initialize Tab Navigation in Riwayat Section
+        function initializeTabNavigation() {
+            // Add event listeners to tab navigation items
+            document.querySelectorAll('.tab-navigation-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    // Remove active class from all tab navigation items
+                    document.querySelectorAll('.tab-navigation-item').forEach(navItem => {
+                        navItem.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked item
+                    this.classList.add('active');
+                    
+                    // Hide all tab content containers
+                    document.querySelectorAll('.tab-content-container').forEach(container => {
+                        container.classList.remove('active');
+                    });
+                    
+                    // Show the selected tab content
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                    
+                    // Update active tab in app data
+                    appData.activeTab = tabId;
+                    
+                    // Refresh data based on selected tab
+                    if (tabId === 'debt-tab') {
+                        updateDebtUI();
+                    }
+                });
             });
         }
         
@@ -3810,6 +4040,7 @@
                 appData.transactions = transactions;
                 updateTransactionsUI();
                 updateTransactionHistoryUI();
+                updateDebtUI();
                 calculateDailySales();
             }
         }
@@ -4338,6 +4569,91 @@
                     </div>
                 `;
                 container.appendChild(transactionItem);
+            });
+        }
+        
+        function updateDebtUI() {
+            const container = document.getElementById('debt-list-container');
+            container.innerHTML = '';
+            
+            // Filter transactions with status "Hutang"
+            const debtTransactions = appData.transactions.filter(t => t['Status'] === 'Hutang');
+            
+            if (debtTransactions.length === 0) {
+                container.innerHTML = '<div class="text-center p-4">Tidak ada hutang</div>';
+                return;
+            }
+            
+            // Group transactions by ID Transaksi
+            const groupedTransactions = {};
+            debtTransactions.forEach(transaction => {
+                const id = transaction['ID Transaksi'];
+                if (!groupedTransactions[id]) {
+                    groupedTransactions[id] = [];
+                }
+                groupedTransactions[id].push(transaction);
+            });
+            
+            // Sort transactions by date (newest first)
+            const sortedTransactions = Object.values(groupedTransactions)
+                .sort((a, b) => new Date(b[0]['Tanggal']) - new Date(a[0]['Tanggal']));
+            
+            sortedTransactions.forEach(transactionGroup => {
+                const transaction = transactionGroup[0];
+                const debtItem = document.createElement('div');
+                debtItem.className = 'debt-item';
+                
+                const date = new Date(transaction['Tanggal']);
+                const formattedDate = date.toLocaleDateString('id-ID', { 
+                    day: '2-digit', 
+                    month: 'short', 
+                    year: 'numeric' 
+                });
+                
+                // Calculate total amount and remaining debt for this transaction group
+                const totalAmount = transactionGroup.reduce((sum, t) => {
+                    return sum + (parseInt(t['Harga Jual (Rp)']) || 0) * (parseInt(t['Jumlah']) || 1);
+                }, 0);
+                
+                const remainingDebt = parseInt(transaction['Sisa Hutang']) || 0;
+                
+                // Format due date if available
+                let dueDateHtml = '';
+                if (transaction['Jatuh Tempo']) {
+                    const dueDate = new Date(transaction['Jatuh Tempo']);
+                    const formattedDueDate = dueDate.toLocaleDateString('id-ID', { 
+                        day: '2-digit', 
+                        month: 'short', 
+                        year: 'numeric' 
+                    });
+                    
+                    // Check if due date is passed
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    dueDate.setHours(0, 0, 0, 0);
+                    
+                    const isOverdue = dueDate < today;
+                    dueDateHtml = `<div class="debt-due-date ${isOverdue ? 'text-danger' : ''}">Jatuh tempo: ${formattedDueDate}</div>`;
+                }
+                
+                debtItem.innerHTML = `
+                    <div class="debt-icon">
+                        <i class="bi bi-wallet2"></i>
+                    </div>
+                    <div class="debt-info">
+                        <div class="debt-title-text">${transaction['ID Transaksi'] || 'Unknown'}</div>
+                        <div class="debt-date">${formattedDate} • ${transaction['Nama Pelanggan'] || 'Unknown'}</div>
+                        ${dueDateHtml}
+                    </div>
+                    <div class="debt-amount">Rp ${remainingDebt.toLocaleString('id-ID')}</div>
+                    <div class="debt-actions">
+                        <div class="debt-action pay" onclick="showPaymentModal('${transaction['ID Transaksi']}', '${transaction['Nama Pelanggan']}', ${remainingDebt})">
+                            <i class="bi bi-cash"></i>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(debtItem);
             });
         }
         
@@ -5280,6 +5596,7 @@
                 updateWaterLevelThreshold();
                 calculateDailySales();
                 updateSalesChart();
+                updateDebtUI();
                 
                 // Show success notification
                 showToast('Transaksi berhasil disimpan', 'success');
@@ -5451,6 +5768,7 @@
                 updateWaterLevelThreshold();
                 calculateDailySales();
                 updateSalesChart();
+                updateDebtUI();
                 
                 // Show success notification
                 showToast('Transaksi berhasil disimpan', 'success');
@@ -6101,6 +6419,7 @@
                 }
                 updateCustomersUI();
                 updateTransactionHistoryUI();
+                updateDebtUI();
                 return;
             }
             
@@ -6370,6 +6689,7 @@
                 case 'riwayat-tab':
                     loadTransactions();
                     updateTransactionHistoryUI();
+                    updateDebtUI();
                     break;
                     
                 case 'produk-tab':
@@ -6400,6 +6720,167 @@
             
             // NOTIFIKASI DIHAPUS - Tidak menampilkan notifikasi "Halaman diperbarui"
             // showToast('Halaman diperbarui', 'success');
+        }
+        
+        // Payment Functions
+        function showPaymentModal(transactionId, customerName, totalDebt) {
+            // Set modal values
+            document.getElementById('payment-transaction-id').value = transactionId;
+            document.getElementById('payment-customer-name').value = customerName;
+            document.getElementById('payment-total-debt').value = `Rp ${totalDebt.toLocaleString('id-ID')}`;
+            document.getElementById('payment-amount').value = totalDebt;
+            
+            // Set today's date as default
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('payment-date').value = today;
+            
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('paymentModal'));
+            modal.show();
+        }
+        
+        async function savePayment() {
+            // Check if already processing
+            if (appData.processing) {
+                showToast('Proses sedang berlangsung, harap tunggu', 'warning');
+                return;
+            }
+            
+            // Get form values
+            const transactionId = document.getElementById('payment-transaction-id').value;
+            const paymentAmount = parseInt(document.getElementById('payment-amount').value) || 0;
+            const paymentDate = document.getElementById('payment-date').value;
+            const paymentDescription = document.getElementById('payment-description').value;
+            
+            // Validate inputs
+            if (!transactionId) {
+                showToast('ID transaksi tidak ditemukan', 'danger');
+                return;
+            }
+            
+            if (!paymentAmount || paymentAmount <= 0) {
+                showToast('Silakan masukkan jumlah pembayaran yang valid', 'warning');
+                return;
+            }
+            
+            if (!paymentDate) {
+                showToast('Silakan pilih tanggal pembayaran', 'warning');
+                return;
+            }
+            
+            // Find all transactions with the same ID
+            const transactionGroup = appData.transactions.filter(t => t['ID Transaksi'] === transactionId);
+            
+            if (transactionGroup.length === 0) {
+                showToast('Transaksi tidak ditemukan', 'danger');
+                return;
+            }
+            
+            // Get the main transaction
+            const mainTransaction = transactionGroup[0];
+            const remainingDebt = parseInt(mainTransaction['Sisa Hutang']) || 0;
+            
+            // Check if payment amount is valid
+            if (paymentAmount > remainingDebt) {
+                showToast('Jumlah pembayaran melebihi sisa hutang', 'warning');
+                return;
+            }
+            
+            // Set processing state
+            setProcessingState(true);
+            
+            // Calculate new remaining debt
+            const newRemainingDebt = remainingDebt - paymentAmount;
+            
+            // Determine new status
+            const newStatus = newRemainingDebt === 0 ? 'Lunas' : 'Hutang';
+            
+            // Update all transactions with the same ID
+            let allTransactionsUpdated = true;
+            
+            for (const transaction of transactionGroup) {
+                // Update transaction data
+                const transactionData = {
+                    'Status': newStatus,
+                    'Sisa Hutang': newRemainingDebt
+                };
+                
+                // Find the transaction index
+                const transactionIndex = appData.transactions.findIndex(t => 
+                    t['ID Transaksi'] === transaction['ID Transaksi'] && 
+                    t['Produk'] === transaction['Produk']
+                );
+                
+                if (transactionIndex !== -1) {
+                    // Update the transaction in app data
+                    appData.transactions[transactionIndex]['Status'] = newStatus;
+                    appData.transactions[transactionIndex]['Sisa Hutang'] = newRemainingDebt;
+                    
+                    // Update the transaction in spreadsheet (row number = index + 2 for header and 1-based index)
+                    const success = await updateData('Transaksi', transactionIndex + 2, transactionData);
+                    
+                    if (!success) {
+                        allTransactionsUpdated = false;
+                    }
+                } else {
+                    allTransactionsUpdated = false;
+                }
+            }
+            
+            if (allTransactionsUpdated) {
+                // Add payment record
+                const paymentData = {
+                    'Tanggal': paymentDate,
+                    'ID Transaksi': transactionId,
+                    'ID Pelanggan': mainTransaction['ID Pelanggan'],
+                    'Nama Pelanggan': mainTransaction['Nama Pelanggan'],
+                    'Jumlah': paymentAmount,
+                    'Keterangan': paymentDescription || `Pembayaran hutang untuk transaksi ${transactionId}`,
+                    'Jenis': 'Pembayaran Hutang'
+                };
+                
+                // Save payment record
+                const paymentSuccess = await insertData('Pembayaran', paymentData);
+                
+                if (paymentSuccess) {
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('paymentModal'));
+                    modal.hide();
+                    
+                    // Reset form
+                    document.getElementById('payment-transaction-id').value = '';
+                    document.getElementById('payment-customer-name').value = '';
+                    document.getElementById('payment-total-debt').value = '';
+                    document.getElementById('payment-amount').value = '';
+                    document.getElementById('payment-date').value = '';
+                    document.getElementById('payment-description').value = '';
+                    
+                    // Refresh data
+                    loadTransactions();
+                    updateDashboardStats();
+                    updateFinancialSummary();
+                    updateTransactionHistoryUI();
+                    updateDebtUI();
+                    
+                    // Show success notification
+                    showToast('Pembayaran berhasil disimpan', 'success');
+                    
+                    // Add notification
+                    const notificationData = {
+                        'Tanggal': new Date().toISOString(),
+                        'Notifikasi': `Pembayaran hutang berhasil! Transaksi: ${transactionId}, Jumlah: Rp ${paymentAmount.toLocaleString('id-ID')}`,
+                        'Status': 'enable'
+                    };
+                    insertData('Notifikasi', notificationData);
+                } else {
+                    showToast('Terjadi kesalahan saat menyimpan pembayaran', 'danger');
+                }
+            } else {
+                showToast('Terjadi kesalahan saat memperbarui transaksi', 'danger');
+            }
+            
+            // Reset processing state
+            setProcessingState(false);
         }
         
         // Toast notification function
