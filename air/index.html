@@ -8,7 +8,72 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/forumu/forumu.github.io@main/air/style2.css">    
+<style>
+/* Tambahan CSS untuk perbaikan */
+.settings-banner {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: var(--primary);
+    color: white;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
 
+.settings-banner-logo img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.settings-banner-info {
+    text-align: center;
+}
+
+.settings-banner-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.settings-banner-subtitle {
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+.settings-banner-address {
+    font-size: 14px;
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.settings-banner-address i {
+    margin-right: 5px;
+}
+
+/* Hide notification settings */
+.settings-group:nth-child(4) {
+    display: none;
+}
+
+/* Modal refill modifications */
+#refillModal .modal-body .mb-3 {
+    display: none;
+}
+
+.refill-info-message {
+    text-align: center;
+    padding: 20px;
+    font-size: 16px;
+}
+</style>
 </head>
 <body>
 <!-- Processing Overlay - Baru -->
@@ -18,7 +83,6 @@
 <div class="processing-text">Sedang Diproses</div>
 </div>
 </div>
-
 <!-- Header -->
 <div class="app-header" id="app-header">
 <div class="header-logo" id="header-logo">
@@ -73,7 +137,6 @@
 </div>
 </div>
 </div>
-
 <!-- Search Bar -->
 <div class="search-container" id="search-container">
 <div class="search-box">
@@ -81,7 +144,6 @@
 <input type="text" placeholder="Cari produk, pelanggan, atau transaksi..." id="search-input">
 </div>
 </div>
-
 <!-- Banner -->
 <div class="banner-container" id="banner-container">
 <div class="banner">
@@ -91,7 +153,6 @@
 </div>
 </div>
 </div>
-
 <!-- Dashboard Tab -->
 <div id="dashboard-tab" class="tab-content active">
 <!-- Stats Cards -->
@@ -141,7 +202,6 @@
 </div>
 </div>
 </div>
-
 <!-- Financial Summary -->
 <div class="financial-summary">
 <div class="summary-card">
@@ -167,7 +227,6 @@ Ringkasan Keuangan
 </div>
 </div>
 </div>
-
 <!-- Sales Chart -->
 <div class="sales-chart">
 <div class="chart-card">
@@ -191,7 +250,6 @@ Grafik Penjualan
 </div>
 </div>
 </div>
-
 <!-- Top Products - Modified to show max 3 products with ranking -->
 <div class="top-products">
 <div class="section-header">
@@ -207,7 +265,6 @@ Grafik Penjualan
 </div>
 </div>
 </div>
-
 <!-- Active Customers -->
 <div class="active-customers">
 <div class="section-header">
@@ -223,7 +280,6 @@ Grafik Penjualan
 </div>
 </div>
 </div>
-
 <!-- Recent Transactions -->
 <div class="recent-transactions">
 <div class="section-header">
@@ -240,7 +296,6 @@ Grafik Penjualan
 </div>
 </div>
 </div>
-
 <!-- Transaksi Tab -->
 <div id="transaksi-tab" class="tab-content">
 <!-- Cashier Style Transaction -->
@@ -311,7 +366,6 @@ Grafik Penjualan
 </div>
 </div>
 </div>
-
 <!-- Riwayat Transaksi Tab -->
 <div id="riwayat-tab" class="tab-content">
 <div class="section">
@@ -360,7 +414,6 @@ Hutang
 </div>
 </div>
 </div>
-
 <!-- Produk Tab -->
 <div id="produk-tab" class="tab-content">
 <div class="section">
@@ -403,7 +456,6 @@ Hutang
 </button>
 </div>
 </div>
-
 <!-- Pelanggan Tab -->
 <div id="pelanggan-tab" class="tab-content">
 <div class="section">
@@ -421,7 +473,6 @@ Hutang
 </div>
 </div>
 </div>
-
 <!-- Stok Air Tab -->
 <div id="stok-tab" class="tab-content">
 <div class="water-stock-container">
@@ -486,14 +537,9 @@ Riwayat Penambahan Stok Air
 </div>
 </div>
 </div>
-<div class="d-grid gap-2 mt-3">
-<button class="btn btn-primary" id="refill-water-btn" data-bs-toggle="modal" data-bs-target="#refillModal" disabled>
-<i class="bi bi-arrow-repeat"></i> Tambah Stok Air
-</button>
+<!-- Tombol refill dihapus, diganti dengan FAB button -->
 </div>
 </div>
-</div>
-
 <!-- Pengeluaran Tab -->
 <div id="pengeluaran-tab" class="tab-content">
 <div class="section">
@@ -522,11 +568,10 @@ Riwayat Penambahan Stok Air
 </div>
 </div>
 </div>
-
 <!-- Pengaturan Tab -->
 <div id="pengaturan-tab" class="tab-content">
-<!-- Settings Banner -->
-<div class="settings-banner">
+<!-- Settings Banner - Posisi rata tengah -->
+<div class="settings-banner" id="settings-banner">
 <div class="settings-banner-logo">
 <img src="https://forumu.github.io/gen/logo.png" alt="Logo" id="settings-banner-logo">
 </div>
@@ -539,7 +584,6 @@ Riwayat Penambahan Stok Air
 </div>
 </div>
 </div>
-
 <div class="settings-container">
 <div class="settings-group">
 <div class="settings-group-title">Informasi Usaha</div>
@@ -732,16 +776,7 @@ Riwayat Penambahan Stok Air
 </div>
 </div>
 </div>
-<div class="settings-group">
-<div class="settings-group-title">Notifikasi</div>
-<div class="settings-item">
-<div class="settings-label">Notifikasi Sistem</div>
-<label class="settings-toggle">
-<input type="checkbox" id="system-notification-toggle" checked>
-<span class="toggle-slider"></span>
-</label>
-</div>
-</div>
+<!-- Notifikasi settings dihapus -->
 <div class="settings-group">
 <div class="settings-group-title">API Key</div>
 <div class="settings-item">
@@ -763,7 +798,6 @@ Reset Data
 </div>
 </div>
 </div>
-
 <!-- Bottom Navigation - Icons above and titles below -->
 <div class="bottom-nav" id="bottom-nav">
 <a href="#" class="nav-item active" data-tab="dashboard-tab">
@@ -799,12 +833,10 @@ Reset Data
 <div class="nav-label">Pengaturan</div>
 </a>
 </div>
-
 <!-- Floating Action Button - Dynamic based on active tab -->
 <a href="#" class="fab" id="fab-button">
 <i class="bi bi-arrow-clockwise"></i>
 </a>
-
 <!-- Add Transaction Modal -->
 <div class="modal fade" id="addTransactionModal" tabindex="-1" aria-hidden="true">
 <div class="modal-dialog">
@@ -852,7 +884,6 @@ Reset Data
 </div>
 </div>
 </div>
-
 <!-- Add Product Modal -->
 <div class="modal fade" id="addProductModal" tabindex="-1" aria-hidden="true">
 <div class="modal-dialog">
@@ -886,7 +917,6 @@ Reset Data
 </div>
 </div>
 </div>
-
 <!-- Add Customer Modal -->
 <div class="modal fade" id="addCustomerModal" tabindex="-1" aria-hidden="true">
 <div class="modal-dialog">
@@ -924,7 +954,6 @@ Reset Data
 </div>
 </div>
 </div>
-
 <!-- Edit Customer Modal -->
 <div class="modal fade" id="editCustomerModal" tabindex="-1" aria-hidden="true">
 <div class="modal-dialog">
@@ -964,7 +993,6 @@ Reset Data
 </div>
 </div>
 </div>
-
 <!-- Add Expense Modal -->
 <div class="modal fade" id="addExpenseModal" tabindex="-1" aria-hidden="true">
 <div class="modal-dialog">
@@ -1004,8 +1032,7 @@ Reset Data
 </div>
 </div>
 </div>
-
-<!-- Refill Water Modal -->
+<!-- Refill Water Modal - Dimodifikasi untuk otomatis -->
 <div class="modal fade" id="refillModal" tabindex="-1" aria-hidden="true">
 <div class="modal-dialog">
 <div class="modal-content">
@@ -1014,15 +1041,19 @@ Reset Data
 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 <div class="modal-body">
-<div class="mb-3">
+<div class="refill-info-message alert alert-info">
+Stok air akan diisi sampai penuh secara otomatis.
+</div>
+<!-- Input fields disembunyikan -->
+<div class="mb-3" style="display: none;">
 <label class="form-label">Jumlah Liter</label>
 <input type="number" class="form-control" id="refill-amount" placeholder="Jumlah liter yang akan diisi">
 </div>
-<div class="mb-3">
+<div class="mb-3" style="display: none;">
 <label class="form-label">Tanggal</label>
 <input type="date" class="form-control" id="refill-date">
 </div>
-<div class="mb-3">
+<div class="mb-3" style="display: none;">
 <label class="form-label">Keterangan</label>
 <textarea class="form-control" rows="2" id="refill-description" placeholder="Keterangan tambahan"></textarea>
 </div>
@@ -1034,7 +1065,6 @@ Reset Data
 </div>
 </div>
 </div>
-
 <!-- Edit Setting Modal -->
 <div class="modal fade" id="editSettingModal" tabindex="-1" aria-hidden="true">
 <div class="modal-dialog">
@@ -1056,7 +1086,6 @@ Reset Data
 </div>
 </div>
 </div>
-
 <!-- Receipt Modal -->
 <div class="modal fade" id="receiptModal" tabindex="-1" aria-hidden="true">
 <div class="modal-dialog modal-dialog-centered">
@@ -1080,7 +1109,6 @@ Reset Data
 </div>
 </div>
 </div>
-
 <!-- Maps Modal -->
 <div class="modal fade" id="mapsModal" tabindex="-1" aria-hidden="true">
 <div class="modal-dialog modal-lg">
@@ -1100,7 +1128,6 @@ Reset Data
 </div>
 </div>
 </div>
-
 <!-- Payment Modal - Diperbaiki, menghapus input keterangan -->
 <div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
 <div class="modal-dialog">
@@ -1136,7 +1163,6 @@ Reset Data
 </div>
 </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -1144,7 +1170,6 @@ Reset Data
 const API_KEY = "AKfycby_6VvnaHFQ4hmJALaX5-Zk1bF-nHzyuGR_FfdDvtJfbu_YMWLsVycoCrtCT-DlyMAv";
 const API_URL = `https://script.google.com/macros/s/${API_KEY}/exec`;
 const SPREADSHEET_ID = "1-IA568-QQWdBL1Xv7FuFkl6PqpdHwLOQWSVsRmadweQ";
-
 // App State
 let appData = {
     transactions: [],
@@ -1173,7 +1198,6 @@ let appData = {
     productView: 'list', // Track current product view (list or grid)
     activeTab: 'transaction-history-tab' // Track active tab in riwayat section
 };
-
 // Initialize App
 document.addEventListener('DOMContentLoaded', function() {
     // Load initial data
@@ -1221,8 +1245,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Setup reset button
     setupResetButton();
+    
+    // PERBAIKAN: Terapkan perubahan tambahan
+    removeNotificationSettings();
+    modifyRefillModal();
+    removeRefillModalButton();
+    updateSettingsBanner();
 });
-
 // Setup Event Listeners
 function setupEventListeners() {
     // Tab Navigation
@@ -1295,11 +1324,6 @@ function setupEventListeners() {
     
     // Search Input
     document.getElementById('search-input').addEventListener('input', handleSearch);
-    
-    // System Notification Toggle
-    document.getElementById('system-notification-toggle').addEventListener('change', function() {
-        updateSetting('Notifikasi', this.checked ? 'enable' : 'disable');
-    });
     
     // Cashier functionality
     document.getElementById('clear-cart-btn').addEventListener('click', clearCart);
@@ -1480,11 +1504,11 @@ function setupEventListeners() {
     
     // Customer search input
     document.getElementById('cashier-customer-input').addEventListener('input', function(e) {
-        const searchTerm = e.target.value.toLowerCase();
+        const searchTerm = e.target.value;
         if (searchTerm.length > 0) {
             // Filter customers based on search term
             const filteredCustomers = appData.customers.filter(customer =>
-                customer['Nama'].toLowerCase().includes(searchTerm)
+                customer['Nama'].toLowerCase().includes(searchTerm.toLowerCase())
             );
             
             // Show search results
@@ -1540,12 +1564,9 @@ function setupEventListeners() {
                 break;
                 
             case 'stok-tab':
-                // Open refill modal if enabled, otherwise show message
-                if (!document.getElementById('refill-water-btn').disabled) {
-                    const refillModal = new bootstrap.Modal(document.getElementById('refillModal'));
-                    refillModal.show();
-                } else {
-                    // showToast('Stok air masih mencukupi', 'warning');
+                // PERBAIKAN: Langsung panggil fungsi saveRefill tanpa modal
+                if (confirm('Apakah Anda yakin ingin mengisi stok air sampai penuh?')) {
+                    saveRefill();
                 }
                 break;
                 
@@ -1585,7 +1606,6 @@ function setupEventListeners() {
         document.getElementById('customer-search-results').classList.remove('show');
     });
 }
-
 // Setup Reset Button
 function setupResetButton() {
     // Reset Data Button
@@ -1595,13 +1615,11 @@ function setupResetButton() {
         }
     });
 }
-
 // Initialize Product View Toggle
 function initializeProductViewToggle() {
     // Set initial view based on appData.productView
     setProductView(appData.productView);
 }
-
 // Set Product View
 function setProductView(view) {
     appData.productView = view;
@@ -1621,7 +1639,6 @@ function setProductView(view) {
         updateProductsGridView();
     }
 }
-
 // Initialize Menu Settings
 function initializeMenuSettings() {
     // Try to load menu settings from local storage
@@ -1662,7 +1679,6 @@ function initializeMenuSettings() {
         });
     });
 }
-
 // Save Menu Settings to Local Storage
 function saveMenuSettings() {
     localStorage.setItem('menuSettings', JSON.stringify(appData.menuSettings));
@@ -1684,7 +1700,6 @@ function saveMenuSettings() {
         'Menu Bawah': menuBawah
     });
 }
-
 // Load Menu Settings from Spreadsheet
 async function loadMenuSettingsFromSpreadsheet() {
     try {
@@ -1728,7 +1743,6 @@ async function loadMenuSettingsFromSpreadsheet() {
         console.error('Error loading menu settings from spreadsheet:', error);
     }
 }
-
 // Update Menu Visibility
 function updateMenuVisibility() {
     // Update bottom navigation visibility
@@ -1741,7 +1755,6 @@ function updateMenuVisibility() {
         }
     });
 }
-
 // Update Menu Position
 function updateMenuPosition() {
     // Create header navigation if it doesn't exist
@@ -1834,7 +1847,6 @@ function updateMenuPosition() {
         }
     }
 }
-
 // Update FAB Button based on active tab
 function updateFabButton() {
     const activeTab = document.querySelector('.nav-item.active').getAttribute('data-tab');
@@ -1918,12 +1930,9 @@ function updateFabButton() {
                 break;
                 
             case 'stok-tab':
-                // Open refill modal if enabled, otherwise show message
-                if (!document.getElementById('refill-water-btn').disabled) {
-                    const refillModal = new bootstrap.Modal(document.getElementById('refillModal'));
-                    refillModal.show();
-                } else {
-                    // showToast('Stok air masih mencukupi', 'warning');
+                // PERBAIKAN: Langsung panggil fungsi saveRefill tanpa modal
+                if (confirm('Apakah Anda yakin ingin mengisi stok air sampai penuh?')) {
+                    saveRefill();
                 }
                 break;
                 
@@ -1935,7 +1944,6 @@ function updateFabButton() {
         }
     });
 }
-
 // Initialize Tab Navigation in Riwayat Section
 function initializeTabNavigation() {
     // Add event listeners to tab navigation items
@@ -1968,10 +1976,10 @@ function initializeTabNavigation() {
         });
     });
 }
-
 // Update search box visibility based on active tab
 function updateSearchBoxVisibility(tabId) {
     const searchContainer = document.getElementById('search-container');
+    const bannerContainer = document.getElementById('banner-container');
     
     // Only show search box for riwayat, produk, and pelanggan tabs
     if (tabId === 'riwayat-tab' || tabId === 'produk-tab' || tabId === 'pelanggan-tab') {
@@ -1979,8 +1987,14 @@ function updateSearchBoxVisibility(tabId) {
     } else {
         searchContainer.style.display = 'none';
     }
+    
+    // PERBAIKAN: Sembunyikan banner di halaman pengaturan
+    if (tabId === 'pengaturan-tab') {
+        bannerContainer.style.display = 'none';
+    } else if (tabId !== 'transaksi-tab') {
+        bannerContainer.style.display = 'block';
+    }
 }
-
 // Update banner content based on active tab
 function updateBannerContent(tabId) {
     const bannerContainer = document.getElementById('banner-container');
@@ -1998,7 +2012,7 @@ function updateBannerContent(tabId) {
     // Update banner content based on active tab
     switch(tabId) {
         case 'riwayat-tab':
-            // Count lunas and hutang transactions
+            // PERBAIKAN: Selalu tampilkan data Lunas dan Hutang
             const lunasCount = appData.transactions.filter(t => t['Status'] === 'Lunas').length;
             const hutangCount = appData.transactions.filter(t => t['Status'] === 'Hutang').length;
             bannerTitle.textContent = `${lunasCount} Lunas / ${hutangCount} Hutang`;
@@ -2031,7 +2045,6 @@ function updateBannerContent(tabId) {
             bannerSubtitle.textContent = 'Omset Pemasukan Bulan Ini';
     }
 }
-
 // Display customer search results
 function displayCustomerSearchResults(customers, searchTerm) {
     const resultsContainer = document.getElementById('customer-search-results');
@@ -2041,14 +2054,16 @@ function displayCustomerSearchResults(customers, searchTerm) {
         // Show option to add new customer
         const addNewOption = document.createElement('div');
         addNewOption.className = 'customer-search-item';
+        // PERBAIKAN: Tampilkan searchTerm persis seperti yang diketik
         addNewOption.innerHTML = `<i class="bi bi-person-plus"></i> Tambah pelanggan baru: "${searchTerm}"`;
         addNewOption.addEventListener('click', function() {
-            // Set the input value to the new customer name
+            // Set the input value to the new customer name (persis seperti yang diketik)
             document.getElementById('cashier-customer-input').value = searchTerm;
             
             // Create a new customer object
             const newCustomer = {
                 'ID Pelanggan': generateCustomerId(),
+                // PERBAIKAN: Gunakan searchTerm persis seperti yang diketik
                 'Nama': searchTerm,
                 'Kontak': '',
                 'Alamat': '',
@@ -2069,13 +2084,14 @@ function displayCustomerSearchResults(customers, searchTerm) {
         customers.forEach(customer => {
             const customerOption = document.createElement('div');
             customerOption.className = 'customer-search-item';
+            // PERBAIKAN: Tampilkan nama pelanggan persis seperti di database
             customerOption.innerHTML = `
                 <div>${customer['Nama']}</div>
                 <small>${customer['Kontak'] || 'No contact'}</small>
             `;
             
             customerOption.addEventListener('click', function() {
-                // Set the input value to the selected customer name
+                // Set the input value to the selected customer name (persis seperti di database)
                 document.getElementById('cashier-customer-input').value = customer['Nama'];
                 
                 // Set as selected customer
@@ -2092,13 +2108,11 @@ function displayCustomerSearchResults(customers, searchTerm) {
     // Show results container
     resultsContainer.classList.add('show');
 }
-
 // Generate random customer ID
 function generateCustomerId() {
     const timestamp = Date.now();
     return `CUST-${timestamp}`;
 }
-
 // API Functions
 async function fetchData(sheet, action = 'get-data', params = {}) {
     try {
@@ -2131,7 +2145,6 @@ async function fetchData(sheet, action = 'get-data', params = {}) {
         return null;
     }
 }
-
 async function insertData(sheet, data) {
     try {
         // Check if API key is set
@@ -2164,7 +2177,6 @@ async function insertData(sheet, data) {
         return false;
     }
 }
-
 async function updateData(sheet, row, data) {
     try {
         // Check if API key is set
@@ -2198,7 +2210,6 @@ async function updateData(sheet, row, data) {
         return false;
     }
 }
-
 async function updateNotificationStatus(date, status) {
     try {
         // Find the notification in the app data
@@ -2224,7 +2235,6 @@ async function updateNotificationStatus(date, status) {
         return false;
     }
 }
-
 // Load Data Functions
 async function loadSettings() {
     const settings = await fetchData('Pengaturan');
@@ -2247,7 +2257,6 @@ async function loadSettings() {
         }
     }
 }
-
 async function loadProducts() {
     const products = await fetchData('Produk');
     if (products) {
@@ -2257,7 +2266,6 @@ async function loadProducts() {
         populateCashierProductGrid();
     }
 }
-
 async function loadCustomers() {
     const customers = await fetchData('Pelanggan');
     if (customers) {
@@ -2266,7 +2274,6 @@ async function loadCustomers() {
         populateCustomerSelects();
     }
 }
-
 async function loadTransactions() {
     const transactions = await fetchData('Transaksi');
     if (transactions) {
@@ -2280,7 +2287,6 @@ async function loadTransactions() {
         await fixDebtInconsistencies();
     }
 }
-
 async function loadWaterStock() {
     const waterStock = await fetchData('Stok Air');
     if (waterStock) {
@@ -2290,7 +2296,6 @@ async function loadWaterStock() {
         updateWaterLevelThreshold();
     }
 }
-
 async function loadExpenses() {
     const expenses = await fetchData('Pengeluaran');
     if (expenses) {
@@ -2299,7 +2304,6 @@ async function loadExpenses() {
         updateMonthlyExpense();
     }
 }
-
 async function loadNotifications() {
     const notifications = await fetchData('Notifikasi');
     if (notifications) {
@@ -2309,7 +2313,6 @@ async function loadNotifications() {
         updateNotificationDropdown();
     }
 }
-
 // Update UI Functions
 function updateSettingsUI() {
     const settings = appData.settings;
@@ -2353,21 +2356,34 @@ function updateSettingsUI() {
     // Update water stock details when settings change
     updateWaterStockDetails();
 }
-
 // Update Settings Banner
 function updateSettingsBanner() {
     const settings = appData.settings;
+    const bannerContainer = document.querySelector('.settings-banner');
+    
+    // PERBAIKAN: Tambahkan class untuk rata tengah
+    bannerContainer.style.textAlign = 'center';
+    bannerContainer.style.display = 'flex';
+    bannerContainer.style.flexDirection = 'column';
+    bannerContainer.style.alignItems = 'center';
+    bannerContainer.style.justifyContent = 'center';
     
     // Update banner logo
     const bannerLogo = document.getElementById('settings-banner-logo');
     if (bannerLogo) {
         bannerLogo.src = settings['Logo'] || 'https://forumu.github.io/gen/logo.png';
+        // PERBAIKAN: Atur ukuran logo
+        bannerLogo.style.width = '80px';
+        bannerLogo.style.height = '80px';
+        bannerLogo.style.objectFit = 'cover';
+        bannerLogo.style.borderRadius = '50%';
     }
     
     // Update banner title
     const bannerTitle = document.getElementById('settings-banner-title');
     if (bannerTitle) {
         bannerTitle.textContent = settings['Nama Usaha'] || 'YOUSHE';
+        bannerTitle.style.marginTop = '10px';
     }
     
     // Update banner subtitle
@@ -2382,7 +2398,6 @@ function updateSettingsBanner() {
         bannerAddress.textContent = settings['Alamat Usaha'] || 'Jaten Karanganyar';
     }
 }
-
 // Fungsi untuk memperbarui logo header
 function updateHeaderLogo() {
     const headerLogo = document.getElementById('header-logo');
@@ -2396,14 +2411,12 @@ function updateHeaderLogo() {
         headerLogo.innerHTML = '<i class="bi bi-droplet-fill"></i>';
     }
 }
-
 // Fungsi untuk memperbarui subtitle (alamat usaha)
 function updateHeaderSubtitle() {
     const appSubtitle = document.getElementById('app-subtitle');
     const businessAddress = appData.settings['Alamat Usaha'] || 'Depot Air Minum Isi Ulang';
     appSubtitle.textContent = businessAddress;
 }
-
 function updateWaterStockDetails() {
     const settings = appData.settings;
     const waterStock = appData.waterStock;
@@ -2437,7 +2450,6 @@ function updateWaterStockDetails() {
     // Update dashboard stats
     document.getElementById('water-stock').textContent = `${remaining} L`;
 }
-
 function updateProductsUI() {
     // Update based on current view
     if (appData.productView === 'list') {
@@ -2446,7 +2458,6 @@ function updateProductsUI() {
         updateProductsGridView();
     }
 }
-
 function updateProductsListView() {
     const container = document.getElementById('product-list-container');
     container.innerHTML = '';
@@ -2494,7 +2505,6 @@ function updateProductsListView() {
     const hasSelectedProducts = Object.keys(appData.selectedProducts).length > 0;
     document.getElementById('checkout-products-btn').style.display = hasSelectedProducts ? 'block' : 'none';
 }
-
 function updateProductsGridView() {
     const container = document.getElementById('product-grid-container');
     container.innerHTML = '';
@@ -2535,7 +2545,6 @@ function updateProductsGridView() {
     const hasSelectedProducts = Object.keys(appData.selectedProducts).length > 0;
     document.getElementById('checkout-products-btn').style.display = hasSelectedProducts ? 'block' : 'none';
 }
-
 // PERBAIKAN: Fungsi selectProduct yang diperbaiki
 function selectProduct(product) {
     const productId = product['ID Produk'];
@@ -2557,7 +2566,6 @@ function selectProduct(product) {
     // Add to cart
     addToCart(product);
 }
-
 function populateCashierProductGrid() {
     const container = document.getElementById('cashier-product-grid');
     container.innerHTML = '';
@@ -2592,7 +2600,6 @@ function populateCashierProductGrid() {
         container.appendChild(productItem);
     });
 }
-
 function updateCustomersUI() {
     const container = document.getElementById('customers-container');
     container.innerHTML = '';
@@ -2678,7 +2685,6 @@ function updateCustomersUI() {
         });
     });
 }
-
 function showEditCustomerModal(customerId, customerName, customerContact, customerAddress, customerDeposit, customerMaps) {
     // Isi modal dengan data pelanggan
     document.getElementById('edit-customer-id').value = customerId;
@@ -2692,7 +2698,6 @@ function showEditCustomerModal(customerId, customerName, customerContact, custom
     const modal = new bootstrap.Modal(document.getElementById('editCustomerModal'));
     modal.show();
 }
-
 function showMapsModal(mapsUrl) {
     const mapsContainer = document.getElementById('maps-container');
     
@@ -2722,7 +2727,6 @@ function showMapsModal(mapsUrl) {
     const modal = new bootstrap.Modal(document.getElementById('mapsModal'));
     modal.show();
 }
-
 function updateTransactionsUI() {
     // Update recent transactions in dashboard
     const container = document.getElementById('recent-transactions-container');
@@ -2789,7 +2793,6 @@ function updateTransactionsUI() {
         container.appendChild(transactionItem);
     });
 }
-
 function updateTransactionHistoryUI() {
     // Update transaction history in riwayat tab
     const container = document.getElementById('transaction-history-list');
@@ -2855,7 +2858,6 @@ function updateTransactionHistoryUI() {
         container.appendChild(transactionItem);
     });
 }
-
 function updateDebtUI() {
     const container = document.getElementById('debt-list-container');
     container.innerHTML = '';
@@ -2946,7 +2948,6 @@ function updateDebtUI() {
         container.appendChild(debtItem);
     });
 }
-
 function updateWaterStockUI() {
     const waterStock = appData.waterStock;
     const settings = appData.settings;
@@ -2970,7 +2971,6 @@ function updateWaterStockUI() {
     document.getElementById('detail-tank-capacity').textContent = `${capacity} L`;
     document.getElementById('detail-total-cost').textContent = `Rp ${parseInt(settings['Total Biaya Suplai (Rp)'] || 300000).toLocaleString('id-ID')}`;
 }
-
 function updateExpensesUI() {
     const container = document.getElementById('expenses-container');
     container.innerHTML = '';
@@ -3006,7 +3006,6 @@ function updateExpensesUI() {
         container.appendChild(expenseItem);
     });
 }
-
 function updateMonthlyExpense() {
     // Calculate total expenses for current month
     const currentMonth = new Date().getMonth();
@@ -3024,11 +3023,9 @@ function updateMonthlyExpense() {
     
     document.getElementById('monthly-expense').textContent = `Rp ${totalExpense.toLocaleString('id-ID')}`;
 }
-
 function updateNotificationsUI() {
     // Removed notifications from dashboard as requested
 }
-
 function updateNotificationBadge() {
     const enabledCount = appData.notifications.filter(n => n['Status'] === 'enable').length;
     const badge = document.getElementById('notification-count');
@@ -3040,7 +3037,6 @@ function updateNotificationBadge() {
         badge.style.display = 'none';
     }
 }
-
 function updateNotificationDropdown() {
     const container = document.getElementById('notification-dropdown-body');
     container.innerHTML = '';
@@ -3094,7 +3090,6 @@ function updateNotificationDropdown() {
         container.appendChild(notificationItem);
     });
 }
-
 function populateProductSelects() {
     const productSelects = [
         document.getElementById('transaction-product-select')
@@ -3115,7 +3110,6 @@ function populateProductSelects() {
         });
     });
 }
-
 function populateCustomerSelects() {
     const customerSelects = [
         document.getElementById('transaction-customer-select')
@@ -3136,7 +3130,6 @@ function populateCustomerSelects() {
         });
     });
 }
-
 function updateDashboardStats() {
     // Calculate stats from transactions
     const today = new Date();
@@ -3174,7 +3167,6 @@ function updateDashboardStats() {
     // Monthly revenue (placeholder - would need to filter by month)
     document.getElementById('monthly-revenue').textContent = `Rp ${todaySales.toLocaleString('id-ID')}`;
 }
-
 function updateFinancialSummary() {
     // Calculate financial summary from transactions and expenses
     const currentMonth = new Date().getMonth();
@@ -3220,7 +3212,6 @@ function updateFinancialSummary() {
     document.getElementById('total-debt').textContent = `Rp ${totalDebt.toLocaleString('id-ID')}`;
     document.getElementById('net-profit').textContent = `Rp ${netProfit.toLocaleString('id-ID')}`;
 }
-
 function updateSalesChart() {
     const chartContainer = document.getElementById('sales-chart-bars');
     chartContainer.innerHTML = '';
@@ -3282,7 +3273,6 @@ function updateSalesChart() {
         chartContainer.appendChild(bar);
     });
 }
-
 function updateWaterLevel() {
     // Update water level visualization
     const waterStock = appData.waterStock;
@@ -3294,7 +3284,6 @@ function updateWaterLevel() {
     document.getElementById('water-level').style.height = `${percentage}%`;
     document.getElementById('water-percentage').textContent = `${percentage}%`;
 }
-
 function updateTransactionDate() {
     const now = new Date();
     const formattedDate = now.toLocaleDateString('id-ID', {
@@ -3305,7 +3294,6 @@ function updateTransactionDate() {
     
     document.getElementById('transaction-date').textContent = formattedDate;
 }
-
 function updateStockHistory() {
     const container = document.getElementById('stock-history-container');
     container.innerHTML = '';
@@ -3355,7 +3343,6 @@ function updateStockHistory() {
         container.appendChild(historyItem);
     });
 }
-
 function updateTopProducts() {
     const container = document.getElementById('top-products-container');
     container.innerHTML = '';
@@ -3423,7 +3410,6 @@ function updateTopProducts() {
     
     container.appendChild(productList);
 }
-
 function updateActiveCustomers() {
     const container = document.getElementById('active-customers-container');
     container.innerHTML = '';
@@ -3483,7 +3469,6 @@ function updateActiveCustomers() {
         container.appendChild(customerItem);
     });
 }
-
 function calculateDailySales() {
     // Reset daily sales data
     appData.dailySales = {};
@@ -3501,7 +3486,6 @@ function calculateDailySales() {
         appData.dailySales[dateStr] += amount;
     });
 }
-
 // Update water level threshold for refill button
 function updateWaterLevelThreshold() {
     const waterStock = appData.waterStock;
@@ -3517,7 +3501,6 @@ function updateWaterLevelThreshold() {
         refillButton.disabled = true;
     }
 }
-
 // Disable/Enable buttons during processing
 function setProcessingState(isProcessing) {
     appData.processing = isProcessing;
@@ -3547,7 +3530,6 @@ function setProcessingState(isProcessing) {
         fabButton.style.pointerEvents = 'auto';
     }
 }
-
 // Cashier Functions
 // PERBAIKAN: Fungsi addToCart yang diperbaiki
 function addToCart(product) {
@@ -3579,7 +3561,6 @@ function addToCart(product) {
         updateProductsGridView();
     }
 }
-
 function updateCartUI() {
     const container = document.getElementById('cart-items-container');
     container.innerHTML = '';
@@ -3616,7 +3597,6 @@ function updateCartUI() {
     
     updateCartSummary();
 }
-
 function updateCartDropdown() {
     const container = document.getElementById('cart-dropdown-body');
     container.innerHTML = '';
@@ -3649,7 +3629,6 @@ function updateCartDropdown() {
     
     document.getElementById('cart-dropdown-total').textContent = `Rp ${total.toLocaleString('id-ID')}`;
 }
-
 function updateCartBadge() {
     const totalItems = appData.cart.reduce((sum, item) => {
         return sum + item.quantity;
@@ -3663,7 +3642,6 @@ function updateCartBadge() {
         badge.style.display = 'none';
     }
 }
-
 function updateCartItemQuantity(productId, change) {
     const item = appData.cart.find(item => item.id === productId);
     
@@ -3695,7 +3673,6 @@ function updateCartItemQuantity(productId, change) {
         }
     }
 }
-
 function updateCartSummary() {
     const subtotal = appData.cart.reduce((sum, item) => {
         return sum + (item.price * item.quantity);
@@ -3728,7 +3705,6 @@ function updateCartSummary() {
     document.getElementById('cart-discount').textContent = `Rp ${discount.toLocaleString('id-ID')}`;
     document.getElementById('cart-total').textContent = `Rp ${total.toLocaleString('id-ID')}`;
 }
-
 function clearCart() {
     appData.cart = [];
     appData.selectedProducts = {};
@@ -3744,8 +3720,8 @@ function clearCart() {
     updateCartDropdown();
     updateCartBadge();
 }
-
 // PERBAIKAN: Fungsi checkout() yang diperbaiki untuk memastikan konsistensi data hutang
+// dan menambahkan pelanggan baru secara otomatis
 async function checkout() {
     // Check if already processing
     if (appData.processing) {
@@ -3757,13 +3733,17 @@ async function checkout() {
     let customerId = '';
     let customerName = '';
     
+    // PERBAIKAN: Ambil nama pelanggan dari input field tanpa mengubah case
+    const inputCustomerName = document.getElementById('cashier-customer-input').value;
+    
     if (appData.selectedCustomer) {
         customerId = appData.selectedCustomer['ID Pelanggan'];
         customerName = appData.selectedCustomer['Nama'];
     } else {
         // Generate random customer ID if none selected
         customerId = generateCustomerId();
-        customerName = document.getElementById('cashier-customer-input').value || customerId;
+        // PERBAIKAN: Gunakan nama persis seperti yang diketik pengguna
+        customerName = inputCustomerName || customerId;
     }
     
     if (appData.cart.length === 0) {
@@ -3813,6 +3793,33 @@ async function checkout() {
     
     // Show processing overlay
     showProcessingOverlay();
+    
+    // PERBAIKAN: Jika pelanggan baru, simpan ke database
+    if (!appData.selectedCustomer && inputCustomerName) {
+        // Create a new customer object
+        const newCustomer = {
+            'ID Pelanggan': customerId,
+            'Nama': customerName, // Nama persis seperti yang diketik
+            'Kontak': '',
+            'Alamat': '',
+            'Galon Titipan': 0,
+            'Maps': ''
+        };
+        
+        // Save the new customer
+        const customerSaved = await insertData('Pelanggan', newCustomer);
+        
+        if (customerSaved) {
+            // Add to app data
+            appData.customers.push(newCustomer);
+            
+            // Update UI
+            updateCustomersUI();
+            
+            // Set as selected customer
+            appData.selectedCustomer = newCustomer;
+        }
+    }
     
     // Create transactions for each item in cart
     const now = new Date();
@@ -3957,7 +3964,6 @@ async function checkout() {
     // Reset processing state
     setProcessingState(false);
 }
-
 // Action Functions
 async function saveTransactionFromModal() {
     // Check if already processing
@@ -4130,7 +4136,6 @@ async function saveTransactionFromModal() {
     // Reset processing state
     setProcessingState(false);
 }
-
 async function saveProduct() {
     // Check if already processing
     if (appData.processing) {
@@ -4226,7 +4231,6 @@ async function saveProduct() {
     // Reset processing state
     setProcessingState(false);
 }
-
 async function saveCustomer() {
     // Check if already processing
     if (appData.processing) {
@@ -4315,7 +4319,6 @@ async function saveCustomer() {
     // Reset processing state
     setProcessingState(false);
 }
-
 async function saveCustomerName() {
     const customerId = document.getElementById('edit-customer-id').value;
     const newName = document.getElementById('edit-customer-name').value;
@@ -4366,7 +4369,6 @@ async function saveCustomerName() {
         showToast('Gagal memperbarui data pelanggan', 'danger');
     }
 }
-
 async function deleteCustomer() {
     const customerId = document.getElementById('edit-customer-id').value;
     
@@ -4394,7 +4396,6 @@ async function deleteCustomer() {
     
     showToast('Pelanggan berhasil dihapus', 'success');
 }
-
 async function saveExpense() {
     // Check if already processing
     if (appData.processing) {
@@ -4481,7 +4482,7 @@ async function saveExpense() {
     // Reset processing state
     setProcessingState(false);
 }
-
+// PERBAIKAN: Fungsi saveRefill yang diperbaiki untuk otomatis mengisi nilai
 async function saveRefill() {
     // Check if already processing
     if (appData.processing) {
@@ -4489,27 +4490,19 @@ async function saveRefill() {
         return;
     }
     
-    // Get form values
-    const amount = document.getElementById('refill-amount').value;
-    const date = document.getElementById('refill-date').value;
-    const description = document.getElementById('refill-description').value;
+    // PERBAIKAN: Otomatis isi nilai tanpa perlu input
+    const capacity = parseInt(appData.settings['Kapasitas Toren (Liter)'] || 8000);
+    const currentRemaining = parseInt(appData.waterStock['Sisa Liter'] || 0);
+    const amount = capacity - currentRemaining; // Isi sampai penuh
     
-    // Validate inputs
-    if (!amount || amount <= 0) {
-        showToast('Silakan masukkan jumlah liter yang valid', 'warning');
-        return;
-    }
-    
-    if (!date) {
-        showToast('Silakan pilih tanggal', 'warning');
-        return;
-    }
+    const now = new Date();
+    const date = now.toISOString().split('T')[0]; // Tanggal hari ini
+    const description = `Penambahan stok air ${amount} liter`; // Deskripsi otomatis
     
     // Get water supply cost from settings
     const waterSupplyCost = parseInt(appData.settings['Biaya Suplai Air Tangki (Rp)'] || 300000);
     
     // Calculate cost based on amount and supply cost
-    const capacity = parseInt(appData.settings['Kapasitas Toren (Liter)'] || 8000);
     const costPerLiter = waterSupplyCost / capacity;
     const totalCost = Math.round(amount * costPerLiter);
     
@@ -4522,7 +4515,7 @@ async function saveRefill() {
     // Prepare expense data
     const expenseData = {
         'Tanggal': date,
-        'Keterangan': description || `Penambahan stok air ${amount} liter`,
+        'Keterangan': description,
         'Jenis': 'Stok Air',
         'Jumlah': totalCost,
         'Saldo': '-' + totalCost // Placeholder for actual balance calculation
@@ -4536,12 +4529,11 @@ async function saveRefill() {
         const waterStock = appData.waterStock;
         const settings = appData.settings;
         const currentCapacity = parseInt(settings['Kapasitas Toren (Liter)'] || 8000);
-        const currentRemaining = parseInt(waterStock['Sisa Liter'] || 0);
         const currentUsed = parseInt(waterStock['Liter Terpakai'] || 0);
         const currentTotalUsed = parseInt(waterStock['Total Liter Terpakai'] || 0);
         const currentTotalCost = parseInt(waterStock['Total Biaya Suplai (Rp)'] || 300000);
         
-        const newRemaining = Math.min(currentCapacity, currentRemaining + parseInt(amount));
+        const newRemaining = capacity; // Isi sampai penuh
         const newTotalUsed = currentTotalUsed; // Total used should not reset
         const newTotalCost = currentTotalCost + totalCost;
         
@@ -4561,11 +4553,6 @@ async function saveRefill() {
             // Close modal
             const modal = bootstrap.Modal.getInstance(document.getElementById('refillModal'));
             modal.hide();
-            
-            // Reset form
-            document.getElementById('refill-amount').value = '';
-            document.getElementById('refill-date').value = '';
-            document.getElementById('refill-description').value = '';
             
             // Refresh data
             loadWaterStock();
@@ -4600,7 +4587,6 @@ async function saveRefill() {
     // Reset processing state
     setProcessingState(false);
 }
-
 async function saveSetting() {
     // Check if already processing
     if (appData.processing) {
@@ -4658,7 +4644,6 @@ async function saveSetting() {
     // Reset processing state
     setProcessingState(false);
 }
-
 function showReceipt(transactionId) {
     // Find all transactions with the same ID
     const transactionGroup = appData.transactions.filter(t => t['ID Transaksi'] === transactionId);
@@ -4743,11 +4728,9 @@ function showReceipt(transactionId) {
     const modal = new bootstrap.Modal(document.getElementById('receiptModal'));
     modal.show();
 }
-
 function printReceipt() {
     window.print();
 }
-
 // Download Receipt as Image
 function downloadReceiptAsImage() {
     const receiptElement = document.getElementById('receipt-container');
@@ -4776,7 +4759,6 @@ function downloadReceiptAsImage() {
         showToast('Gagal mengunduh nota sebagai gambar', 'danger');
     });
 }
-
 function handleSearch(e) {
     const searchTerm = e.target.value.toLowerCase();
     
@@ -4820,7 +4802,6 @@ function handleSearch(e) {
     updateFilteredCustomersUI(filteredCustomers);
     updateFilteredTransactionsUI(filteredTransactions);
 }
-
 function updateFilteredProductsListView(products) {
     const container = document.getElementById('product-list-container');
     container.innerHTML = '';
@@ -4864,7 +4845,6 @@ function updateFilteredProductsListView(products) {
         container.appendChild(productItem);
     });
 }
-
 function updateFilteredProductsGridView(products) {
     const container = document.getElementById('product-grid-container');
     container.innerHTML = '';
@@ -4901,7 +4881,6 @@ function updateFilteredProductsGridView(products) {
         container.appendChild(productCard);
     });
 }
-
 function updateFilteredCustomersUI(customers) {
     const container = document.getElementById('customers-container');
     container.innerHTML = '';
@@ -4970,7 +4949,6 @@ function updateFilteredCustomersUI(customers) {
         });
     });
 }
-
 function updateFilteredTransactionsUI(transactions) {
     const container = document.getElementById('transaction-history-list');
     container.innerHTML = '';
@@ -5035,7 +5013,6 @@ function updateFilteredTransactionsUI(transactions) {
         container.appendChild(transactionItem);
     });
 }
-
 // Fungsi untuk refresh data berdasarkan tab yang aktif
 function refreshTabData(tabId) {
     switch(tabId) {
@@ -5095,7 +5072,6 @@ function refreshTabData(tabId) {
             break;
     }
 }
-
 // Payment Functions
 function showPaymentModal(transactionId, customerName, totalDebt) {
     // Set modal values
@@ -5112,7 +5088,6 @@ function showPaymentModal(transactionId, customerName, totalDebt) {
     const modal = new bootstrap.Modal(document.getElementById('paymentModal'));
     modal.show();
 }
-
 // PERBAIKAN: Fungsi savePayment() yang diperbaiki untuk memastikan popup tertutup otomatis
 async function savePayment() {
     // Check if already processing
@@ -5277,7 +5252,6 @@ async function savePayment() {
     // Reset processing state
     setProcessingState(false);
 }
-
 // PERBAIKAN: Fungsi untuk memvalidasi konsistensi data hutang
 function validateDebtConsistency(transactionId) {
     const transactionGroup = appData.transactions.filter(t => t['ID Transaksi'] === transactionId);
@@ -5311,7 +5285,6 @@ function validateDebtConsistency(transactionId) {
     
     return true;
 }
-
 // PERBAIKAN: Fungsi untuk memperbaiki data yang tidak konsisten
 async function fixDebtInconsistencies() {
     // Group transactions by ID Transaksi
@@ -5374,7 +5347,6 @@ async function fixDebtInconsistencies() {
     updateDashboardStats();
     updateFinancialSummary();
 }
-
 // Fungsi untuk menampilkan animasi loading pada FAB button
 function showRefreshAnimation() {
     const fabButton = document.getElementById('fab-button');
@@ -5390,19 +5362,16 @@ function showRefreshAnimation() {
         fabButton.style.pointerEvents = 'auto';
     }, 2000);
 }
-
 // Fungsi untuk menampilkan overlay pemrosesan
 function showProcessingOverlay() {
     const overlay = document.getElementById('processing-overlay');
     overlay.classList.add('active');
 }
-
 // Fungsi untuk menyembunyikan overlay pemrosesan
 function hideProcessingOverlay() {
     const overlay = document.getElementById('processing-overlay');
     overlay.classList.remove('active');
 }
-
 // Reset All Data Function
 async function resetAllData() {
     if (!confirm('Apakah Anda yakin ingin mereset semua data? Tindakan ini tidak dapat dibatalkan dan akan menghapus semua data dari semua sheet.')) {
@@ -5487,12 +5456,47 @@ async function resetAllData() {
         hideProcessingOverlay();
     }
 }
-
 // Toast notification function - DISABLED
 function showToast(message, type = 'info') {
     // Function disabled to remove all toast notifications
     // console.log(`Toast disabled: ${message} (${type})`);
     return;
+}
+
+// PERBAIKAN: Fungsi untuk menghapus grup pengaturan Notifikasi
+function removeNotificationSettings() {
+    const notificationGroup = document.querySelector('.settings-group:nth-child(4)');
+    if (notificationGroup && notificationGroup.querySelector('.settings-group-title').textContent === 'Notifikasi') {
+        notificationGroup.remove();
+    }
+}
+
+// PERBAIKAN: Fungsi untuk memodifikasi modal refill
+function modifyRefillModal() {
+    const refillModal = document.getElementById('refillModal');
+    if (refillModal) {
+        const modalBody = refillModal.querySelector('.modal-body');
+        
+        // Hapus semua input field
+        const inputFields = modalBody.querySelectorAll('.mb-3');
+        inputFields.forEach(field => {
+            field.style.display = 'none';
+        });
+        
+        // Tambahkan pesan informasi
+        const infoMessage = document.createElement('div');
+        infoMessage.className = 'refill-info-message alert alert-info';
+        infoMessage.textContent = 'Stok air akan diisi sampai penuh secara otomatis.';
+        modalBody.appendChild(infoMessage);
+    }
+}
+
+// PERBAIKAN: Fungsi untuk menghapus tombol refill
+function removeRefillModalButton() {
+    const refillButton = document.getElementById('refill-water-btn');
+    if (refillButton) {
+        refillButton.remove();
+    }
 }
 </script>
 </body>
