@@ -3704,9 +3704,7 @@
         function setupNewButtonListeners() {
             // Reset data button
             document.getElementById('reset-data-btn').addEventListener('click', function() {
-                if (confirm('Apakah Anda yakin ingin mereset semua data? Tindakan ini tidak dapat dibatalkan.')) {
-                    resetAllData();
-                }
+                resetAllData();
             });
             
             // Backup data button
@@ -4331,7 +4329,8 @@
             }
         }
         
-        async function updateData(sheet, row, data) {
+        // PERBAIKAN: Fungsi updateData yang mendukung penghapusan
+        async function updateData(sheet, row, data, isDelete = false) {
             // PERBAIKAN: Validasi API Key
             if (!API_KEY || API_KEY === "${API_KEY}") {
                 showToast('API Key belum diatur. Silakan atur API Key di pengaturan.', 'danger');
@@ -4344,16 +4343,20 @@
                 url.searchParams.append('action', 'update');
                 url.searchParams.append('row', row);
                 
-                // Add data parameters
-                Object.keys(data).forEach(key => {
-                    url.searchParams.append(key, data[key]);
-                });
+                // Tambahkan parameter delete jika true
+                if (isDelete) {
+                    url.searchParams.append('delete', 'true');
+                } else {
+                    // Add data parameters only if not deleting
+                    Object.keys(data).forEach(key => {
+                        url.searchParams.append(key, data[key]);
+                    });
+                }
                 
                 const response = await fetch(url);
                 const result = await response.json();
                 
                 if (result.success) {
-                    // Menghapus notifikasi "Data berhasil diperbarui" sesuai permintaan
                     return true;
                 } else {
                     throw new Error(result.message);
@@ -7592,10 +7595,33 @@
         
         // PERBAIKAN: Fungsi untuk reset semua data
         async function resetAllData() {
+            // Tampilkan konfirmasi terlebih dahulu
+            if (!confirm('Apakah Anda yakin ingin mereset semua data? Tindakan ini tidak dapat dibatalkan dan akan menghapus semua data dari spreadsheet.')) {
+                return;
+            }
+            
             // Tampilkan loading
             showProcessingOverlay();
             
             try {
+                // Hapus data dari spreadsheet, bukan hanya dari memori
+                const sheets = ['Transaksi', 'Stok Air', 'Pengeluaran', 'Notifikasi'];
+                
+                // Loop melalui semua sheet dan hapus isi mulai baris ke-2
+                for (const sheet of sheets) {
+                    // Dapatkan semua data dari sheet
+                    const data = await fetchData(sheet);
+                    
+                    if (data && data.length > 1) {
+                        // Hapus semua data mulai baris ke-2 (baris pertama adalah header)
+                        // Proses dari bawah ke atas untuk menghindari masalah indeks
+                        for (let i = data.length - 1; i >= 1; i--) {
+                            // Hapus baris dengan menggunakan fungsi updateData dengan parameter delete=true
+                            await updateData(sheet, i + 1, {}, true);
+                        }
+                    }
+                }
+                
                 // Reset data di app
                 appData.transactions = [];
                 appData.products = [];
@@ -7617,7 +7643,7 @@
                 showToast('Semua data berhasil direset', 'success');
             } catch (error) {
                 console.error('Error resetting data:', error);
-                showToast('Gagal mereset data', 'danger');
+                showToast('Gagal mereset data: ' + error.message, 'danger');
             } finally {
                 // Sembunyikan loading
                 hideProcessingOverlay();
