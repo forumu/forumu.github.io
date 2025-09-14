@@ -104,7 +104,7 @@
 .water-stock-report {
     margin-top: 15px;
 }
-/* Perbaikan animasi processing overlay */
+/* Perbaikan animasi processing overlay - disembunyikan sesuai permintaan */
 .processing-overlay {
     position: fixed;
     top: 0;
@@ -119,10 +119,14 @@
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s, visibility 0.3s;
+    /* disembunyikan sesuai permintaan */
+    display: none;
 }
 .processing-overlay.active {
     opacity: 1;
     visibility: visible;
+    /* disembunyikan sesuai permintaan */
+    display: none;
 }
 .processing-content {
     background-color: white;
@@ -153,11 +157,168 @@
     font-size: 16px;
     color: #333;
 }
+/* Style untuk tombol tambah di section header */
+.section-action.btn {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+    border-radius: 0.25rem;
+}
+/* Style untuk menu yang di-disable */
+.nav-item.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+.tab-content.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+/* Style untuk nota thermal */
+.receipt-container {
+    font-family: 'Courier New', monospace;
+    background-color: white;
+    padding: 15px;
+    font-size: 12px;
+    line-height: 1.4;
+    max-width: 300px;
+    margin: 0 auto;
+    border: 1px dashed #ccc;
+}
+.receipt-header {
+    text-align: center;
+    margin-bottom: 10px;
+    border-bottom: 1px dashed #ccc;
+    padding-bottom: 10px;
+}
+.receipt-logo {
+    margin-bottom: 5px;
+}
+.receipt-logo img {
+    max-width: 80px;
+    max-height: 80px;
+}
+.receipt-title {
+    font-weight: bold;
+    font-size: 16px;
+    margin: 5px 0;
+}
+.receipt-subtitle {
+    font-size: 10px;
+    margin: 2px 0;
+}
+.receipt-info {
+    margin-bottom: 10px;
+    border-bottom: 1px dashed #ccc;
+    padding-bottom: 10px;
+}
+.receipt-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 3px 0;
+}
+.receipt-items {
+    margin-bottom: 10px;
+    border-bottom: 1px dashed #ccc;
+    padding-bottom: 10px;
+}
+.receipt-item {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+}
+.receipt-item-name {
+    flex: 2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.receipt-item-qty {
+    flex: 0 0 30px;
+    text-align: center;
+}
+.receipt-item-price {
+    flex: 0 0 80px;
+    text-align: right;
+}
+.receipt-total {
+    margin-bottom: 10px;
+}
+.receipt-total-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+}
+.receipt-grand-total {
+    font-weight: bold;
+    border-top: 1px dashed #ccc;
+    padding-top: 5px;
+}
+.receipt-footer {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 10px;
+}
+
+/* Style untuk tombol dengan loading spinner */
+.btn-loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.btn-loading .btn-text {
+    visibility: hidden;
+}
+
+.btn-loading .spinner-border {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.15em;
+}
+
+/* Style untuk spinner border kecil */
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.15em;
+}
+
+/* Style untuk tombol aksi utama */
+.action-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.action-btn .spinner {
+    display: none;
+    width: 1rem;
+    height: 1rem;
+    border: 0.15em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spinner-border .75s linear infinite;
+    margin-right: 0.5rem;
+}
+
+.action-btn.loading .spinner {
+    display: inline-block;
+}
+
+.action-btn.loading .btn-text {
+    margin-left: 0.5rem;
+}
+
+@keyframes spinner-border {
+    to { transform: rotate(360deg); }
+}
 </style>
 </head>
 <body>
-<!-- Processing Overlay - Baru -->
-<div class="processing-overlay" id="processing-overlay">
+<!-- Processing Overlay - disembunyikan sesuai permintaan -->
+<div class="processing-overlay" id="processing-overlay" style="display: none;">
 <div class="processing-content">
 <div class="processing-spinner"></div>
 <div class="processing-text">Sedang Diproses</div>
@@ -441,7 +602,10 @@ Grafik Penjualan
 </div>
 <div class="action-buttons">
 <button class="btn btn-secondary" id="clear-cart-btn">Batal</button>
-<button class="btn btn-primary" id="checkout-btn">Bayar</button>
+<button class="btn btn-primary action-btn" id="checkout-btn">
+<span class="spinner spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+<span class="btn-text">Bayar</span>
+</button>
 </div>
 </div>
 </div>
@@ -499,7 +663,9 @@ Hutang
 <div class="section">
 <div class="section-header">
 <div class="section-title">Daftar Produk</div>
-<a href="#" class="section-action">Filter</a>
+<button class="btn btn-primary section-action" id="add-product-btn">
+    <i class="bi bi-plus"></i> Tambah Produk
+</button>
 </div>
 <!-- Product List/Grid Toggle -->
 <div class="view-toggle">
@@ -541,7 +707,9 @@ Hutang
 <div class="section">
 <div class="section-header">
 <div class="section-title">Daftar Pelanggan</div>
-<a href="#" class="section-action">Filter</a>
+<button class="btn btn-primary section-action" id="add-customer-btn">
+    <i class="bi bi-plus"></i> Tambah Pelanggan
+</button>
 </div>
 <div class="card-container" id="customers-container" style="margin: 0 15px 15px; padding: 0 10px;">
 <!-- Customers will be loaded dynamically -->
@@ -559,8 +727,9 @@ Hutang
 <div class="water-tank">
 <div class="tank-label">Stok Air Saat Ini</div>
 <!-- Tombol Tambah Stok Air -->
-<button class="add-water-stock-btn" id="add-water-stock-btn">
-<i class="bi bi-droplet-fill"></i> Tambah Stok Air
+<button class="add-water-stock-btn action-btn" id="add-water-stock-btn">
+<span class="spinner spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+<span class="btn-text">Tambah Stok Air</span>
 </button>
 <div class="tank-container">
 <div class="water-level" id="water-level"></div>
@@ -616,7 +785,9 @@ Riwayat Penambahan Stok Air
 <div class="section">
 <div class="section-header">
 <div class="section-title">Pengeluaran Bulan Ini</div>
-<a href="#" class="section-action">Lihat Semua</a>
+<button class="btn btn-primary section-action" id="add-expense-btn">
+    <i class="bi bi-plus"></i> Tambah Pengeluaran
+</button>
 </div>
 <div class="banner-container">
 <div class="banner">
@@ -851,11 +1022,21 @@ Riwayat Penambahan Stok Air
 <div class="settings-group">
 <div class="settings-group-title">API Key</div>
 <div class="settings-item">
-<div class="settings-label">Kunci API</div>
+<div class="settings-label">Kunci API Saat Ini</div>
 <div class="settings-value-container">
 <div class="settings-value" id="api-key-setting">AKfycby_6VvnaHFQ4hmJALaX5-Zk1bF-nHzyuGR_FfdDvtJfbu_YMWLsVycoCrtCT-DlyMAv</div>
 <button class="settings-edit-btn" data-field="API" data-value="AKfycby_6VvnaHFQ4hmJALaX5-Zk1bF-nHzyuGR_FfdDvtJfbu_YMWLsVycoCrtCT-DlyMAv">
 <i class="bi bi-pencil"></i>
+</button>
+</div>
+</div>
+<div class="settings-item">
+<div class="settings-label">Input API Key Baru</div>
+<div class="settings-value-container">
+<input type="text" class="form-control" id="new-api-key" placeholder="Masukkan API Key baru">
+<button class="btn btn-primary btn-sm action-btn mt-2" id="save-api-key-btn">
+<span class="spinner spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+<span class="btn-text">Simpan</span>
 </button>
 </div>
 </div>
@@ -946,7 +1127,10 @@ Reset Data
 </div>
 <div class="modal-footer">
 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-<button type="button" class="btn btn-primary" id="save-transaction-modal-btn">Simpan</button>
+<button type="button" class="btn btn-primary action-btn" id="save-transaction-modal-btn">
+<span class="spinner spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+<span class="btn-text">Simpan</span>
+</button>
 </div>
 </div>
 </div>
@@ -979,7 +1163,10 @@ Reset Data
 </div>
 <div class="modal-footer">
 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-<button type="button" class="btn btn-primary" id="save-product-btn">Simpan</button>
+<button type="button" class="btn btn-primary action-btn" id="save-product-btn">
+<span class="spinner spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+<span class="btn-text">Simpan</span>
+</button>
 </div>
 </div>
 </div>
@@ -1016,7 +1203,10 @@ Reset Data
 </div>
 <div class="modal-footer">
 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-<button type="button" class="btn btn-primary" id="save-customer-btn">Simpan</button>
+<button type="button" class="btn btn-primary action-btn" id="save-customer-btn">
+<span class="spinner spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+<span class="btn-text">Simpan</span>
+</button>
 </div>
 </div>
 </div>
@@ -1055,7 +1245,10 @@ Reset Data
 <div class="modal-footer">
 <button type="button" class="btn btn-danger" id="delete-customer-btn">Hapus</button>
 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-<button type="button" class="btn btn-primary" id="save-customer-name-btn">Simpan</button>
+<button type="button" class="btn btn-primary action-btn" id="save-customer-name-btn">
+<span class="spinner spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+<span class="btn-text">Simpan</span>
+</button>
 </div>
 </div>
 </div>
@@ -1094,7 +1287,10 @@ Reset Data
 </div>
 <div class="modal-footer">
 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-<button type="button" class="btn btn-primary" id="save-expense-btn">Simpan</button>
+<button type="button" class="btn btn-primary action-btn" id="save-expense-btn">
+<span class="spinner spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+<span class="btn-text">Simpan</span>
+</button>
 </div>
 </div>
 </div>
@@ -1127,7 +1323,10 @@ Stok air akan diisi sampai penuh secara otomatis.
 </div>
 <div class="modal-footer">
 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-<button type="button" class="btn btn-primary" id="save-refill-btn">Simpan</button>
+<button type="button" class="btn btn-primary action-btn" id="save-refill-btn">
+<span class="spinner spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+<span class="btn-text">Simpan</span>
+</button>
 </div>
 </div>
 </div>
@@ -1148,7 +1347,10 @@ Stok air akan diisi sampai penuh secara otomatis.
 </div>
 <div class="modal-footer">
 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-<button type="button" class="btn btn-primary" id="save-setting-btn">Simpan</button>
+<button type="button" class="btn btn-primary action-btn" id="save-setting-btn">
+<span class="spinner spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+<span class="btn-text">Simpan</span>
+</button>
 </div>
 </div>
 </div>
@@ -1225,7 +1427,10 @@ Stok air akan diisi sampai penuh secara otomatis.
 </div>
 <div class="modal-footer">
 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-<button type="button" class="btn btn-primary" id="save-payment-btn">Bayar</button>
+<button type="button" class="btn btn-primary action-btn" id="save-payment-btn">
+<span class="spinner spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+<span class="btn-text">Bayar</span>
+</button>
 </div>
 </div>
 </div>
@@ -1263,7 +1468,8 @@ let appData = {
         'pengaturan-tab': { visible: true, position: 'bottom' }
     },
     productView: 'list', // Track current product view (list or grid)
-    activeTab: 'transaction-history-tab' // Track active tab in riwayat section
+    activeTab: 'transaction-history-tab', // Track active tab in riwayat section
+    apiKeyConfigured: true // Track if API key is configured
 };
 // Initialize App
 document.addEventListener('DOMContentLoaded', function() {
@@ -1318,6 +1524,15 @@ document.addEventListener('DOMContentLoaded', function() {
     modifyRefillModal();
     removeRefillModalButton();
     updateSettingsBanner();
+    
+    // Check API key configuration and disable menus if needed
+    checkApiKeyConfiguration();
+    
+    // Setup new button event listeners
+    setupNewButtonListeners();
+    
+    // Setup API Key button
+    setupApiKeyButton();
 });
 // Setup Event Listeners
 function setupEventListeners() {
@@ -1325,6 +1540,13 @@ function setupEventListeners() {
     document.querySelectorAll('.nav-item').forEach(item => {
         item.addEventListener('click', function(e) {
             e.preventDefault();
+            
+            // Check if API key is configured and this is not the settings tab
+            if (!appData.apiKeyConfigured && this.getAttribute('data-tab') !== 'pengaturan-tab') {
+                showToast('Silakan atur API Key terlebih dahulu di menu Pengaturan', 'warning');
+                return;
+            }
+            
             // Remove active class from all tabs and contents
             document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
@@ -1607,6 +1829,132 @@ function setupEventListeners() {
         document.getElementById('customer-search-results').classList.remove('show');
     });
 }
+// Setup new button event listeners
+function setupNewButtonListeners() {
+    // Add Product Button
+    const addProductBtn = document.getElementById('add-product-btn');
+    if (addProductBtn) {
+        addProductBtn.addEventListener('click', function() {
+            const modal = new bootstrap.Modal(document.getElementById('addProductModal'));
+            modal.show();
+        });
+    }
+    
+    // Add Customer Button
+    const addCustomerBtn = document.getElementById('add-customer-btn');
+    if (addCustomerBtn) {
+        addCustomerBtn.addEventListener('click', function() {
+            const modal = new bootstrap.Modal(document.getElementById('addCustomerModal'));
+            modal.show();
+        });
+    }
+    
+    // Add Expense Button
+    const addExpenseBtn = document.getElementById('add-expense-btn');
+    if (addExpenseBtn) {
+        addExpenseBtn.addEventListener('click', function() {
+            const modal = new bootstrap.Modal(document.getElementById('addExpenseModal'));
+            modal.show();
+        });
+    }
+}
+// Setup API Key button
+function setupApiKeyButton() {
+    const saveApiKeyBtn = document.getElementById('save-api-key-btn');
+    if (saveApiKeyBtn) {
+        saveApiKeyBtn.addEventListener('click', async function() {
+            const newApiKey = document.getElementById('new-api-key').value;
+            
+            if (!newApiKey) {
+                showToast('Silakan masukkan API Key', 'warning');
+                return;
+            }
+            
+            // Tambahkan efek loading pada tombol
+            setButtonLoading(saveApiKeyBtn, true);
+            
+            // Update API key in settings
+            const success = await updateData('Pengaturan', 2, { 'API': newApiKey });
+            
+            if (success) {
+                // Update global API key
+                window.API_KEY = newApiKey;
+                
+                // Update API URL
+                window.API_URL = `https://script.google.com/macros/s/${newApiKey}/exec`;
+                
+                // Update UI
+                document.getElementById('api-key-setting').textContent = newApiKey;
+                document.getElementById('new-api-key').value = '';
+                
+                showToast('API Key berhasil diperbarui', 'success');
+                
+                // Check API key configuration
+                checkApiKeyConfiguration();
+            } else {
+                showToast('Gagal memperbarui API Key', 'danger');
+            }
+            
+            // Hapus efek loading dari tombol
+            setButtonLoading(saveApiKeyBtn, false);
+        });
+    }
+}
+// Check API Key Configuration
+function checkApiKeyConfiguration() {
+    // Check if API key is configured
+    const apiKey = appData.settings['API'] || API_KEY;
+    
+    if (!apiKey || apiKey.trim() === '') {
+        appData.apiKeyConfigured = false;
+        disableAllMenusExceptSettings();
+    } else {
+        appData.apiKeyConfigured = true;
+        enableAllMenus();
+    }
+}
+// Disable all menus except settings
+function disableAllMenusExceptSettings() {
+    // Disable all nav items except settings
+    document.querySelectorAll('.nav-item').forEach(item => {
+        const tabId = item.getAttribute('data-tab');
+        if (tabId !== 'pengaturan-tab') {
+            item.classList.add('disabled');
+        }
+    });
+    
+    // Disable all tab contents except settings
+    document.querySelectorAll('.tab-content').forEach(content => {
+        const contentId = content.getAttribute('id');
+        if (contentId !== 'pengaturan-tab') {
+            content.classList.add('disabled');
+        }
+    });
+    
+    // Make sure settings tab is active
+    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+    
+    const settingsTab = document.querySelector('.nav-item[data-tab="pengaturan-tab"]');
+    const settingsContent = document.getElementById('pengaturan-tab');
+    settingsTab.classList.add('active');
+    settingsContent.classList.add('active');
+    
+    // Update search box visibility
+    updateSearchBoxVisibility('pengaturan-tab');
+}
+// Enable all menus
+function enableAllMenus() {
+    // Enable all nav items
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('disabled');
+    });
+    
+    // Enable all tab contents
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('disabled');
+    });
+}
 // Setup Reset Button
 function setupResetButton() {
     // Reset Data Button
@@ -1621,6 +1969,7 @@ function setupAddWaterStockButton() {
     const addWaterStockBtn = document.getElementById('add-water-stock-btn');
     if (addWaterStockBtn) {
         addWaterStockBtn.addEventListener('click', function() {
+            // PERBAIKAN: Langsung panggil fungsi saveRefill() tanpa modal
             if (confirm('Apakah Anda yakin ingin mengisi stok air sampai penuh?')) {
                 saveRefill();
             }
@@ -2170,6 +2519,9 @@ async function loadSettings() {
                 console.error('Error parsing menu settings from local storage:', e);
             }
         }
+        
+        // Check API key configuration
+        checkApiKeyConfiguration();
     }
 }
 async function loadProducts() {
@@ -3721,8 +4073,8 @@ async function checkout() {
     // Set processing state
     setProcessingState(true);
     
-    // Show processing overlay
-    showProcessingOverlay();
+    // Show processing overlay - disembunyikan sesuai permintaan
+    // showProcessingOverlay();
     
     // PERBAIKAN: Jika pelanggan baru, simpan ke database
     if (!appData.selectedCustomer && inputCustomerName) {
@@ -3885,8 +4237,8 @@ async function checkout() {
         insertData('Notifikasi', notificationData);
     }
     
-    // Hide processing overlay
-    hideProcessingOverlay();
+    // Hide processing overlay - disembunyikan sesuai permintaan
+    // hideProcessingOverlay();
     
     // Reset processing state
     setProcessingState(false);
@@ -3960,8 +4312,8 @@ async function saveTransactionFromModal() {
     // Set processing state
     setProcessingState(true);
     
-    // Show processing overlay
-    showProcessingOverlay();
+    // Show processing overlay - disembunyikan sesuai permintaan
+    // showProcessingOverlay();
     
     // Prepare transaction data
     const transactionData = {
@@ -4057,8 +4409,8 @@ async function saveTransactionFromModal() {
         insertData('Notifikasi', notificationData);
     }
     
-    // Hide processing overlay
-    hideProcessingOverlay();
+    // Hide processing overlay - disembunyikan sesuai permintaan
+    // hideProcessingOverlay();
     
     // Reset processing state
     setProcessingState(false);
@@ -4106,8 +4458,8 @@ async function saveProduct() {
     // Set processing state
     setProcessingState(true);
     
-    // Show processing overlay
-    showProcessingOverlay();
+    // Show processing overlay - disembunyikan sesuai permintaan
+    // showProcessingOverlay();
     
     // Prepare product data
     const productData = {
@@ -4152,8 +4504,8 @@ async function saveProduct() {
         insertData('Notifikasi', notificationData);
     }
     
-    // Hide processing overlay
-    hideProcessingOverlay();
+    // Hide processing overlay - disembunyikan sesuai permintaan
+    // hideProcessingOverlay();
     
     // Reset processing state
     setProcessingState(false);
@@ -4192,8 +4544,8 @@ async function saveCustomer() {
     // Set processing state
     setProcessingState(true);
     
-    // Show processing overlay
-    showProcessingOverlay();
+    // Show processing overlay - disembunyikan sesuai permintaan
+    // showProcessingOverlay();
     
     // Prepare customer data
     const customerData = {
@@ -4240,8 +4592,8 @@ async function saveCustomer() {
         insertData('Notifikasi', notificationData);
     }
     
-    // Hide processing overlay
-    hideProcessingOverlay();
+    // Hide processing overlay - disembunyikan sesuai permintaan
+    // hideProcessingOverlay();
     
     // Reset processing state
     setProcessingState(false);
@@ -4355,8 +4707,8 @@ async function saveExpense() {
     // Set processing state
     setProcessingState(true);
     
-    // Show processing overlay
-    showProcessingOverlay();
+    // Show processing overlay - disembunyikan sesuai permintaan
+    // showProcessingOverlay();
     
     // Prepare expense data
     const expenseData = {
@@ -4403,13 +4755,13 @@ async function saveExpense() {
         insertData('Notifikasi', notificationData);
     }
     
-    // Hide processing overlay
-    hideProcessingOverlay();
+    // Hide processing overlay - disembunyikan sesuai permintaan
+    // hideProcessingOverlay();
     
     // Reset processing state
     setProcessingState(false);
 }
-// PERBAIKAN: Fungsi saveRefill yang diperbaiki untuk otomatis mengisi nilai
+// PERBAIKAN: Fungsi saveRefill() yang diperbaiki untuk otomatis mengisi nilai
 async function saveRefill() {
     // Check if already processing
     if (appData.processing) {
@@ -4436,8 +4788,8 @@ async function saveRefill() {
     // Set processing state
     setProcessingState(true);
     
-    // Show processing overlay
-    showProcessingOverlay();
+    // Show processing overlay - disembunyikan sesuai permintaan
+    // showProcessingOverlay();
     
     // Prepare expense data
     const expenseData = {
@@ -4505,8 +4857,8 @@ async function saveRefill() {
         insertData('Notifikasi', notificationData);
     }
     
-    // Hide processing overlay
-    hideProcessingOverlay();
+    // Hide processing overlay - disembunyikan sesuai permintaan
+    // hideProcessingOverlay();
     
     // Reset processing state
     setProcessingState(false);
@@ -4529,8 +4881,8 @@ async function saveSetting() {
     // Set processing state
     setProcessingState(true);
     
-    // Show processing overlay
-    showProcessingOverlay();
+    // Show processing overlay - disembunyikan sesuai permintaan
+    // showProcessingOverlay();
     
     // Update setting in app data
     appData.settings[field] = value;
@@ -4553,6 +4905,11 @@ async function saveSetting() {
             updateWaterLevelThreshold();
             updateWaterStockButtonState();
         }
+        
+        // If API key was updated, check configuration
+        if (field === 'API') {
+            checkApiKeyConfiguration();
+        }
     } else {
         // Add notification for failed setting update
         const notificationData = {
@@ -4563,8 +4920,8 @@ async function saveSetting() {
         insertData('Notifikasi', notificationData);
     }
     
-    // Hide processing overlay
-    hideProcessingOverlay();
+    // Hide processing overlay - disembunyikan sesuai permintaan
+    // hideProcessingOverlay();
     
     // Reset processing state
     setProcessingState(false);
@@ -5061,8 +5418,8 @@ async function savePayment() {
     // Set processing state
     setProcessingState(true);
     
-    // Show processing overlay
-    showProcessingOverlay();
+    // Show processing overlay - disembunyikan sesuai permintaan
+    // showProcessingOverlay();
     
     // Calculate new remaining debt
     const newRemainingDebt = remainingDebt - validPaymentAmount;
@@ -5172,8 +5529,8 @@ async function savePayment() {
         showToast('Terjadi kesalahan saat memperbarui transaksi', 'danger');
     }
     
-    // Hide processing overlay
-    hideProcessingOverlay();
+    // Hide processing overlay - disembunyikan sesuai permintaan
+    // hideProcessingOverlay();
     
     // Reset processing state
     setProcessingState(false);
@@ -5277,12 +5634,12 @@ async function fixDebtInconsistencies() {
 function showRefreshAnimation() {
     // Fungsi ini tidak lagi diperlukan karena FAB sudah dihapus
 }
-// Fungsi untuk menampilkan overlay pemrosesan
+// Fungsi untuk menampilkan overlay pemrosesan - disembunyikan sesuai permintaan
 function showProcessingOverlay() {
     const overlay = document.getElementById('processing-overlay');
     overlay.classList.add('active');
 }
-// Fungsi untuk menyembunyikan overlay pemrosesan
+// Fungsi untuk menyembunyikan overlay pemrosesan - disembunyikan sesuai permintaan
 function hideProcessingOverlay() {
     const overlay = document.getElementById('processing-overlay');
     overlay.classList.remove('active');
@@ -5293,8 +5650,8 @@ async function resetAllData() {
         return;
     }
     
-    // Show processing overlay
-    showProcessingOverlay();
+    // Show processing overlay - disembunyikan sesuai permintaan
+    // showProcessingOverlay();
     
     try {
         // Get all sheet names
@@ -5339,7 +5696,8 @@ async function resetAllData() {
                 'pengaturan-tab': { visible: true, position: 'bottom' }
             },
             productView: 'list',
-            activeTab: 'transaction-history-tab'
+            activeTab: 'transaction-history-tab',
+            apiKeyConfigured: true
         };
         
         // Refresh UI
@@ -5362,13 +5720,16 @@ async function resetAllData() {
         updateSettingsUI();
         updateSettingsBanner();
         
+        // Check API key configuration
+        checkApiKeyConfiguration();
+        
         showToast('Semua data berhasil direset', 'success');
     } catch (error) {
         console.error('Error resetting data:', error);
         showToast('Gagal mereset data: ' + error.message, 'danger');
     } finally {
-        // Hide processing overlay
-        hideProcessingOverlay();
+        // Hide processing overlay - disembunyikan sesuai permintaan
+        // hideProcessingOverlay();
     }
 }
 // Toast notification function - DISABLED
@@ -5410,6 +5771,206 @@ function removeRefillModalButton() {
         refillButton.remove();
     }
 }
+
+// Fungsi untuk menambahkan efek loading pada tombol aksi
+function setButtonLoading(button, isLoading) {
+    if (isLoading) {
+        // Tambahkan class loading
+        button.classList.add('loading');
+        
+        // Nonaktifkan tombol
+        button.disabled = true;
+        
+        // Sembunyikan teks tombol
+        const btnText = button.querySelector('.btn-text');
+        if (btnText) {
+            btnText.style.visibility = 'hidden';
+        }
+    } else {
+        // Hapus class loading
+        button.classList.remove('loading');
+        
+        // Aktifkan tombol
+        button.disabled = false;
+        
+        // Tampilkan teks tombol
+        const btnText = button.querySelector('.btn-text');
+        if (btnText) {
+            btnText.style.visibility = 'visible';
+        }
+    }
+}
+
+// Override fungsi checkout untuk menambahkan efek loading
+const originalCheckout = checkout;
+checkout = async function() {
+    const checkoutBtn = document.getElementById('checkout-btn');
+    
+    // Tambahkan efek loading
+    setButtonLoading(checkoutBtn, true);
+    
+    try {
+        // Panggil fungsi checkout asli
+        await originalCheckout.call(this);
+    } catch (error) {
+        console.error('Error during checkout:', error);
+    } finally {
+        // Hapus efek loading
+        setButtonLoading(checkoutBtn, false);
+    }
+};
+
+// Override fungsi saveProduct untuk menambahkan efek loading
+const originalSaveProduct = saveProduct;
+saveProduct = async function() {
+    const saveProductBtn = document.getElementById('save-product-btn');
+    
+    // Tambahkan efek loading
+    setButtonLoading(saveProductBtn, true);
+    
+    try {
+        // Panggil fungsi saveProduct asli
+        await originalSaveProduct.call(this);
+    } catch (error) {
+        console.error('Error during saveProduct:', error);
+    } finally {
+        // Hapus efek loading
+        setButtonLoading(saveProductBtn, false);
+    }
+};
+
+// Override fungsi saveCustomer untuk menambahkan efek loading
+const originalSaveCustomer = saveCustomer;
+saveCustomer = async function() {
+    const saveCustomerBtn = document.getElementById('save-customer-btn');
+    
+    // Tambahkan efek loading
+    setButtonLoading(saveCustomerBtn, true);
+    
+    try {
+        // Panggil fungsi saveCustomer asli
+        await originalSaveCustomer.call(this);
+    } catch (error) {
+        console.error('Error during saveCustomer:', error);
+    } finally {
+        // Hapus efek loading
+        setButtonLoading(saveCustomerBtn, false);
+    }
+};
+
+// Override fungsi saveExpense untuk menambahkan efek loading
+const originalSaveExpense = saveExpense;
+saveExpense = async function() {
+    const saveExpenseBtn = document.getElementById('save-expense-btn');
+    
+    // Tambahkan efek loading
+    setButtonLoading(saveExpenseBtn, true);
+    
+    try {
+        // Panggil fungsi saveExpense asli
+        await originalSaveExpense.call(this);
+    } catch (error) {
+        console.error('Error during saveExpense:', error);
+    } finally {
+        // Hapus efek loading
+        setButtonLoading(saveExpenseBtn, false);
+    }
+};
+
+// Override fungsi saveRefill untuk menambahkan efek loading
+const originalSaveRefill = saveRefill;
+saveRefill = async function() {
+    const saveRefillBtn = document.getElementById('save-refill-btn');
+    
+    // Tambahkan efek loading
+    setButtonLoading(saveRefillBtn, true);
+    
+    try {
+        // Panggil fungsi saveRefill asli
+        await originalSaveRefill.call(this);
+    } catch (error) {
+        console.error('Error during saveRefill:', error);
+    } finally {
+        // Hapus efek loading
+        setButtonLoading(saveRefillBtn, false);
+    }
+};
+
+// Override fungsi saveSetting untuk menambahkan efek loading
+const originalSaveSetting = saveSetting;
+saveSetting = async function() {
+    const saveSettingBtn = document.getElementById('save-setting-btn');
+    
+    // Tambahkan efek loading
+    setButtonLoading(saveSettingBtn, true);
+    
+    try {
+        // Panggil fungsi saveSetting asli
+        await originalSaveSetting.call(this);
+    } catch (error) {
+        console.error('Error during saveSetting:', error);
+    } finally {
+        // Hapus efek loading
+        setButtonLoading(saveSettingBtn, false);
+    }
+};
+
+// Override fungsi savePayment untuk menambahkan efek loading
+const originalSavePayment = savePayment;
+savePayment = async function() {
+    const savePaymentBtn = document.getElementById('save-payment-btn');
+    
+    // Tambahkan efek loading
+    setButtonLoading(savePaymentBtn, true);
+    
+    try {
+        // Panggil fungsi savePayment asli
+        await originalSavePayment.call(this);
+    } catch (error) {
+        console.error('Error during savePayment:', error);
+    } finally {
+        // Hapus efek loading
+        setButtonLoading(savePaymentBtn, false);
+    }
+};
+
+// Override fungsi saveCustomerName untuk menambahkan efek loading
+const originalSaveCustomerName = saveCustomerName;
+saveCustomerName = async function() {
+    const saveCustomerNameBtn = document.getElementById('save-customer-name-btn');
+    
+    // Tambahkan efek loading
+    setButtonLoading(saveCustomerNameBtn, true);
+    
+    try {
+        // Panggil fungsi saveCustomerName asli
+        await originalSaveCustomerName.call(this);
+    } catch (error) {
+        console.error('Error during saveCustomerName:', error);
+    } finally {
+        // Hapus efek loading
+        setButtonLoading(saveCustomerNameBtn, false);
+    }
+};
+
+// Override fungsi saveTransactionFromModal untuk menambahkan efek loading
+const originalSaveTransactionFromModal = saveTransactionFromModal;
+saveTransactionFromModal = async function() {
+    const saveTransactionBtn = document.getElementById('save-transaction-modal-btn');
+    
+    // Tambahkan efek loading
+    setButtonLoading(saveTransactionBtn, true);
+    
+    try {
+        // Panggil fungsi saveTransactionFromModal asli
+        await originalSaveTransactionFromModal.call(this);
+    } catch (error) {
+        console.error('Error during saveTransactionFromModal:', error);
+    } finally {
+        // Hapus efek loading
+        setButtonLoading(saveTransactionBtn, false);
+    }
+};
 </script>
 </body>
 </html>
