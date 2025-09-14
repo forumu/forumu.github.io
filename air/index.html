@@ -183,6 +183,7 @@
         .search-container {
             padding: 10px 15px;
             background-color: var(--primary-color);
+            display: none;
         }
         .search-box {
             position: relative;
@@ -1967,7 +1968,6 @@
             <div class="processing-text">Sedang Diproses</div>
         </div>
     </div>
-
     <!-- Header -->
     <div class="app-header" id="app-header">
         <div class="header-logo" id="header-logo">
@@ -2366,13 +2366,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Add Customer Button -->
-        <div class="d-grid gap-2 p-3">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
-                <i class="bi bi-person-plus"></i> Tambah Pelanggan
-            </button>
         </div>
     </div>
     <!-- Stok Air Tab -->
@@ -3137,6 +3130,9 @@
             
             // Initialize tab navigation in riwayat section
             initializeTabNavigation();
+            
+            // Hide search box initially
+            document.getElementById('search-container').style.display = 'none';
         });
         
         // Setup Event Listeners
@@ -3162,6 +3158,12 @@
                     
                     // Update FAB button based on active tab
                     updateFabButton();
+                    
+                    // Update search box visibility based on active tab
+                    updateSearchBoxVisibility(tabId);
+                    
+                    // Update banner based on active tab
+                    updateBannerContent(tabId);
                 });
             });
             
@@ -3331,6 +3333,9 @@
                 
                 // Update FAB button
                 updateFabButton();
+                
+                // Update search box visibility
+                updateSearchBoxVisibility('pengaturan-tab');
             });
             
             // Clear notifications
@@ -3375,6 +3380,9 @@
                 
                 // Update FAB button
                 updateFabButton();
+                
+                // Update search box visibility
+                updateSearchBoxVisibility('transaksi-tab');
             });
             
             // Customer search input
@@ -3487,6 +3495,9 @@
                 
                 // Update FAB button
                 updateFabButton();
+                
+                // Update search box visibility
+                updateSearchBoxVisibility('transaksi-tab');
             });
             
             // Payment button
@@ -3895,6 +3906,70 @@
                     }
                 });
             });
+        }
+        
+        // Update search box visibility based on active tab
+        function updateSearchBoxVisibility(tabId) {
+            const searchContainer = document.getElementById('search-container');
+            
+            // Only show search box for riwayat, produk, and pelanggan tabs
+            if (tabId === 'riwayat-tab' || tabId === 'produk-tab' || tabId === 'pelanggan-tab') {
+                searchContainer.style.display = 'block';
+            } else {
+                searchContainer.style.display = 'none';
+            }
+        }
+        
+        // Update banner content based on active tab
+        function updateBannerContent(tabId) {
+            const bannerContainer = document.getElementById('banner-container');
+            const bannerTitle = document.getElementById('monthly-revenue');
+            const bannerSubtitle = document.querySelector('.banner-subtitle');
+            
+            // Hide banner for transaksi tab
+            if (tabId === 'transaksi-tab') {
+                bannerContainer.style.display = 'none';
+                return;
+            } else {
+                bannerContainer.style.display = 'block';
+            }
+            
+            // Update banner content based on active tab
+            switch(tabId) {
+                case 'riwayat-tab':
+                    // Count lunas and hutang transactions
+                    const lunasCount = appData.transactions.filter(t => t['Status'] === 'Lunas').length;
+                    const hutangCount = appData.transactions.filter(t => t['Status'] === 'Hutang').length;
+                    
+                    bannerTitle.textContent = `${lunasCount} Lunas / ${hutangCount} Hutang`;
+                    bannerSubtitle.textContent = 'Total Transaksi';
+                    break;
+                    
+                case 'produk-tab':
+                    // Show product count
+                    bannerTitle.textContent = `${appData.products.length} Produk`;
+                    bannerSubtitle.textContent = 'Total Produk Tersedia';
+                    break;
+                    
+                case 'pelanggan-tab':
+                    // Show customer count
+                    bannerTitle.textContent = `${appData.customers.length} Pelanggan`;
+                    bannerSubtitle.textContent = 'Total Pelanggan Terdaftar';
+                    break;
+                    
+                case 'stok-tab':
+                    // Show remaining water stock
+                    const waterStock = appData.waterStock;
+                    const remainingWater = parseInt(waterStock['Sisa Liter'] || 0);
+                    bannerTitle.textContent = `${remainingWater} Liter`;
+                    bannerSubtitle.textContent = 'Sisa Stok Air Tersedia';
+                    break;
+                    
+                default:
+                    // Default to monthly revenue
+                    bannerTitle.textContent = 'Rp. 0';
+                    bannerSubtitle.textContent = 'Omset Pemasukan Bulan Ini';
+            }
         }
         
         // Display customer search results
@@ -4420,7 +4495,19 @@
                 return;
             }
             
-            appData.customers.forEach(customer => {
+            // Sort customers by newest first (based on ID)
+            const sortedCustomers = [...appData.customers].sort((a, b) => {
+                // Extract timestamp from ID if it exists, otherwise use the whole ID
+                const aTimestamp = a['ID Pelanggan'].includes('-') ? 
+                    parseInt(a['ID Pelanggan'].split('-')[1]) : 
+                    parseInt(a['ID Pelanggan']) || 0;
+                const bTimestamp = b['ID Pelanggan'].includes('-') ? 
+                    parseInt(b['ID Pelanggan'].split('-')[1]) : 
+                    parseInt(b['ID Pelanggan']) || 0;
+                return bTimestamp - aTimestamp; // Sort in descending order (newest first)
+            });
+            
+            sortedCustomers.forEach(customer => {
                 const customerItem = document.createElement('div');
                 customerItem.className = 'customer-item';
                 
@@ -4443,6 +4530,10 @@
                     <div class="customer-avatar">${initials}</div>
                     <div class="customer-info">
                         <div class="customer-name" style="cursor: pointer;" data-id="${customer['ID Pelanggan']}" data-name="${name}" data-contact="${customer['Kontak'] || ''}" data-address="${customer['Alamat'] || ''}" data-deposit="${customer['Galon Titipan'] || 0}" data-maps="${customer['Maps'] || ''}">${name}</div>
+                    <div class="customer-stats">${customer['Kontak'] || 'No contact'}</div>
+                    <div class="customer-stats">${customer['Alamat'] || 'No address'}</div>
+                    ${customer['Galon Titipan'] > 0 ? `<div class="customer-stats">Galon Titipan: ${customer['Galon Titipan']}</div>` : ''}
+                    ${customer['Maps'] ? `<div class="customer-stats"><i class="bi bi-geo-alt"></i> Lokasi tersedia</div>` : ''}
                     </div>
                     <div class="customer-actions">
                         ${whatsappNumber ? `<a href="https://wa.me/${whatsappNumber.replace(/\+/g, '')}" target="_blank" class="customer-action whatsapp" title="WhatsApp">
@@ -4750,26 +4841,23 @@
             const settings = appData.settings;
             const capacity = parseInt(settings['Kapasitas Toren (Liter)'] || 8000);
             const remaining = parseInt(waterStock['Sisa Liter'] || 0);
-            const used = parseInt(waterStock['Liter Terpakai'] || 0);
-            const totalUsed = parseInt(waterStock['Total Liter Terpakai'] || 0);
-            const totalCost = parseInt(settings['Total Biaya Suplai (Rp)'] || 300000);
+            const percentage = Math.round((remaining / capacity) * 100);
             
             // Update water level
-            const percentage = Math.round((remaining / capacity) * 100);
             document.getElementById('water-level').style.height = `${percentage}%`;
             document.getElementById('water-percentage').textContent = `${percentage}%`;
             
             // Update water info
             document.getElementById('remaining-water').textContent = `${remaining} L`;
-            document.getElementById('used-water').textContent = `${used} L`;
+            document.getElementById('used-water').textContent = `${parseInt(waterStock['Liter Terpakai'] || 0)} L`;
             document.getElementById('tank-capacity').textContent = `${capacity} L`;
             
             // Update water stock details
             document.getElementById('detail-remaining-water').textContent = `${remaining} L`;
-            document.getElementById('detail-used-water').textContent = `${used} L`;
-            document.getElementById('detail-total-used-water').textContent = `${totalUsed} L`;
+            document.getElementById('detail-used-water').textContent = `${parseInt(waterStock['Liter Terpakai'] || 0)} L`;
+            document.getElementById('detail-total-used-water').textContent = `${parseInt(waterStock['Total Liter Terpakai'] || 0)} L`;
             document.getElementById('detail-tank-capacity').textContent = `${capacity} L`;
-            document.getElementById('detail-total-cost').textContent = `Rp ${totalCost.toLocaleString('id-ID')}`;
+            document.getElementById('detail-total-cost').textContent = `Rp ${parseInt(settings['Total Biaya Suplai (Rp)'] || 300000).toLocaleString('id-ID')}`;
         }
         
         function updateExpensesUI() {
@@ -5723,6 +5811,12 @@
                     
                     // Update FAB button
                     updateFabButton();
+                    
+                    // Update search box visibility
+                    updateSearchBoxVisibility('riwayat-tab');
+                    
+                    // Update banner content
+                    updateBannerContent('riwayat-tab');
                 }
             } else {
                 // Add notification for failed transaction
@@ -5847,17 +5941,17 @@
                 const currentUsed = parseInt(waterStock['Liter Terpakai'] || 0);
                 const currentTotalUsed = parseInt(waterStock['Total Liter Terpakai'] || 0);
                 
-                const newRemaining = Math.max(0, currentRemaining - totalWaterUsed);
-                const newUsed = currentUsed + totalWaterUsed;
-                const newTotalUsed = currentTotalUsed + totalWaterUsed;
+                const newRemaining = Math.min(currentCapacity, currentRemaining + parseInt(amount));
+                const newTotalUsed = currentTotalUsed; // Total used should not reset
+                const newTotalCost = currentTotalCost + totalCost;
                 
                 // Update water stock (only update, not insert)
                 const waterStockData = {
                     'Kapasitas Toren': currentCapacity,
                     'Sisa Liter': newRemaining,
-                    'Liter Terpakai': newUsed,
+                    'Liter Terpakai': 0, // Reset daily usage
                     'Total Liter Terpakai': newTotalUsed,
-                    'Total Biaya Suplai (Rp)': waterStock['Total Biaya Suplai (Rp)'] || 300000
+                    'Total Biaya Suplai (Rp)': newTotalCost
                 };
                 
                 // Update water stock
@@ -6692,6 +6786,10 @@
                     <div class="customer-avatar">${initials}</div>
                     <div class="customer-info">
                         <div class="customer-name" style="cursor: pointer;" data-id="${customer['ID Pelanggan']}" data-name="${name}" data-contact="${customer['Kontak'] || ''}" data-address="${customer['Alamat'] || ''}" data-deposit="${customer['Galon Titipan'] || 0}" data-maps="${customer['Maps'] || ''}">${name}</div>
+                        <div class="customer-stats">${customer['Kontak'] || 'No contact'}</div>
+                        <div class="customer-stats">${customer['Alamat'] || 'No address'}</div>
+                        ${customer['Galon Titipan'] > 0 ? `<div class="customer-stats">Galon Titipan: ${customer['Galon Titipan']}</div>` : ''}
+                        ${customer['Maps'] ? `<div class="customer-stats"><i class="bi bi-geo-alt"></i> Lokasi tersedia</div>` : ''}
                     </div>
                     <div class="customer-actions">
                         ${whatsappNumber ? `<a href="https://wa.me/${whatsappNumber.replace(/\+/g, '')}" target="_blank" class="customer-action whatsapp" title="WhatsApp">
@@ -6864,7 +6962,7 @@
             modal.show();
         }
         
-        // PERBAIKAN: Fungsi savePayment() yang diperbaiki untuk memastikan konsistensi data hutang
+        // PERBAIKAN: Fungsi savePayment() yang diperbaiki untuk memastikan popup tertutup otomatis
         async function savePayment() {
             // Check if already processing
             if (appData.processing) {
@@ -6986,9 +7084,35 @@
                     };
                     insertData('Notifikasi', notificationData);
                     
-                    // Close modal automatically after successful payment
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('paymentModal'));
-                    modal.hide();
+                    // PERBAIKAN: Tutup modal secara otomatis setelah pembayaran berhasil
+                    try {
+                        const modalElement = document.getElementById('paymentModal');
+                        if (modalElement) {
+                            // Dapatkan instance modal yang sudah ada
+                            const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                            if (modalInstance) {
+                                modalInstance.hide();
+                            } else {
+                                // Jika tidak ada instance, buat instance baru dan sembunyikan
+                                const newModal = new bootstrap.Modal(modalElement);
+                                newModal.hide();
+                            }
+                            
+                            // Tunggu hingga animasi penutupan selesai
+                            setTimeout(() => {
+                                // Hapus backdrop jika masih ada
+                                const backdrops = document.querySelectorAll('.modal-backdrop');
+                                backdrops.forEach(backdrop => {
+                                    backdrop.remove();
+                                });
+                                
+                                // Hapus class 'modal-open' dari body jika masih ada
+                                document.body.classList.remove('modal-open');
+                            }, 300);
+                        }
+                    } catch (error) {
+                        console.error('Error closing payment modal:', error);
+                    }
                 } else {
                     showToast('Terjadi kesalahan saat menyimpan pembayaran', 'danger');
                 }
