@@ -232,6 +232,56 @@
             font-size: 14px;
             opacity: 0.9;
         }
+        /* Settings Banner */
+        .settings-banner {
+            background-color: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            align-items: center;
+        }
+        .settings-banner-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-right: 15px;
+            background-color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .settings-banner-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .settings-banner-info {
+            flex: 1;
+        }
+        .settings-banner-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--dark-color);
+        }
+        .settings-banner-subtitle {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 2px;
+        }
+        .settings-banner-address {
+            font-size: 12px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+        }
+        .settings-banner-address i {
+            margin-right: 5px;
+            font-size: 14px;
+        }
         /* Dashboard Stats */
         .dashboard-stats {
             padding: 0 15px 15px;
@@ -704,13 +754,13 @@
         .tab-content.active {
             display: block;
         }
-        /* Cashier Style - PERUBAHAN: Margin diubah menjadi 15px */
+        /* Cashier Style */
         .cashier-container {
             background-color: var(--white);
             border-radius: 12px;
             box-shadow: var(--card-shadow);
             overflow: hidden;
-            margin: 15px; /* PERUBAHAN: Margin diubah menjadi 15px */
+            margin: 15px; /* Changed from 0 15px 15px to 15px */
         }
         .cashier-header {
             background-color: var(--primary-color);
@@ -1171,7 +1221,7 @@
             font-weight: 700;
             color: var(--primary-color);
         }
-        /* Receipt Modal */
+        /* Receipt Modal - Alfamart Style */
         .receipt-container {
             background-color: var(--white);
             border-radius: 8px;
@@ -1180,11 +1230,12 @@
             margin: 0 auto;
             font-family: 'Courier New', monospace;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            position: relative;
         }
         .receipt-header {
             text-align: center;
             margin-bottom: 15px;
-            border-bottom: 1px dashed #cbd5e1;
+            border-bottom: 2px solid #e10600; /* Alfamart red color */
             padding-bottom: 15px;
         }
         .receipt-logo {
@@ -1203,6 +1254,7 @@
             font-size: 18px;
             font-weight: 700;
             margin-bottom: 5px;
+            color: #e10600; /* Alfamart red color */
         }
         .receipt-subtitle {
             font-size: 12px;
@@ -1239,7 +1291,7 @@
             text-align: right;
         }
         .receipt-total {
-            border-top: 1px dashed #cbd5e1;
+            border-top: 2px dashed #e10600; /* Alfamart red color */
             padding-top: 10px;
             margin-top: 10px;
         }
@@ -1252,12 +1304,13 @@
         .receipt-grand-total {
             font-weight: 700;
             font-size: 14px;
+            color: #e10600; /* Alfamart red color */
         }
         .receipt-footer {
             text-align: center;
             margin-top: 15px;
             padding-top: 15px;
-            border-top: 1px dashed #cbd5e1;
+            border-top: 2px solid #e10600; /* Alfamart red color */
             font-size: 11px;
             color: #64748b;
         }
@@ -1265,6 +1318,21 @@
             display: flex;
             gap: 10px;
             margin-top: 20px;
+        }
+        .receipt-download-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .receipt-download-btn:hover {
+            background-color: #45a049;
         }
         /* Loading Spinner */
         .spinner-container {
@@ -1294,6 +1362,7 @@
         }
         .toast-header {
             background-color: var(--primary-color);
+            color: var(--white);
             border-bottom: none;
             padding: 8px 12px;
         }
@@ -1750,6 +1819,76 @@
             background-color: var(--primary-color);
             color: var(--white);
         }
+        /* Reset and Backup Styles */
+        .settings-action-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            padding: 0 15px;
+        }
+        .settings-action-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        .settings-action-btn.reset {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+        }
+        .settings-action-btn.reset:hover {
+            background-color: rgba(239, 68, 68, 0.2);
+        }
+        .settings-action-btn.backup {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+        .settings-action-btn.backup:hover {
+            background-color: rgba(16, 185, 129, 0.2);
+        }
+        .settings-action-btn.import {
+            background-color: rgba(6, 182, 212, 0.1);
+            color: var(--secondary-color);
+        }
+        .settings-action-btn.import:hover {
+            background-color: rgba(6, 182, 212, 0.2);
+        }
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            flex: 1;
+        }
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+        /* Receipt Footer Settings */
+        .receipt-footer-settings {
+            margin-top: 15px;
+        }
+        .receipt-footer-preview {
+            background-color: #f8fafc;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #64748b;
+            font-style: italic;
+        }
+        /* Modal Content */
         .modal-content {
             border-radius: 12px;
             border: none;
@@ -1793,6 +1932,10 @@
         .btn-success {
             background-color: var(--success-color);
             border-color: var(--success-color);
+        }
+        .btn-danger {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
         }
         .btn:disabled {
             opacity: 0.6;
@@ -1931,76 +2074,6 @@
         .tab-content-container.active {
             display: block;
         }
-        /* PERUBAHAN: Banner di halaman pengaturan */
-        .settings-banner {
-            background-color: var(--white);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: var(--card-shadow);
-            display: flex;
-            align-items: center;
-        }
-        .settings-banner-logo {
-            width: 80px;
-            height: 80px;
-            border-radius: 8px;
-            overflow: hidden;
-            margin-right: 20px;
-            flex-shrink: 0;
-            background-color: #f8fafc;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .settings-banner-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .settings-banner-info {
-            flex: 1;
-        }
-        .settings-banner-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 5px;
-            color: var(--dark-color);
-        }
-        .settings-banner-address {
-            font-size: 14px;
-            color: #64748b;
-            margin-bottom: 10px;
-        }
-        .settings-banner-box {
-            display: inline-block;
-            background-color: rgba(19, 78, 74, 0.1);
-            color: var(--primary-color);
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-        /* PERUBAHAN: Tombol Reset, Backup dan Import */
-        .settings-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        .settings-actions .btn {
-            flex: 1;
-        }
-        /* PERUBAHAN: Tombol Download Nota */
-        .receipt-download-btn {
-            background-color: var(--success-color);
-            border-color: var(--success-color);
-            color: white;
-        }
-        .receipt-download-btn:hover {
-            background-color: #0d9e6a;
-            border-color: #0d9e6a;
-            color: white;
-        }
         /* Responsive */
         @media (max-width: 410px) {
             .stat-row {
@@ -2018,16 +2091,6 @@
             .water-stock-details {
                 grid-template-columns: 1fr;
             }
-            
-            .settings-banner {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .settings-banner-logo {
-                margin-right: 0;
-                margin-bottom: 15px;
-            }
         }
         
         /* Animasi rotasi untuk ikon refresh */
@@ -2037,31 +2100,6 @@
         @keyframes rotate {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
-        }
-        
-        /* PERBAIKAN: Validasi API Key */
-        .api-key-warning {
-            background-color: rgba(239, 68, 68, 0.1);
-            color: var(--danger-color);
-            padding: 10px 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-        .api-key-warning i {
-            margin-right: 10px;
-            font-size: 18px;
-        }
-        
-        /* PERBAIKAN: Loading saat proses backup/restore */
-        .backup-loading {
-            display: none;
-            text-align: center;
-            padding: 20px;
-        }
-        .backup-loading.active {
-            display: block;
         }
     </style>
 </head>
@@ -2577,25 +2615,18 @@
     </div>
     <!-- Pengaturan Tab -->
     <div id="pengaturan-tab" class="tab-content">
-        <!-- PERUBAHAN: Banner di halaman pengaturan -->
+        <!-- Settings Banner -->
         <div class="settings-banner">
-            <div class="settings-banner-logo" id="settings-banner-logo">
-                <i class="bi bi-building" style="font-size: 40px; color: var(--primary-color);"></i>
+            <div class="settings-banner-logo">
+                <img src="https://forumu.github.io/gen/logo.png" alt="Logo" id="settings-banner-logo">
             </div>
             <div class="settings-banner-info">
                 <div class="settings-banner-title" id="settings-banner-title">YOUSHE</div>
-                <div class="settings-banner-address" id="settings-banner-address">Jaten Karanganyar</div>
-                <div class="settings-banner-box">
-                    <i class="bi bi-box-seam"></i> Depot Air Minum Isi Ulang
+                <div class="settings-banner-subtitle" id="settings-banner-subtitle">Depot Air Minum Isi Ulang</div>
+                <div class="settings-banner-address">
+                    <i class="bi bi-geo-alt"></i>
+                    <span id="settings-banner-address">Jaten Karanganyar</span>
                 </div>
-            </div>
-        </div>
-        
-        <!-- PERBAIKAN: Validasi API Key -->
-        <div class="api-key-warning" id="api-key-warning" style="display: none;">
-            <i class="bi bi-exclamation-triangle-fill"></i>
-            <div>
-                <strong>Peringatan:</strong> API Key belum diatur. Silakan atur API Key di pengaturan untuk dapat terhubung ke data.
             </div>
         </div>
         
@@ -2658,6 +2689,24 @@
                         <button class="settings-edit-btn" data-field="Biaya Suplai Air Tangki (Rp)" data-value="300000">
                             <i class="bi bi-pencil"></i>
                         </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="settings-group">
+                <div class="settings-group-title">Pengaturan Nota</div>
+                <div class="settings-item">
+                    <div class="settings-label">Footer Nota</div>
+                    <div class="settings-value-container">
+                        <div class="settings-value" id="receipt-footer-setting">Terima kasih atas kunjungan Anda</div>
+                        <button class="settings-edit-btn" data-field="Footer Nota" data-value="Terima kasih atas kunjungan Anda">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="receipt-footer-settings">
+                    <div class="receipt-footer-preview" id="receipt-footer-preview">
+                        Terima kasih atas kunjungan Anda
                     </div>
                 </div>
             </div>
@@ -2818,25 +2867,25 @@
                 </div>
             </div>
             
-            <!-- PERUBAHAN: Tombol Reset, Backup dan Import -->
-            <div class="settings-group">
-                <div class="settings-group-title">Pengaturan Data</div>
-                <div class="settings-actions">
-                    <button class="btn btn-danger" id="reset-data-btn">
-                        <i class="bi bi-arrow-clockwise"></i> Reset Data
-                    </button>
-                    <button class="btn btn-primary" id="backup-data-btn">
-                        <i class="bi bi-download"></i> Backup Data
-                    </button>
-                    <button class="btn btn-success" id="import-data-btn">
-                        <i class="bi bi-upload"></i> Import Data
-                    </button>
+            <!-- Reset and Backup Settings -->
+            <div class="settings-action-group">
+                <div class="settings-action-btn reset" id="reset-data-btn">
+                    <i class="bi bi-arrow-clockwise"></i>
+                    Reset Data
                 </div>
-                <div class="backup-loading" id="backup-loading">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
+                <div class="settings-action-btn backup" id="backup-settings-btn">
+                    <i class="bi bi-download"></i>
+                    Backup Pengaturan
+                </div>
+            </div>
+            
+            <div class="settings-action-group">
+                <div class="file-input-wrapper">
+                    <div class="settings-action-btn import">
+                        <i class="bi bi-upload"></i>
+                        Import Backup
                     </div>
-                    <p class="mt-2">Sedang memproses...</p>
+                    <input type="file" id="import-backup-input" accept=".json">
                 </div>
             </div>
         </div>
@@ -3141,8 +3190,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                     <button type="button" class="btn btn-primary" id="print-receipt-btn">Cetak</button>
-                    <!-- PERUBAHAN: Tombol Download Nota -->
-                    <button type="button" class="btn receipt-download-btn" id="download-receipt-btn">
+                    <button type="button" class="receipt-download-btn" id="download-receipt-btn">
                         <i class="bi bi-download"></i> Download Gambar
                     </button>
                 </div>
@@ -3203,33 +3251,6 @@
             </div>
         </div>
     </div>
-    <!-- PERBAIKAN: Modal untuk Import Data -->
-    <div class="modal fade" id="importDataModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Import Data</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Pilih File Backup</label>
-                        <input type="file" class="form-control" id="import-file" accept=".json">
-                        <div class="form-text">Format file yang didukung: .json</div>
-                    </div>
-                    <div class="alert alert-warning">
-                        <i class="bi bi-exclamation-triangle-fill"></i>
-                        <strong>Perhatian:</strong> Import data akan menggantikan semua data yang ada. Pastikan Anda telah melakukan backup sebelum melakukan import.
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-primary" id="confirm-import-btn">Import</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
     <!-- Toast Container -->
     <div class="toast-container"></div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -3271,20 +3292,14 @@
         
         // Initialize App
         document.addEventListener('DOMContentLoaded', function() {
-            // PERBAIKAN: Validasi API Key
-            if (!API_KEY || API_KEY === "${API_KEY}") {
-                document.getElementById('api-key-warning').style.display = 'flex';
-                showToast('API Key belum diatur. Silakan atur API Key di pengaturan untuk dapat terhubung ke data.', 'warning');
-            } else {
-                // Load initial data
-                loadSettings();
-                loadProducts();
-                loadCustomers();
-                loadTransactions();
-                loadWaterStock();
-                loadExpenses();
-                loadNotifications();
-            }
+            // Load initial data
+            loadSettings();
+            loadProducts();
+            loadCustomers();
+            loadTransactions();
+            loadWaterStock();
+            loadExpenses();
+            loadNotifications();
             
             // Setup event listeners
             setupEventListeners();
@@ -3320,8 +3335,8 @@
             // Hide search box initially
             document.getElementById('search-container').style.display = 'none';
             
-            // Setup event listeners for new buttons
-            setupNewButtonListeners();
+            // Setup reset and backup buttons
+            setupResetBackupButtons();
         });
         
         // Setup Event Listeners
@@ -3391,6 +3406,9 @@
             
             // Print Receipt Button
             document.getElementById('print-receipt-btn').addEventListener('click', printReceipt);
+            
+            // Download Receipt Button
+            document.getElementById('download-receipt-btn').addEventListener('click', downloadReceiptAsImage);
             
             // Search Input
             document.getElementById('search-input').addEventListener('input', handleSearch);
@@ -3700,38 +3718,26 @@
             });
         }
         
-        // PERBAIKAN: Setup event listeners untuk tombol baru
-        function setupNewButtonListeners() {
-            // Reset data button
+        // Setup Reset and Backup Buttons
+        function setupResetBackupButtons() {
+            // Reset Data Button
             document.getElementById('reset-data-btn').addEventListener('click', function() {
-                resetAllData();
-            });
-            
-            // Backup data button
-            document.getElementById('backup-data-btn').addEventListener('click', function() {
-                backupData();
-            });
-            
-            // Import data button
-            document.getElementById('import-data-btn').addEventListener('click', function() {
-                const modal = new bootstrap.Modal(document.getElementById('importDataModal'));
-                modal.show();
-            });
-            
-            // Confirm import button
-            document.getElementById('confirm-import-btn').addEventListener('click', function() {
-                const fileInput = document.getElementById('import-file');
-                if (fileInput.files.length > 0) {
-                    const file = fileInput.files[0];
-                    importData(file);
-                } else {
-                    showToast('Silakan pilih file backup terlebih dahulu', 'warning');
+                if (confirm('Apakah Anda yakin ingin mereset semua data? Tindakan ini tidak dapat dibatalkan.')) {
+                    resetAllData();
                 }
             });
             
-            // Download receipt button
-            document.getElementById('download-receipt-btn').addEventListener('click', function() {
-                downloadReceiptAsImage();
+            // Backup Settings Button
+            document.getElementById('backup-settings-btn').addEventListener('click', function() {
+                backupSettings();
+            });
+            
+            // Import Backup Input
+            document.getElementById('import-backup-input').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    importBackup(file);
+                }
             });
         }
         
@@ -4265,13 +4271,13 @@
         
         // API Functions
         async function fetchData(sheet, action = 'get-data', params = {}) {
-            // PERBAIKAN: Validasi API Key
-            if (!API_KEY || API_KEY === "${API_KEY}") {
-                showToast('API Key belum diatur. Silakan atur API Key di pengaturan.', 'danger');
-                return null;
-            }
-            
             try {
+                // Check if API key is set
+                if (!API_KEY || API_KEY === '') {
+                    showToast('API Key tidak valid. Silakan periksa pengaturan.', 'danger');
+                    return null;
+                }
+                
                 const url = new URL(API_URL);
                 url.searchParams.append('sheet', sheet);
                 url.searchParams.append('action', action);
@@ -4297,13 +4303,13 @@
         }
         
         async function insertData(sheet, data) {
-            // PERBAIKAN: Validasi API Key
-            if (!API_KEY || API_KEY === "${API_KEY}") {
-                showToast('API Key belum diatur. Silakan atur API Key di pengaturan.', 'danger');
-                return false;
-            }
-            
             try {
+                // Check if API key is set
+                if (!API_KEY || API_KEY === '') {
+                    showToast('API Key tidak valid. Silakan periksa pengaturan.', 'danger');
+                    return false;
+                }
+                
                 const url = new URL(API_URL);
                 url.searchParams.append('sheet', sheet);
                 url.searchParams.append('action', 'insert');
@@ -4329,34 +4335,29 @@
             }
         }
         
-        // PERBAIKAN: Fungsi updateData yang mendukung penghapusan
-        async function updateData(sheet, row, data, isDelete = false) {
-            // PERBAIKAN: Validasi API Key
-            if (!API_KEY || API_KEY === "${API_KEY}") {
-                showToast('API Key belum diatur. Silakan atur API Key di pengaturan.', 'danger');
-                return false;
-            }
-            
+        async function updateData(sheet, row, data) {
             try {
+                // Check if API key is set
+                if (!API_KEY || API_KEY === '') {
+                    showToast('API Key tidak valid. Silakan periksa pengaturan.', 'danger');
+                    return false;
+                }
+                
                 const url = new URL(API_URL);
                 url.searchParams.append('sheet', sheet);
                 url.searchParams.append('action', 'update');
                 url.searchParams.append('row', row);
                 
-                // Tambahkan parameter delete jika true
-                if (isDelete) {
-                    url.searchParams.append('delete', 'true');
-                } else {
-                    // Add data parameters only if not deleting
-                    Object.keys(data).forEach(key => {
-                        url.searchParams.append(key, data[key]);
-                    });
-                }
+                // Add data parameters
+                Object.keys(data).forEach(key => {
+                    url.searchParams.append(key, data[key]);
+                });
                 
                 const response = await fetch(url);
                 const result = await response.json();
                 
                 if (result.success) {
+                    // Menghapus notifikasi "Data berhasil diperbarui" sesuai permintaan
                     return true;
                 } else {
                     throw new Error(result.message);
@@ -4401,6 +4402,7 @@
                 appData.settings = settings[0] || {};
                 updateSettingsUI();
                 updateWaterLevelThreshold();
+                updateSettingsBanner();
                 
                 // Load menu settings from localStorage
                 const savedMenuSettings = localStorage.getItem('menuSettings');
@@ -4498,6 +4500,11 @@
             // Update logo
             document.getElementById('business-logo').textContent = settings['Logo'] || 'https://forumu.github.io/gen/logo.png';
             
+            // Update receipt footer
+            const receiptFooter = settings['Footer Nota'] || 'Terima kasih atas kunjungan Anda';
+            document.getElementById('receipt-footer-setting').textContent = receiptFooter;
+            document.getElementById('receipt-footer-preview').textContent = receiptFooter;
+            
             // Update edit button data attributes
             document.querySelectorAll('.settings-edit-btn').forEach(btn => {
                 const field = btn.getAttribute('data-field');
@@ -4518,11 +4525,37 @@
             updateHeaderLogo();
             updateHeaderSubtitle();
             
-            // PERBAIKAN: Update banner di pengaturan
-            updateSettingsBanner();
-            
             // Update water stock details when settings change
             updateWaterStockDetails();
+        }
+        
+        // Update Settings Banner
+        function updateSettingsBanner() {
+            const settings = appData.settings;
+            
+            // Update banner logo
+            const bannerLogo = document.getElementById('settings-banner-logo');
+            if (bannerLogo) {
+                bannerLogo.src = settings['Logo'] || 'https://forumu.github.io/gen/logo.png';
+            }
+            
+            // Update banner title
+            const bannerTitle = document.getElementById('settings-banner-title');
+            if (bannerTitle) {
+                bannerTitle.textContent = settings['Nama Usaha'] || 'YOUSHE';
+            }
+            
+            // Update banner subtitle
+            const bannerSubtitle = document.getElementById('settings-banner-subtitle');
+            if (bannerSubtitle) {
+                bannerSubtitle.textContent = 'Depot Air Minum Isi Ulang';
+            }
+            
+            // Update banner address
+            const bannerAddress = document.getElementById('settings-banner-address');
+            if (bannerAddress) {
+                bannerAddress.textContent = settings['Alamat Usaha'] || 'Jaten Karanganyar';
+            }
         }
         
         // Fungsi untuk memperbarui logo header
@@ -4545,25 +4578,6 @@
             const businessAddress = appData.settings['Alamat Usaha'] || 'Depot Air Minum Isi Ulang';
             
             appSubtitle.textContent = businessAddress;
-        }
-        
-        // PERBAIKAN: Fungsi untuk memperbarui banner di pengaturan
-        function updateSettingsBanner() {
-            const settings = appData.settings;
-            
-            // Update banner logo
-            const bannerLogo = document.getElementById('settings-banner-logo');
-            const logoUrl = settings['Logo'] || '';
-            
-            if (logoUrl) {
-                bannerLogo.innerHTML = `<img src="${logoUrl}" alt="Logo" style="width: 100%; height: 100%; object-fit: cover;">`;
-            } else {
-                bannerLogo.innerHTML = '<i class="bi bi-building" style="font-size: 40px; color: var(--primary-color);"></i>';
-            }
-            
-            // Update banner info
-            document.getElementById('settings-banner-title').textContent = settings['Nama Usaha'] || 'YOUSHE';
-            document.getElementById('settings-banner-address').textContent = settings['Alamat Usaha'] || 'Jaten Karanganyar';
         }
         
         function updateWaterStockDetails() {
@@ -4803,7 +4817,7 @@
                         <div class="customer-stats">${customer['Alamat'] || 'No address'}</div>
                         ${customer['Galon Titipan'] > 0 ? `<div class="customer-stats">Galon Titipan: ${customer['Galon Titipan']}</div>` : ''}
                         ${customer['Maps'] ? `<div class="customer-stats"><i class="bi bi-geo-alt"></i> Lokasi tersedia</div>` : ''}
-                    </div>
+                        </div>
                     <div class="customer-actions">
                         ${whatsappNumber ? `<a href="https://wa.me/${whatsappNumber.replace(/\+/g, '')}" target="_blank" class="customer-action whatsapp" title="WhatsApp">
                             <i class="bi bi-whatsapp"></i>
@@ -6788,6 +6802,11 @@
                     updateWaterStockUI();
                     updateWaterLevelThreshold();
                 }
+                
+                // If receipt footer was updated, update receipt footer preview
+                if (field === 'Footer Nota') {
+                    document.getElementById('receipt-footer-preview').textContent = value;
+                }
             } else {
                 // Add notification for failed setting update
                 const notificationData = {
@@ -6826,7 +6845,10 @@
                 return sum + (parseInt(t['Harga Jual (Rp)']) || 0) * (parseInt(t['Jumlah']) || 1);
             }, 0);
             
-            // Generate receipt HTML
+            // Get receipt footer from settings
+            const receiptFooter = settings['Footer Nota'] || 'Terima kasih atas kunjungan Anda';
+            
+            // Generate receipt HTML - Alfamart Style
             const receiptContainer = document.getElementById('receipt-container');
             receiptContainer.innerHTML = `
                 <div class="receipt-header">
@@ -6884,7 +6906,7 @@
                 </div>
                 
                 <div class="receipt-footer">
-                    <div>Terima kasih atas kunjungan Anda</div>
+                    <div>${receiptFooter}</div>
                     <div>Barang yang sudah dibeli tidak dapat dikembalikan</div>
                 </div>
             `;
@@ -6898,37 +6920,32 @@
             window.print();
         }
         
-        // PERBAIKAN: Fungsi untuk download nota sebagai gambar
+        // Download Receipt as Image
         function downloadReceiptAsImage() {
             const receiptElement = document.getElementById('receipt-container');
             
-            // Tampilkan loading
-            showToast('Sedang memproses download...', 'info');
-            
-            // Gunakan html2canvas untuk mengkonversi ke gambar
             html2canvas(receiptElement, {
-                scale: 2, // Kualitas gambar lebih tinggi
+                scale: 2, // Higher resolution
                 logging: false,
                 useCORS: true
             }).then(canvas => {
-                // Konversi canvas ke URL data
-                const imgData = canvas.toDataURL('image/png');
+                // Convert canvas to data URL
+                const dataURL = canvas.toDataURL('image/png');
                 
-                // Buat link download
+                // Create download link
                 const link = document.createElement('a');
                 link.download = `nota-${new Date().getTime()}.png`;
-                link.href = imgData;
+                link.href = dataURL;
                 
                 // Trigger download
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
                 
-                // Tampilkan notifikasi sukses
                 showToast('Nota berhasil diunduh sebagai gambar', 'success');
             }).catch(error => {
                 console.error('Error generating receipt image:', error);
-                showToast('Gagal mengunduh nota. Silakan coba lagi.', 'danger');
+                showToast('Gagal mengunduh nota sebagai gambar', 'danger');
             });
         }
         
@@ -7554,6 +7571,189 @@
             overlay.classList.remove('active');
         }
         
+        // Reset All Data Function
+        async function resetAllData() {
+            if (!confirm('Apakah Anda yakin ingin mereset semua data? Tindakan ini tidak dapat dibatalkan dan akan menghapus semua data dari semua sheet.')) {
+                return;
+            }
+            
+            // Show processing overlay
+            showProcessingOverlay();
+            
+            try {
+                // Get all sheet names
+                const sheets = ['Produk', 'Pelanggan', 'Transaksi', 'Pengeluaran', 'Stok Air', 'Notifikasi', 'Pengaturan'];
+                
+                // Reset each sheet
+                for (const sheet of sheets) {
+                    // Get all data from the sheet
+                    const data = await fetchData(sheet);
+                    
+                    if (data && data.length > 0) {
+                        // Delete all rows except the header
+                        for (let i = data.length; i >= 1; i--) {
+                            await updateData(sheet, i + 1, { 'delete': 'true' });
+                        }
+                    }
+                }
+                
+                // Clear local data
+                appData = {
+                    transactions: [],
+                    products: [],
+                    waterStock: {},
+                    customers: [],
+                    expenses: [],
+                    settings: {},
+                    notifications: [],
+                    cart: [],
+                    selectedPaymentMethod: 'Lunas',
+                    dailySales: {},
+                    selectedCustomer: null,
+                    selectedProducts: {},
+                    processing: false,
+                    menuSettings: {
+                        'dashboard-tab': { visible: true, position: 'bottom' },
+                        'transaksi-tab': { visible: true, position: 'bottom' },
+                        'riwayat-tab': { visible: true, position: 'bottom' },
+                        'produk-tab': { visible: true, position: 'bottom' },
+                        'pelanggan-tab': { visible: true, position: 'bottom' },
+                        'stok-tab': { visible: true, position: 'bottom' },
+                        'pengeluaran-tab': { visible: true, position: 'bottom' },
+                        'pengaturan-tab': { visible: true, position: 'bottom' }
+                    },
+                    productView: 'list',
+                    activeTab: 'transaction-history-tab'
+                };
+                
+                // Refresh UI
+                updateDashboardStats();
+                updateFinancialSummary();
+                updateSalesChart();
+                updateWaterLevel();
+                updateTransactionDate();
+                updateTopProducts();
+                updateActiveCustomers();
+                updateMonthlyExpense();
+                updateProductsUI();
+                updateCustomersUI();
+                updateTransactionsUI();
+                updateWaterStockUI();
+                updateExpensesUI();
+                updateNotificationsUI();
+                updateNotificationBadge();
+                updateNotificationDropdown();
+                updateSettingsUI();
+                updateSettingsBanner();
+                
+                showToast('Semua data berhasil direset', 'success');
+            } catch (error) {
+                console.error('Error resetting data:', error);
+                showToast('Gagal mereset data: ' + error.message, 'danger');
+            } finally {
+                // Hide processing overlay
+                hideProcessingOverlay();
+            }
+        }
+        
+        // Backup Settings Function
+        function backupSettings() {
+            // Create backup object with all settings
+            const backup = {
+                settings: appData.settings,
+                menuSettings: appData.menuSettings,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Convert to JSON
+            const backupJson = JSON.stringify(backup, null, 2);
+            
+            // Create blob
+            const blob = new Blob([backupJson], { type: 'application/json' });
+            
+            // Create download link
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `backup-settings-${new Date().toISOString().slice(0, 10)}.json`;
+            
+            // Trigger download
+            document.body.appendChild(a);
+            a.click();
+            
+            // Clean up
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 0);
+            
+            showToast('Pengaturan berhasil dibackup', 'success');
+        }
+        
+        // Import Backup Function
+        function importBackup(file) {
+            const reader = new FileReader();
+            
+            reader.onload = async function(e) {
+                try {
+                    // Parse JSON
+                    const backup = JSON.parse(e.target.result);
+                    
+                    // Validate backup structure
+                    if (!backup.settings || !backup.menuSettings) {
+                        showToast('File backup tidak valid', 'danger');
+                        return;
+                    }
+                    
+                    // Show processing overlay
+                    showProcessingOverlay();
+                    
+                    // Update settings
+                    appData.settings = backup.settings;
+                    appData.menuSettings = backup.menuSettings;
+                    
+                    // Update UI
+                    updateSettingsUI();
+                    updateMenuVisibility();
+                    updateMenuPosition();
+                    updateSettingsBanner();
+                    
+                    // Save settings to spreadsheet
+                    const settingsData = {};
+                    Object.keys(backup.settings).forEach(key => {
+                        settingsData[key] = backup.settings[key];
+                    });
+                    
+                    // Save menu settings to spreadsheet
+                    const menuAtas = Object.keys(backup.menuSettings)
+                        .filter(key => backup.menuSettings[key].position === 'header' && backup.menuSettings[key].visible)
+                        .map(key => key.replace('-tab', ''))
+                        .join(',');
+                    
+                    const menuBawah = Object.keys(backup.menuSettings)
+                        .filter(key => backup.menuSettings[key].position === 'bottom' && backup.menuSettings[key].visible)
+                        .map(key => key.replace('-tab', ''))
+                        .join(',');
+                    
+                    settingsData['Menu Atas'] = menuAtas;
+                    settingsData['Menu Bawah'] = menuBawah;
+                    
+                    // Update settings in spreadsheet
+                    await updateData('Pengaturan', 2, settingsData);
+                    
+                    showToast('Pengaturan berhasil diimpor', 'success');
+                } catch (error) {
+                    console.error('Error importing backup:', error);
+                    showToast('Gagal mengimpor pengaturan: ' + error.message, 'danger');
+                } finally {
+                    // Hide processing overlay
+                    hideProcessingOverlay();
+                }
+            };
+            
+            reader.readAsText(file);
+        }
+        
         // Toast notification function
         function showToast(message, type = 'info') {
             const toastContainer = document.querySelector('.toast-container');
@@ -7591,175 +7791,6 @@
             toast.addEventListener('hidden.bs.toast', function() {
                 toast.remove();
             });
-        }
-        
-        // PERBAIKAN: Fungsi untuk reset semua data
-        async function resetAllData() {
-            // Tampilkan konfirmasi terlebih dahulu
-            if (!confirm('Apakah Anda yakin ingin mereset semua data? Tindakan ini tidak dapat dibatalkan dan akan menghapus semua data dari spreadsheet.')) {
-                return;
-            }
-            
-            // Tampilkan loading
-            showProcessingOverlay();
-            
-            try {
-                // Hapus data dari spreadsheet, bukan hanya dari memori
-                const sheets = ['Transaksi', 'Stok Air', 'Pengeluaran', 'Notifikasi'];
-                
-                // Loop melalui semua sheet dan hapus isi mulai baris ke-2
-                for (const sheet of sheets) {
-                    // Dapatkan semua data dari sheet
-                    const data = await fetchData(sheet);
-                    
-                    if (data && data.length > 1) {
-                        // Hapus semua data mulai baris ke-2 (baris pertama adalah header)
-                        // Proses dari bawah ke atas untuk menghindari masalah indeks
-                        for (let i = data.length - 1; i >= 1; i--) {
-                            // Hapus baris dengan menggunakan fungsi updateData dengan parameter delete=true
-                            await updateData(sheet, i + 1, {}, true);
-                        }
-                    }
-                }
-                
-                // Reset data di app
-                appData.transactions = [];
-                appData.products = [];
-                appData.waterStock = {};
-                appData.customers = [];
-                appData.expenses = [];
-                appData.notifications = [];
-                
-                // Update UI
-                updateTransactionsUI();
-                updateProductsUI();
-                updateWaterStockUI();
-                updateCustomersUI();
-                updateExpensesUI();
-                updateNotificationsUI();
-                updateDashboardStats();
-                updateFinancialSummary();
-                
-                showToast('Semua data berhasil direset', 'success');
-            } catch (error) {
-                console.error('Error resetting data:', error);
-                showToast('Gagal mereset data: ' + error.message, 'danger');
-            } finally {
-                // Sembunyikan loading
-                hideProcessingOverlay();
-            }
-        }
-        
-        // PERBAIKAN: Fungsi untuk backup data
-        async function backupData() {
-            // Tampilkan loading
-            document.getElementById('backup-loading').classList.add('active');
-            
-            try {
-                // Buat objek backup
-                const backupData = {
-                    settings: appData.settings,
-                    products: appData.products,
-                    customers: appData.customers,
-                    transactions: appData.transactions,
-                    waterStock: appData.waterStock,
-                    expenses: appData.expenses,
-                    notifications: appData.notifications,
-                    menuSettings: appData.menuSettings,
-                    backupDate: new Date().toISOString()
-                };
-                
-                // Konversi ke JSON
-                const dataStr = JSON.stringify(backupData, null, 2);
-                
-                // Buat blob dan download
-                const blob = new Blob([dataStr], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `backup-${new Date().toISOString().slice(0, 10)}.json`;
-                document.body.appendChild(a);
-                a.click();
-                
-                // Bersihkan
-                setTimeout(() => {
-                    document.body.removeChild(a);
-                    window.URL.revokeObjectURL(url);
-                }, 100);
-                
-                showToast('Backup data berhasil dibuat', 'success');
-            } catch (error) {
-                console.error('Error backing up data:', error);
-                showToast('Gagal membuat backup data', 'danger');
-            } finally {
-                // Sembunyikan loading
-                document.getElementById('backup-loading').classList.remove('active');
-            }
-        }
-        
-        // PERBAIKAN: Fungsi untuk import data
-        async function importData(file) {
-            // Tampilkan loading
-            document.getElementById('backup-loading').classList.add('active');
-            
-            try {
-                // Baca file
-                const text = await file.text();
-                
-                // Parse JSON
-                const data = JSON.parse(text);
-                
-                // Validasi data
-                if (!data.settings || !data.products || !data.customers) {
-                    throw new Error('Format file backup tidak valid');
-                }
-                
-                // Update app data
-                appData.settings = data.settings || {};
-                appData.products = data.products || [];
-                appData.customers = data.customers || [];
-                appData.transactions = data.transactions || [];
-                appData.waterStock = data.waterStock || {};
-                appData.expenses = data.expenses || [];
-                appData.notifications = data.notifications || [];
-                appData.menuSettings = data.menuSettings || appData.menuSettings;
-                
-                // Update UI
-                updateSettingsUI();
-                updateProductsUI();
-                updateCustomersUI();
-                updateTransactionsUI();
-                updateWaterStockUI();
-                updateExpensesUI();
-                updateNotificationsUI();
-                updateDashboardStats();
-                updateFinancialSummary();
-                updateTopProducts();
-                updateActiveCustomers();
-                updateMonthlyExpense();
-                updateWaterLevel();
-                updateTransactionDate();
-                updateSalesChart();
-                updateStockHistory();
-                updateWaterLevelThreshold();
-                
-                // Update menu visibility and position
-                updateMenuVisibility();
-                updateMenuPosition();
-                
-                // Tutup modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('importDataModal'));
-                modal.hide();
-                
-                showToast('Data berhasil diimport', 'success');
-            } catch (error) {
-                console.error('Error importing data:', error);
-                showToast('Gagal mengimport data: ' + error.message, 'danger');
-            } finally {
-                // Sembunyikan loading
-                document.getElementById('backup-loading').classList.remove('active');
-            }
         }
     </script>
 </body>
